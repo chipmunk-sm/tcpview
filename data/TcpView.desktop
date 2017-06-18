@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=Qt;KDE;Utility;
+Comment[en_US]=
+Comment=
+Exec=TcpView
+GenericName[en_US]=Connections monitor
+GenericName=Connections monitor
+Icon=tcpview.svg
+MimeType=
+Name[en_US]=TcpView
+Name=TcpView
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
