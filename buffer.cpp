@@ -31,7 +31,7 @@ void CBuffer::Clear()
     }
     catch(...)
     {
-        m_error = "Failed free a block allocated by `malloc!";
+        m_error = "Failed free a block allocated by malloc!";
     }
 }
 

@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>data/tcpview.svg</file>
+    <file>data/tcpviewb.svg</file>
+    <file>data/tcpvieww.svg</file>
+</qresource>
+</RCC>

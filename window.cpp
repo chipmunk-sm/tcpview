@@ -274,7 +274,7 @@ void Window::RestoreAppState()
         restoreGeometry(settings.value("baseWindow/geometry").toByteArray());
         m_TreeView.header()->restoreState(settings.value("baseTable/headerState", "").toByteArray());
 
-        setWindowIcon(QPixmap("./tcpviewb.svg"));
+        setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
 
     }
     catch(...)

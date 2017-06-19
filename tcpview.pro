@@ -20,3 +20,6 @@ SOURCES = main.cpp \
 CONFIG += c++11
 
 CONFIG(debug, release|debug):DEFINES += _DEBUG
+
+RESOURCES   = tcpview.qrc
+
