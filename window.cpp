@@ -546,9 +546,11 @@ void Window::onCustomContextMenu(const QPoint &point)
     }
 }
 
-void Window::ShowInfoDialog(QString dialogText, bool readonly)
+void Window::ShowInfoDialog(QString title, QString dialogText, bool readonly)
 {
     auto infoDialog = new QDialog(this);
+    infoDialog->setWindowTitle(title);
+    infoDialog->setWindowFlags(infoDialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     auto infoEditor = new QTextEdit;
     infoEditor->setLineWrapMode(QTextEdit::NoWrap);
@@ -588,7 +590,7 @@ void Window::ShowWhois(QString rowText, QString whoisText)
     exec.start(commandString);
     exec.waitForFinished();
     rowText += exec.readAllStandardOutput();
-    ShowInfoDialog(rowText, true);
+    ShowInfoDialog(commandString, rowText, true);
 }
 
 void Window::RunNetstat()
@@ -598,7 +600,10 @@ void Window::RunNetstat()
     exec.start(commandString);
     exec.waitForFinished();
     auto result = exec.readAllStandardOutput();
-    ShowInfoDialog(result, true);
+
+    result = "sudo netstat -natuwpe\n" + result;
+
+    ShowInfoDialog("netstat", result, true);
 }
 
 void Window::RunRootDatasource()

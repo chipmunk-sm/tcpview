@@ -86,7 +86,7 @@ private:
     void HideDataColumn();
     void showEvent( QShowEvent* event );
     void ShowWhois(QString rowText, QString whoisText);
-    void ShowInfoDialog(QString dialogText, bool readonly);
+    void ShowInfoDialog(QString title, QString dialogText, bool readonly);
 };
 
 #endif // WINDOW_H
