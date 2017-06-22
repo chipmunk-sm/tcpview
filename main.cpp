@@ -34,30 +34,18 @@ int main(int argc, char *argv[])
 {
 
     auto runRootModule = (argc == 2 && argv[1] != nullptr && strstr(argv[1], "rootmodule") != nullptr);
-    auto rootUser = geteuid() == 0;
-
-    if(/*rootUser &&*/ runRootModule)
+    if(runRootModule)
     {
         auto root = new CRootModule(getpid());
         if(root->m_error.length() > 1)
         {
             std::cout << "CRootModule failed " << root->m_processId << " error " << root->m_error << std::endl;
             delete root;
-            return 0xff;
+            return -1;
         }
         root->RunServer();
         delete root;
         return 0x0;
-    }
-
-    if(rootUser)
-    {
-        return 0xF;
-    }
-
-    if(runRootModule)
-    {
-        return 0xE;
     }
 
     QApplication app(argc, argv);
