@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("");
     QCoreApplication::setOrganizationName("danizt");
     QCoreApplication::setApplicationName("tcpview");
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion("1.0 beta");
 
 #ifndef QT_NO_TRANSLATION
 
