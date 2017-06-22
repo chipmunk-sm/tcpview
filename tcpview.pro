@@ -23,5 +23,6 @@ CONFIG(debug, release|debug):DEFINES += _DEBUG
 RESOURCES   = tcpview.qrc
 
 DISTFILES += \
-    LICENSE
+    LICENSE \
+    README.md
 

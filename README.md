@@ -1,5 +1,6 @@
 # tcpview
-tcpview for linux
+
+Graphical network connections viewer for Linux
 
 Project for fun with Qt and STL
 

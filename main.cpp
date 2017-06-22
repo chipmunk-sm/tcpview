@@ -1,4 +1,4 @@
-/*
+/* This file is part of tcpview - network connections viewer for Linux
  * Copyright (C) 2017 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     QCoreApplication::setOrganizationDomain("");
-    QCoreApplication::setOrganizationName("DaniZt");
-    QCoreApplication::setApplicationName("TcpView");
+    QCoreApplication::setOrganizationName("danizt");
+    QCoreApplication::setApplicationName("tcpview");
     QCoreApplication::setApplicationVersion(QT_VERSION_STR);
 
 #ifndef QT_NO_TRANSLATION

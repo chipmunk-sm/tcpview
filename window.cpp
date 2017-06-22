@@ -1,4 +1,4 @@
-/*
+/* This file is part of tcpview - network connections viewer for Linux
  * Copyright (C) 2017 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
