@@ -1,7 +1,6 @@
 QT += widgets
 
 LIBS += -luuid
-LIBS += -lrt
 
 HEADERS = window.h \
         tableheadercaption.h \
@@ -22,4 +21,7 @@ CONFIG += c++11
 CONFIG(debug, release|debug):DEFINES += _DEBUG
 
 RESOURCES   = tcpview.qrc
+
+DISTFILES += \
+    LICENSE
 
