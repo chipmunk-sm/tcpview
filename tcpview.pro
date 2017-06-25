@@ -24,5 +24,13 @@ RESOURCES   = tcpview.qrc
 
 DISTFILES += \
     LICENSE \
-    README.md
+    README.md \
+    data/tcpview.desktop \
+    debian/source/format \
+    debian/source/format \
+    debian/compat \
+    debian/control \
+    debian/copyright \
+    debian/changelog \
+    debian/rules
 
