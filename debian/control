@@ -1,0 +1,15 @@
+Source: tcpview
+Section: kde
+Priority: optional
+Maintainer: chipmunk.sm <dannico@linuxmail.org>
+Build-Depends: debhelper (>=9),
+            libuuid1,
+            qtbase5-dev
+Standards-Version: 3.9.8
+Homepage: https://github.com/chipmunk-sm/tcpview
+Vcs-Bzr: https://code.launchpad.net/~chipmunk.sm/tcpview/master
+
+Package: tcpview
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Graphical network connections viewer for Linux

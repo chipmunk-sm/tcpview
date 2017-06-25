@@ -1,0 +1,5 @@
+tcpview usr/bin
+data/tcpview.desktop  usr/share/applications
+data/tcpview.svg      usr/share/tcpview
+data/tcpviewb.svg     usr/share/tcpview
+data/tcpvieww.svg     usr/share/tcpview
