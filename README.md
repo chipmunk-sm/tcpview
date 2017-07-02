@@ -6,9 +6,13 @@ tcpview PPA
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
 Development environments:
+
 Kubuntu 16.10
+
 Qt Creator 4.0.2
+
 Qt 5.6.1
+
 
 Main window
 
