@@ -3,7 +3,7 @@ Section: kde
 Priority: optional
 Maintainer: chipmunk.sm <dannico@linuxmail.org>
 Build-Depends: debhelper (>=9),
-            libuuid1,
+            uuid-dev,
             qtbase5-dev
 Standards-Version: 3.9.8
 Homepage: https://github.com/chipmunk-sm/tcpview
