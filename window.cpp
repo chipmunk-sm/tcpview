@@ -276,6 +276,8 @@ void Window::closeEvent(QCloseEvent *event)
 void Window::RestoreAppState()
 {
 
+    setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
+
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
     try
@@ -291,7 +293,6 @@ void Window::RestoreAppState()
         restoreGeometry(settings.value("baseWindow/geometry").toByteArray());
         m_TreeView.header()->restoreState(settings.value("baseTable/headerState", "").toByteArray());
 
-        setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
 
     }
     catch(...)
