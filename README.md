@@ -2,10 +2,10 @@
 
 Graphical network connections viewer for Linux
 
-tcpview PPA
+To get the last release version, please use the PPA:
+
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
-Artful 17.10.1, Yakkety 17.04.1, Zesty 16.10.1
 
 Main window
 
