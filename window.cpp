@@ -163,7 +163,7 @@ Window::Window()
 
 void Window::InitStringMap()
 {
-
+    //                                                              caption                                             captionSample                   captionToolTip
     m_TableCaption.insert(CDataSource::COLUMN_DATA_PROTOCOL,        TableHeaderCaption(QObject::tr("Protocol"),         QObject::tr("tcp6"),            QObject::tr("Protocol")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_LOCALHOST,       TableHeaderCaption(QObject::tr("Local Host"),       QObject::tr("Local Host"),      QObject::tr("Local Host")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_LOCALADDRESS,    TableHeaderCaption(QObject::tr("Local Address"),    QObject::tr("255.255.255.255"), QObject::tr("Local Address")));
@@ -174,6 +174,7 @@ void Window::InitStringMap()
     m_TableCaption.insert(CDataSource::COLUMN_DATA_REMOTEPORT,      TableHeaderCaption(QObject::tr("Remote Port"),      QObject::tr("65535"),           QObject::tr("Remote Port")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_UID,             TableHeaderCaption(QObject::tr("User"),             QObject::tr("0000000"),         QObject::tr("User")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_INODE,           TableHeaderCaption(QObject::tr("Inode"),            QObject::tr("0000000"),         QObject::tr("Pid")));
+    m_TableCaption.insert(CDataSource::COLUMN_DATA_TIME,            TableHeaderCaption(QObject::tr("Time"),             QObject::tr("2017-01-01 00:00:00"), QObject::tr("Time")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_COMMAND,         TableHeaderCaption(QObject::tr("Command"),          QObject::tr("Command"),         QObject::tr("Command")));
     m_TableCaption.insert(CDataSource::COLUMN_DATA_DATA,            TableHeaderCaption(QObject::tr("RowId"),            QObject::tr("RowId"),           QObject::tr("RowId")));
 
@@ -279,32 +280,19 @@ void Window::RestoreAppState()
     setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
 
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    auto testv = settings.value("baseWindow/geometry");
 
-    try
+    if(!testv.isValid() || testv.isNull())
     {
-
-        auto testv = settings.value("baseWindow/geometry");
-        if(!testv.isValid() || testv.isNull())
-        {
-            HideDataColumn();
-            return;
-        }
-
-        restoreGeometry(settings.value("baseWindow/geometry").toByteArray());
-        m_TreeView.header()->restoreState(settings.value("baseTable/headerState", "").toByteArray());
-
-
+        HideDataColumn();
+        return;
     }
-    catch(...)
-    {
-        //just for fun
-        QMessageBox msgBox;
-        msgBox.setText("Welcome to " + QCoreApplication::applicationName());
-        msgBox.exec();
 
-    }
+    restoreGeometry(settings.value("baseWindow/geometry").toByteArray());
+    m_TreeView.header()->restoreState(settings.value("baseTable/headerState", "").toByteArray());
 
     HideDataColumn();
+
 }
 
 void Window::SetFontSize(int fontSizeIndex)
@@ -324,7 +312,7 @@ void Window::SetFontSize(int fontSizeIndex)
 void Window::HideDataColumn()
 {
 
-    for(auto idx = 0; idx < CDataSource::COLUMN_DATA_DATA - 1; idx++)
+    for(auto idx = 0; idx < CDataSource::COLUMN_DATA_DATA; idx++)
         m_TreeView.setColumnHidden(idx, false);
 
     m_TreeView.setColumnHidden(CDataSource::COLUMN_DATA_DATA, true);
@@ -422,6 +410,8 @@ void Window::updateTreeView(CDataSource::SocketInfo * dataSource, bool disableCl
         auto iRow = m_ProxyModel.rowCount();
         m_ProxyModel.insertRows(iRow, 1);
 
+        auto tmpTime = QDateTime::currentDateTime().toString("yy-MM-dd hh:mm:ss");
+
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_PROTOCOL),        m_TableProtocolName[dataSource->netType]);
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_LOCALHOST),       dataSource->localHost);
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_LOCALADDRESS),    dataSource->localAddr);
@@ -432,6 +422,7 @@ void Window::updateTreeView(CDataSource::SocketInfo * dataSource, bool disableCl
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_REMOTEPORT),      dataSource->remotePort);
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_UID),             QString::fromStdString(CDataSource::makeUserNameStr(dataSource->uid)));
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_INODE),           QString::number(dataSource->inode));
+        m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_TIME),            tmpTime);
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_COMMAND),         dataSource->Command);
         m_ProxyModel.setData(m_ProxyModel.index(iRow, CDataSource::COLUMN_DATA_DATA),            uuid);
 

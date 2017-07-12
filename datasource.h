@@ -71,6 +71,7 @@ public:
         COLUMN_DATA_REMOTEPORT,
         COLUMN_DATA_UID,
         COLUMN_DATA_INODE,
+        COLUMN_DATA_TIME,
         COLUMN_DATA_COMMAND,
         COLUMN_DATA_DATA,
 
