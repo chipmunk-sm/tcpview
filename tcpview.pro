@@ -32,5 +32,6 @@ DISTFILES += \
     debian/control \
     debian/copyright \
     debian/changelog \
-    debian/rules
+    debian/rules \
+    debian/tcpview.install
 
