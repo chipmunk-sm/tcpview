@@ -2,19 +2,9 @@
 
 Graphical network connections viewer for Linux
 
-tcpview PPA
+To get the last release version, please use the PPA:
+
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
-
-Artful 17.10.1, Yakkety 17.04.1, Zesty 16.10.1
-
-
-Development environments:
-
-Kubuntu 16.10
-
-Qt Creator 4.0.2
-
-Qt 5.6.1
 
 
 Main window
@@ -29,3 +19,4 @@ Whois
 
 ![whoiswindow](https://user-images.githubusercontent.com/29524958/27342800-313bbaa4-55af-11e7-9765-ad1db179faff.png)
 
+https://github.com/chipmunk-sm/tcpview
