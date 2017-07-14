@@ -1,0 +1,12 @@
+language: cpp
+compiler: gcc
+dist: trusty
+
+before_install:
+ - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+ - sudo apt-get update -qq
+ - sudo apt-get install qtbase5-dev uuid-dev
+
+script:
+ - qmake -qt=qt5
+ - make
