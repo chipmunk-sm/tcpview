@@ -12,4 +12,4 @@ before_install:
 script:
  - qmake -qt=qt5
  - make
-.travis.yml
+
