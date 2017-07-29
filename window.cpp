@@ -103,10 +103,6 @@ Window::Window()
     connect(&m_filterColumnComboBox, static_cast<QComboIntSignal>(&QComboBox::currentIndexChanged),  this, &Window::filterColumnChanged);
     connect(this, SIGNAL(callUpdateGui()),   this, SLOT(updateGui()));
 
-    m_buttonRunNetstat.setText("netstat");
-    m_buttonRunNetstat.setToolTip(QObject::tr("sudo netstat -natuwpe"));
-    connect(&m_buttonRunNetstat, SIGNAL (released()),  this, SLOT(RunNetstat()));
-
     m_buttonRunRootDatasource.setText(QObject::tr("resolver"));
     m_buttonRunRootDatasource.setToolTip(QObject::tr("Display info in \"Command\" for all process"));
     connect(&m_buttonRunRootDatasource, SIGNAL (released()),  this, SLOT(RunRootDatasource()));
@@ -125,7 +121,7 @@ Window::Window()
     QGridLayout *proxyLayout = new QGridLayout;
 
     int row = 0;
-    proxyLayout->addWidget(&m_TreeView,              row, 0, 1, 11);
+    proxyLayout->addWidget(&m_TreeView,              row, 0, 1, 10);
 
     row++;
     int col = 0;
@@ -144,7 +140,6 @@ Window::Window()
     proxyLayout->addWidget(&m_filterColumnComboBox,  row, col++);
 
     proxyLayout->addWidget(&m_zoomSlider,            row, col++);
-    proxyLayout->addWidget(&m_buttonRunNetstat,        row, col++);
 
 
     m_GroupBox.setLayout(proxyLayout);
@@ -602,18 +597,18 @@ void Window::ShowWhois(QString rowText, QString whoisText)
     ShowInfoDialog(commandString, rowText, true);
 }
 
-void Window::RunNetstat()
-{
-    QProcess exec;
-    QString commandString = "pkexec netstat -natuwpe";
-    exec.start(commandString);
-    exec.waitForFinished();
-    auto result = exec.readAllStandardOutput();
+//void Window::RunNetstat()
+//{
+//    QProcess exec;
+//    QString commandString = "pkexec netstat -natuwpe";
+//    exec.start(commandString);
+//    exec.waitForFinished();
+//    auto result = exec.readAllStandardOutput();
 
-    result = "sudo netstat -natuwpe\n" + result;
+//    result = "sudo netstat -natuwpe\n" + result;
 
-    ShowInfoDialog("netstat", result, true);
-}
+//    ShowInfoDialog("netstat", result, true);
+//}
 
 void Window::RunRootDatasource()
 {

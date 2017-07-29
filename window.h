@@ -54,7 +54,6 @@ private slots:
     void updateGui();
     void pauseUpdateThread();
     void onCustomContextMenu(const QPoint &point);
-    void RunNetstat();
     void SetFontSize(int fontSizeIndex);
     void captureMode();
     void RunRootDatasource();
@@ -92,7 +91,6 @@ private:
 
     QSlider             m_zoomSlider;
 
-    QPushButton         m_buttonRunNetstat;
     int                 m_fontSize;
     QList<int>          m_fontSizeList;
 
