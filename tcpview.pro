@@ -1,37 +1,74 @@
-QT += widgets
+#/* This file is part of tcpview - network connections viewer for Linux
+# * Copyright (C) 2017 chipmunk-sm <dannico@linuxmail.org>
+# *
+# * This program is free software: you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation, either version 3 of the License, or
+# * (at your option) any later version.
+# *
+# * This program is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# */
 
-LIBS += -luuid
-
-HEADERS = window.h \
-        tableheadercaption.h \
-    updatethread.h \
-    datasource.h \
-    rootmodule.h \
-    buffer.h
-
-SOURCES = main.cpp \
-        window.cpp \
-    updatethread.cpp \
-    datasource.cpp \
-    rootmodule.cpp \
-    buffer.cpp
+QT += core gui
 
 CONFIG += c++11
 
-CONFIG(debug, release|debug):DEFINES += _DEBUG
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-RESOURCES   = tcpview.qrc
+LIBS += -luuid
+
+TARGET = tcpview
+TEMPLATE = app
+
+
+SOURCES += main.cpp\
+        mainwindow.cpp \
+    source/buffer.cpp \
+    source/datasource.cpp \
+    source/rootmodule.cpp \
+    source/cconnectionstree.cpp \
+    source/ccustomproxymodel.cpp \
+    source/ccfontsize.cpp \
+    source/cfilesavewrapper.cpp \
+    source/updatethread.cpp \
+    source/cportservicenames.cpp \
+    source/cusername.cpp
+
+HEADERS  += mainwindow.h \
+    source/buffer.h \
+    source/datasource.h \
+    source/rootmodule.h \
+    source/cconnectionstree.h \
+    source/tableheadercaption.h \
+    source/ccustomproxymodel.h \
+    source/ccfontsize.h \
+    source/cfilesavewrapper.h \
+    source/updatethread.h \
+    source/cportservicenames.h \
+    source/cusername.h
+
+FORMS    += mainwindow.ui
 
 DISTFILES += \
-    LICENSE \
-    README.md \
+    data/tcpview.svg \
+    data/tcpviewb.svg \
+    data/tcpvieww.svg \
     data/tcpview.desktop \
-    debian/source/format \
-    debian/source/format \
     debian/compat \
     debian/control \
     debian/copyright \
+    debian/tcpview.install \
     debian/changelog \
     debian/rules \
-    debian/tcpview.install
+    debian/source/format \
+    README.md \
+    LICENSE
 
+RESOURCES += \
+    tcpview.qrc

@@ -126,6 +126,11 @@ void CUpdateThread::pauseUpdate(bool state)
     m_pauseUpdate = state;
 }
 
+bool CUpdateThread::IsPause()
+{
+   return m_pauseUpdate;
+}
+
 bool CUpdateThread::InitRootLoader()
 {
     return m_netdatahelper.InitRootLoader();

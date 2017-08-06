@@ -36,7 +36,7 @@
 #include <netdb.h>
 #include <uuid/uuid.h>
 #include <semaphore.h>
-#include <buffer.h>
+#include <source/buffer.h>
 
 #define DEF_STARTCODE 0x010101010
 
@@ -81,10 +81,10 @@ private:
     static unsigned int GetSocketFromNameTypeA(const char *buf, size_t strLen);
     static unsigned int GetSocketFromNameTypeB(const char *buf, size_t strLen);
 
-    static void makeCmdStr(unsigned int pid, int fifoSrv);
+    static void GetCommandString(unsigned int pid, int fifoSrv);
 
-    static bool writeFifo(int fifo, const char *pBuffer, size_t size);
-    static int readFifo(int fifo, CBuffer *pBuffer);
+    static bool WriteFifo(int fifo, const char *pBuffer, size_t size);
+    static int ReadFifo(int fifo, CBuffer *pBuffer);
 
 };
 

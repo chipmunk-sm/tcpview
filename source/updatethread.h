@@ -45,6 +45,7 @@ public:
     void EnableUpdateData();
     void setUpdateCallback(std::function<void(void)> callbackUpdate);
     void pauseUpdate(bool state);
+    bool IsPause();
 
     bool InitRootLoader();
     void DeleteRootLoader();

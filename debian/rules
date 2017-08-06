@@ -3,11 +3,6 @@
 export DH_VERBOSE = 1
 export QT_SELECT=5
 
-# Main dh rule
 %:
 	dh $@
-
-# override_dh_clean: 
-# 	./prepare.sh
-# 	dh_clean
 

@@ -36,6 +36,7 @@
 #include <uuid/uuid.h>
 #include <atomic>
 
+#include "cportservicenames.h"
 #include "rootmodule.h"
 
 class CDataSource
@@ -118,27 +119,23 @@ public:
     void UpdateTable();
 
     std::unordered_map<std::string, SocketInfo> *GetConnectionsList();
-    static std::string makeUserNameStr(__uid_t euid);
 
     bool InitRootLoader();
     void DeleteRootLoader();
-
 private:
     unsigned int m_loadCycles;
     std::map<eNetType, std::string>             m_eNetTypeList;
-    std::map<int, std::string>                  m_PortServiceNamesTcp;
-    std::map<int, std::string>                  m_PortServiceNamesUdp;
     std::unordered_map<std::string, SocketInfo> m_socketList;
-    CRootModule                                *m_rootModule;
+    CRootModule                                *m_pRootModule;
     std::atomic_bool                            m_enableRootMod;
+    CPortServiceNames                           m_CPortServiceNames;
 
-    static void getConnections(eNetType netType,
+    static void LoadConnections(eNetType netType,
                                const char *commandLine,
                                std::unordered_map<std::string, SocketInfo> *pSocketList,
                                std::map<unsigned long long, unsigned int> *procInodeList,
                                std::map<unsigned int, std::string> *procCommand,
-                               std::map<int, std::string> *pPortServiceNamesTcp,
-                               std::map<int, std::string> *pPortServiceNamesUdp,
+                               CPortServiceNames *pCPortServiceNames,
                                unsigned int loadCycles);
 
     static bool FillCommand(unsigned long long inode,
@@ -147,8 +144,6 @@ private:
                              char *pBuff,
                              size_t bufferLen);
 
-    static void serviceName(int port, char *buff, size_t buffLength, std::map<int, std::string> *pNames);
-    static bool run_posix_spawn(char *pPath, char *pArg);
 };
 
 #endif // PROCESSLOADER_H

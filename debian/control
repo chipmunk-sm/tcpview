@@ -1,5 +1,5 @@
 Source: tcpview
-Section: kde
+Section: utils
 Priority: optional
 Maintainer: chipmunk.sm <dannico@linuxmail.org>
 Build-Depends: debhelper (>=9),
@@ -12,4 +12,4 @@ Vcs-Bzr: https://code.launchpad.net/~chipmunk.sm/tcpview/master
 Package: tcpview
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Graphical network connections viewer for Linux
+Description: Graphical Network Connections Viewer For Linux

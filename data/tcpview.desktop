@@ -1,10 +1,10 @@
 [Desktop Entry]
-Categories=Qt;KDE;Utility;
-Comment[en_US]=Graphical network connections viewer
-Comment=Graphical network connections viewer
+Categories=Utility;
+Comment[en_US]=Graphical Network Connections Viewer
+Comment=Graphical Network Connections Viewer
 Exec=tcpview
-GenericName[en_US]=Connections viewer
-GenericName=Connections viewer
+GenericName[en_US]=Network Connections Viewer
+GenericName=Network Connections Viewer
 Icon=/usr/share/tcpview/tcpviewb
 MimeType=
 Name[en_US]=TcpView

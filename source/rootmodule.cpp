@@ -48,8 +48,6 @@ CRootModule::CRootModule(__pid_t processId)
 
 {
 
-    std::cout << "CRootModule enter " << m_processId << std::endl;
-
     auto serverMode = m_processId > 0;//server - child  process with root access
     if(!serverMode)
     {
@@ -93,8 +91,6 @@ CRootModule::CRootModule(__pid_t processId)
 CRootModule::~CRootModule()
 {
 
-    std::cout << "~CRootModule leave " << m_processId << std::endl;
-
     if(m_fifoSrv)
         close(m_fifoSrv);
 
@@ -115,7 +111,7 @@ bool CRootModule::RunClient(
     while(true)
     {
 
-        auto retv = readFifo(m_fifoSrv, &m_buffer);
+        auto retv = ReadFifo(m_fifoSrv, &m_buffer);
         if(retv <= 0)
         {
             return false;
@@ -185,7 +181,7 @@ void CRootModule::RunServer()
     {
 
         inf->command = ItemType_none;
-        if(!writeFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
+        if(!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
         {
             break;
         }
@@ -210,7 +206,7 @@ void CRootModule::RunServer()
             break;
 
         inf->command = ItemType_end;
-        if(!writeFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
+        if(!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
         {
             break;
         }
@@ -271,7 +267,7 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
             if(inf->dataCount >= (_POSIX_PATH_MAX / sizeof(dataptr[0]) - 1) )
             {
                 inf->dataCount *= sizeof(dataptr[0]);
-                if(!writeFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
+                if(!WriteFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
                 {
                     closedir(fddir);
                     return false;
@@ -286,7 +282,7 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
     if(inf->dataCount > 0)
     {
         inf->dataCount *= sizeof(dataptr[0]);
-        if(!writeFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
+        if(!WriteFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
         {
             return false;
         }
@@ -294,7 +290,7 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
 
     if(retCount)
     {
-        makeCmdStr(pid, fifoSrv);
+        GetCommandString(pid, fifoSrv);
     }
 
     return true;
@@ -348,7 +344,7 @@ unsigned int CRootModule::GetSocketFromNameTypeB(const char *buf, size_t strLen)
     return 0;
 }
 
-void CRootModule::makeCmdStr(unsigned int pid, int fifoSrv)
+void CRootModule::GetCommandString(unsigned int pid, int fifoSrv)
 {
 
     char bufferPtr[_POSIX_PATH_MAX + sizeof(ItemInfo) + 1];
@@ -386,11 +382,11 @@ void CRootModule::makeCmdStr(unsigned int pid, int fifoSrv)
     *dataPtr = '\0';
     inf->dataCount++;
 
-    writeFifo(fifoSrv, bufferPtr, inf->dataCount + sizeof(ItemInfo));
+    WriteFifo(fifoSrv, bufferPtr, inf->dataCount + sizeof(ItemInfo));
 
 }
 
-bool CRootModule::writeFifo(int fifo, const char *pBuffer, size_t size)
+bool CRootModule::WriteFifo(int fifo, const char *pBuffer, size_t size)
 {
     try
     {
@@ -414,7 +410,7 @@ bool CRootModule::writeFifo(int fifo, const char *pBuffer, size_t size)
     }
 }
 
-int CRootModule::readFifo(int fifo, CBuffer *pBuffer)
+int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
 {
     auto bufferPtr  = pBuffer->GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1);
     auto inf        = (ItemInfo*)bufferPtr;

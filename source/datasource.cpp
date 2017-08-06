@@ -22,7 +22,7 @@
 
 CDataSource::CDataSource()
     : m_loadCycles(0)
-    , m_rootModule(nullptr)
+    , m_pRootModule(nullptr)
 {
     m_enableRootMod = false;
 
@@ -33,19 +33,6 @@ CDataSource::CDataSource()
     m_eNetTypeList.insert(std::make_pair(conn_raw,  std::string("/proc/net/raw")));
     m_eNetTypeList.insert(std::make_pair(conn_raw6, std::string("/proc/net/raw6")));
 
-    // *Thread safety MT-Unsafe
-    //
-    struct servent *sentry;
-    setservent(0);
-    while ( (sentry = getservent()) != nullptr )
-    {
-        if(strcmp(sentry->s_proto,"tcp") == 0)
-            m_PortServiceNamesTcp.insert(std::pair<int, std::string>(ntohs(sentry->s_port), std::string(sentry->s_name)));
-        else if(strcmp(sentry->s_proto,"udp") == 0)
-            m_PortServiceNamesUdp.insert(std::pair<int, std::string>(ntohs(sentry->s_port), std::string(sentry->s_name)));
-    }
-    endservent();
-
 }
 
 CDataSource::~CDataSource()
@@ -55,18 +42,18 @@ CDataSource::~CDataSource()
 
 void CDataSource::DeleteRootLoader()
 {
-    if(!m_rootModule)
+    if(!m_pRootModule)
         return;
     m_enableRootMod = false;
-    auto tmp = m_rootModule;
-    m_rootModule = nullptr;
+    auto tmp = m_pRootModule;
+    m_pRootModule = nullptr;
     delete tmp;
 }
 
 bool CDataSource::InitRootLoader()
 {
 
-   if(m_rootModule)
+   if(m_pRootModule)
        return true;
 
     auto tmpptr = new CRootModule(-1);
@@ -77,7 +64,7 @@ bool CDataSource::InitRootLoader()
         return false;
     }
 
-    m_rootModule = tmpptr;
+    m_pRootModule = tmpptr;
     m_enableRootMod = true;
 
     return true;
@@ -91,18 +78,17 @@ void CDataSource::UpdateTable()
     std::map<unsigned long long, unsigned int> procInodeList;
     std::map<unsigned int, std::string> procCommand;
 
-    if(m_enableRootMod && m_rootModule)
-        m_rootModule->RunClient(&procInodeList, &procCommand);
+    if(m_enableRootMod && m_pRootModule)
+        m_pRootModule->RunClient(&procInodeList, &procCommand);
 
     /* load socket connections */
     for (const auto& it : m_eNetTypeList)
-         getConnections(it.first,
+         LoadConnections(it.first,
                         it.second.c_str(),
                         &m_socketList,
                         &procInodeList,
                         &procCommand,
-                        &m_PortServiceNamesTcp,
-                        &m_PortServiceNamesUdp,
+                        &m_CPortServiceNames,
                         m_loadCycles);
 
     /* set cleanup flag for old entries in socketList */
@@ -144,13 +130,12 @@ bool CDataSource::FillCommand(unsigned long long inode,
     return false;
 }
 
-void CDataSource::getConnections(eNetType netType,
+void CDataSource::LoadConnections(eNetType netType,
                                  const char * commandLine,
                                  std::unordered_map<std::string, SocketInfo> *pSocketList,
                                  std::map<unsigned long long, unsigned int> *procInodeList,
                                  std::map<unsigned int, std::string> *procCommand,
-                                 std::map<int, std::string> *pPortServiceNamesTcp,
-                                 std::map<int, std::string> *pPortServiceNamesUdp,
+                                 CPortServiceNames *pCPortServiceNames,
                                  unsigned int loadCycles)
 {
 
@@ -254,11 +239,9 @@ void CDataSource::getConnections(eNetType netType,
 
         FillCommand(inode, procCommand, procInodeList, socket_info.Command, sizeof(socket_info.Command));
 
-        serviceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort),
-                    (netType == conn_tcp || netType == conn_tcp6) ? pPortServiceNamesTcp : pPortServiceNamesUdp);
+        pCPortServiceNames->GetServiceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort), (netType == conn_tcp || netType == conn_tcp6));
+        pCPortServiceNames->GetServiceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort), (netType == conn_tcp || netType == conn_tcp6));
 
-        serviceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort),
-                    (netType == conn_tcp || netType == conn_tcp6) ? pPortServiceNamesTcp : pPortServiceNamesUdp);
 
         if (netType == conn_tcp6 || netType == conn_udp6 || netType == conn_raw6)
         {
@@ -298,72 +281,8 @@ void CDataSource::getConnections(eNetType netType,
 
 }
 
-std::string CDataSource::makeUserNameStr(__uid_t euid)
-{
-
-    char buf[32] = {0};
-
-    struct passwd *p = getpwuid(euid);
-    if(p)
-        snprintf(buf, sizeof(buf), "%s", p->pw_name);
-    else
-        snprintf(buf, sizeof(buf), "%5u   ", euid);
-
-    return std::string(buf);
-
-}
-
-void CDataSource::serviceName(int port, char *buff, size_t buffLength, std::map<int, std::string> *pNames)
-{
-
-    if(pNames != nullptr)
-    {
-        auto it = pNames->find(port);
-        if (it != pNames->end())
-        {
-            std::snprintf(buff, buffLength, "%d (%s)", port, it->second.c_str());
-            return;
-        }
-    }
-
-    std::snprintf(buff, buffLength, "%d", port);
-
-}
-
 std::unordered_map<std::string, CDataSource::SocketInfo> *CDataSource::GetConnectionsList()
 {
     return &m_socketList;
 }
 
-bool CDataSource::run_posix_spawn(char *pPath, char *pArg)
-{
-
-    //TODO: test
-
-    //"pkexec " + QCoreApplication::applicationFilePath() + "--rootmodule"
-
-    char *argv[] = { pPath, pArg, (char *)0 };
-
-    pid_t pid;
-    auto status = posix_spawn(&pid, pPath, nullptr, nullptr, argv, environ);
-    if ( status != 0 )
-    {
-        std::cout << "Failed posix_spawn: " << strerror(status) <<  std::endl;
-        return false;
-    }
-
-    std::cout << "posix_spawn: " << pPath << " pid: " << pid <<  std::endl;
-    fflush(nullptr);
-
-    if (waitpid(pid, &status, 0) == -1)
-    {
-        std::cout << "Failed waitpid: " << strerror(status) <<  std::endl;
-        return false;
-    }
-
-    std::cout << "waitpid: " << pPath << " pid: " << pid <<  std::endl;
-    fflush(nullptr);
-
-    return true;
-
-}
