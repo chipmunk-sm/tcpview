@@ -47,6 +47,7 @@ private slots:
     void on_pushButton_displayNames_clicked();
     void on_pushButton_Pause_toggled(bool checked);
     void on_pushButton_Record_toggled(bool checked);
+    void on_pushButton_copyToClipboard_clicked();
     void on_pushButton_SaveToFile_clicked();
     void on_pushButton_whois_clicked();
     void on_lineEdit_include_textChanged(const QString &arg1);
@@ -67,6 +68,7 @@ private:
     bool             m_captureEnable;
     QString          m_whoisText;
     QString          m_RowText;
+    QString          m_ClipBoardString;
 
     void SaveAppState();
     void ShowWhois(QString rowText, QString whoisText);

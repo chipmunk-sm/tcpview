@@ -80,7 +80,7 @@ tcp\b|udp\b</string>
        <property name="spacing">
         <number>0</number>
        </property>
-       <item row="0" column="4" colspan="3">
+       <item row="0" column="5" colspan="3">
         <widget class="QPushButton" name="pushButton_whois">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -112,7 +112,7 @@ tcp\b|udp\b</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
+       <item row="0" column="4">
         <widget class="QPushButton" name="pushButton_SaveToFile">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -160,6 +160,22 @@ tcp\b|udp\b</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButton_copyToClipboard">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Copy to Clipboard</string>
+         </property>
+         <property name="text">
+          <string>Colpy</string>
          </property>
         </widget>
        </item>

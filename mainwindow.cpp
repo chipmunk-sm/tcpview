@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QTextEdit>
+#include <QClipboard>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -78,6 +79,13 @@ void MainWindow::on_pushButton_Pause_toggled(bool checked)
 void MainWindow::on_pushButton_Record_toggled(bool checked)
 {
     m_captureEnable = checked;
+}
+
+void MainWindow::on_pushButton_copyToClipboard_clicked()
+{
+    auto pClp = QApplication::clipboard();
+    if( pClp != nullptr )
+        pClp->setText(m_ClipBoardString);
 }
 
 void MainWindow::on_pushButton_SaveToFile_clicked()
@@ -221,9 +229,15 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
         return;
     }
 
+    QString tmpToolTipStr;
+
     for(auto index = 0; index < CDataSource::COLUMN_DATA_DATA; index++)
     {
-        m_RowText += src->data(src->index(row, index)).toString() + "\t";
+        auto tmpStr = src->data(src->index(row, index)).toString();
+
+        m_RowText += tmpStr + "\t";
+        tmpToolTipStr +=  tmpStr + "\n";
+
         if(index == CDataSource::COLUMN_DATA_REMOTEADDRESS)
         {
            auto whoisText = src->data(src->index(row, index)).toString();
@@ -242,6 +256,10 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
 
         }
     }
+
+    ui->pushButton_copyToClipboard->setToolTip(tmpToolTipStr);
+
+    m_ClipBoardString = m_RowText;
 
 }
 
