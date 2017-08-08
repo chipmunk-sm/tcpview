@@ -33,11 +33,9 @@ void CCFontSize::ConfigureSlider(QSlider* slider, QWidget *pObj)
     m_qwidget = pObj;
     m_slider = slider;
 
-    slider->setOrientation(Qt::Orientation::Horizontal);
     slider->setSingleStep(1);
     slider->setPageStep(1);
-    slider->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    slider->setToolTip(QObject::tr("Zoom the content of a connection table"));
+
 }
 
 void CCFontSize::Init()
@@ -97,7 +95,7 @@ int CCFontSize::GetPointSize()
 
 QString CCFontSize::GetConfigName()
 {
-    return QString("baseWindow1/zoomSlider");
+    return QString("base/fontSize");
 }
 
 void CCFontSize::SaveConfig()

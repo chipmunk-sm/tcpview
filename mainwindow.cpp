@@ -35,9 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_cconnectionstree.InitConnectonsTree(ui->treeView_connection);
 
-    ui->statusBar->addPermanentWidget(&m_zoomSlider);
-    m_ccfontsize.ConfigureSlider(&m_zoomSlider, this);
-    connect(&m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(ZoomSlider(int)));
+    m_ccfontsize.ConfigureSlider(ui->horizontalSlider, this);
 
     connect(this, SIGNAL(callUpdateGui()),   this, SLOT(updateGui()));
 
@@ -101,7 +99,7 @@ void MainWindow::on_pushButton_whois_clicked()
     ShowWhois(m_RowText, m_whoisText);
 }
 
-void MainWindow::ZoomSlider(int value)
+void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     m_ccfontsize.SetFontSize(value);
 }
@@ -121,8 +119,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::SaveAppState()
 {
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-    settings.setValue("baseWindow1/geometry", saveGeometry());
-    settings.setValue("connectionTable/headerState", ui->treeView_connection->header()->saveState());
+    settings.setValue(DEFCFG_MAINWINDOWGEOM, saveGeometry());
+    settings.setValue(DEFCFG_CONNECTIONTABLE, ui->treeView_connection->header()->saveState());
     m_ccfontsize.SaveConfig();
 }
 
@@ -135,12 +133,12 @@ void MainWindow::showEvent(QShowEvent *event)
         m_ccfontsize.Init();
 
         QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-        auto testv = settings.value("baseWindow1/geometry");
+        auto testv = settings.value(DEFCFG_MAINWINDOWGEOM);
 
         if(testv.isValid() && !testv.isNull())
         {
-            restoreGeometry(settings.value("baseWindow1/geometry").toByteArray());
-            //ui->treeView_connection->header()->restoreState(settings.value("connectionTable/headerState", "").toByteArray());
+            restoreGeometry(settings.value(DEFCFG_MAINWINDOWGEOM).toByteArray());
+            ui->treeView_connection->header()->restoreState(settings.value(DEFCFG_CONNECTIONTABLE, "").toByteArray());
         }
 
         m_cconnectionstree.SetDataColumnHiden(ui->treeView_connection);
@@ -308,3 +306,4 @@ void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly
     infoDialog->raise();
     infoDialog->activateWindow();
 }
+

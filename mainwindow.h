@@ -27,6 +27,9 @@
 #include "source/ccfontsize.h"
 #include "source/updatethread.h"
 
+#define DEFCFG_MAINWINDOWGEOM  "base/MainWindowGeometry"
+#define DEFCFG_CONNECTIONTABLE "base/TableHeaderState"
+
 namespace Ui {
 class MainWindow;
 }
@@ -51,9 +54,10 @@ private slots:
     void on_pushButton_SaveToFile_clicked();
     void on_pushButton_whois_clicked();
     void on_lineEdit_include_textChanged(const QString &arg1);
-    void ZoomSlider(int value);
+    void on_horizontalSlider_valueChanged(int value);
     void updateGui();
     void currentSelectionChanged(const QModelIndex current, const QModelIndex previous);
+
 
 signals:
     void callUpdateGui();
@@ -62,7 +66,6 @@ private:
     Ui::MainWindow *ui;
     CConnectionsTree m_cconnectionstree;
     CCFontSize       m_ccfontsize;
-    QSlider          m_zoomSlider;
     QProcess         m_rootResolver;
     CUpdateThread    m_NetData;
     bool             m_captureEnable;
