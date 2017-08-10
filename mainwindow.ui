@@ -187,6 +187,9 @@ tcp\b|udp\b</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="toolTip">
+          <string>WHOIS - Lookup service to search for the domain name registration information</string>
+         </property>
          <property name="text">
           <string>whois</string>
          </property>
