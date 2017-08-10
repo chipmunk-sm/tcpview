@@ -143,7 +143,7 @@ tcp\b|udp\b</string>
           <string>Copy to Clipboard</string>
          </property>
          <property name="text">
-          <string>Colpy</string>
+          <string>Copy</string>
          </property>
         </widget>
        </item>
