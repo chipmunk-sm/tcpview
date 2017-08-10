@@ -172,10 +172,10 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Password required</string>
+          <string>Display program names (Password required)</string>
          </property>
          <property name="text">
-          <string>Display names</string>
+          <string>Names</string>
          </property>
         </widget>
        </item>
