@@ -52,7 +52,7 @@ void CConnectionsTree::PrepareTableCaptionString()
     m_caption.insert(CDataSource::COLUMN_DATA_REMOTEADDRESS,   TableHeaderCaption(QObject::tr("Remote Address"),   QObject::tr("255.255.255.255"), QObject::tr("Remote Address")));
     m_caption.insert(CDataSource::COLUMN_DATA_REMOTEPORT,      TableHeaderCaption(QObject::tr("Remote Port"),      QObject::tr("65535"),           QObject::tr("Remote Port")));
     m_caption.insert(CDataSource::COLUMN_DATA_UID,             TableHeaderCaption(QObject::tr("User"),             QObject::tr("0000000"),         QObject::tr("User")));
-    m_caption.insert(CDataSource::COLUMN_DATA_INODE,           TableHeaderCaption(QObject::tr("Inode"),            QObject::tr("0000000"),         QObject::tr("Pid")));
+    m_caption.insert(CDataSource::COLUMN_DATA_INODE,           TableHeaderCaption(QObject::tr("Inode"),            QObject::tr("0000000"),         QObject::tr("Inode")));
     m_caption.insert(CDataSource::COLUMN_DATA_TIME,            TableHeaderCaption(QObject::tr("Time"),             QObject::tr("2017-01-01 00:00:00"), QObject::tr("Time")));
     m_caption.insert(CDataSource::COLUMN_DATA_COMMAND,         TableHeaderCaption(QObject::tr("Command"),          QObject::tr("Command"),         QObject::tr("Command")));
     m_caption.insert(CDataSource::COLUMN_DATA_DATA,            TableHeaderCaption(QObject::tr("RowId"),            QObject::tr("RowId"),           QObject::tr("RowId")));
@@ -280,7 +280,7 @@ void CConnectionsTree::Save(QWidget *parent)
         }
         catch(...)
         {
-            QMessageBox::critical(parent, QObject::tr("Save"), "Unexpected exception", QMessageBox::Ok);
+            QMessageBox::critical(parent, QObject::tr("Save"), QObject::tr("Unexpected exception"), QMessageBox::Ok);
         }
     }
 }

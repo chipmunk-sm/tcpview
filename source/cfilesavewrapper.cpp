@@ -40,7 +40,7 @@ void CFileSaveWrapper::Open(const QString fileName, const QString fileType, QWid
     m_pQFile = new QFile(fileName);
     if (!m_pQFile->open(QFile::WriteOnly | QFile::Text))
     {
-        QString mess("Error: Cannot write file " + fileName + "\n" +  m_pQFile->errorString());
+        QString mess(MSG_ERR_WRITE_FILE + fileName + "\n" +  m_pQFile->errorString());
         QMessageBox::critical(m_parent, QObject::tr("Save"), mess, QMessageBox::Ok);
         return;
     }
@@ -80,7 +80,7 @@ void CFileSaveWrapper::Close()
         m_pQFile->close();
         if (m_pQFile->error())
         {
-            QString mess("Error: Cannot write file\n" +  m_pQFile->errorString());
+            QString mess(MSG_ERR_WRITE_FILE + m_pQFile->errorString());
             QMessageBox::critical(m_parent, QObject::tr("Save"), mess, QMessageBox::Ok);
         }
         delete m_pQFile;

@@ -18,6 +18,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include "source/rootmodule.h"
+#include "source/clanguage.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,13 +41,17 @@ int main(int argc, char *argv[])
 
     }
 
+    Q_INIT_RESOURCE(tcpview);
 
     QApplication app(argc, argv);
 
     QCoreApplication::setOrganizationDomain("");
-    QCoreApplication::setOrganizationName("danizt");
+    QCoreApplication::setOrganizationName("tcpview");
     QCoreApplication::setApplicationName("tcpview");
     QCoreApplication::setApplicationVersion("2.0 beta");
+
+    CLanguage        m_lang;
+    m_lang.SetLangByLocale();
 
     MainWindow w;
     w.show();

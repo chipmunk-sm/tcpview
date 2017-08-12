@@ -26,6 +26,7 @@
 #include "source/cconnectionstree.h"
 #include "source/ccfontsize.h"
 #include "source/updatethread.h"
+#include "source/clanguage.h"
 
 #define DEFCFG_MAINWINDOWGEOM  "base/MainWindowGeometry"
 #define DEFCFG_CONNECTIONTABLE "base/TableHeaderState"
@@ -58,12 +59,12 @@ private slots:
     void updateGui();
     void currentSelectionChanged(const QModelIndex current, const QModelIndex previous);
 
-
 signals:
     void callUpdateGui();
 
 private:
-    Ui::MainWindow *ui;
+
+    Ui::MainWindow  *ui;
     CConnectionsTree m_cconnectionstree;
     CCFontSize       m_ccfontsize;
     QProcess         m_rootResolver;

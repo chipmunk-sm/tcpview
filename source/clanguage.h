@@ -15,36 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CFILESAVEWRAPPER_H
-#define CFILESAVEWRAPPER_H
+#ifndef CLANGUAGE_H
+#define CLANGUAGE_H
 
-#include <QFile>
-#include <QString>
-#include <QTextStream>
-#include <QXmlStreamWriter>
-#include <vector>
+#include <QStringList>
+#include <QMap>
+#include <QMainWindow>
+#include <QCoreApplication>
+#include <QTranslator>
 
-#define MSG_ERR_WRITE_FILE QObject::tr("Error: Cannot write file\n")
 
-class CFileSaveWrapper
+class CLanguage
 {
 public:
-    CFileSaveWrapper();
-    ~CFileSaveWrapper();
-    void Open(const QString fileName, const QString fileType, QWidget *parent);
-    void Close();
 
-    void ElemStart(const QString Val);
-    void ElemVal(const QString Val);
-    void ElemEnd(const QString Val);
-
+    CLanguage();
+    void SetLang(const QString &langName);
+    void SetLangByLocale();
+    const QStringList GetListLangNames();
 
 private:
-    QWidget             *m_parent;
-    QFile               *m_pQFile;
-    QXmlStreamWriter    *m_pQXmlStreamWriter;
-    QTextStream         *m_pQTextStream;
-    QVector<QString>    m_tag;
+    QString ExtractLanguageName(const QString &fileName);
+    void GetSysLocale();
+
+    QStringList            m_langNames;
+    QMap<QString, QString> m_langList;
+    QString                m_sysLocale;
+    QTranslator            m_translator;
+
 };
 
-#endif // CFILESAVEWRAPPER_H
+#endif // CLANGUAGE_H

@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , m_captureEnable(false)
 {
+
     ui->setupUi(this);
 
     setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
@@ -213,7 +214,7 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
     if(!current.isValid())
     {
         ui->pushButton_whois->setEnabled(false);
-        ui->pushButton_whois->setText(QObject::tr("Whois"));
+        ui->pushButton_whois->setText("Whois");
         return;
     }
 
@@ -223,7 +224,7 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
     if(src == nullptr)
     {
         ui->pushButton_whois->setEnabled(false);
-        ui->pushButton_whois->setText(QObject::tr("Whois"));
+        ui->pushButton_whois->setText("Whois");
         return;
     }
 
@@ -243,13 +244,13 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
                QString::compare(whoisText, "::", Qt::CaseInsensitive) != 0)
             {
                 m_whoisText = whoisText;
-                ui->pushButton_whois->setText(QObject::tr("Whois \"") + whoisText + QObject::tr("\""));
+                ui->pushButton_whois->setText("Whois \"" + whoisText + "\"");
                 ui->pushButton_whois->setEnabled(true);
             }
             else
             {
                 ui->pushButton_whois->setEnabled(false);
-                ui->pushButton_whois->setText(QObject::tr("Whois"));
+                ui->pushButton_whois->setText("Whois");
             }
 
         }

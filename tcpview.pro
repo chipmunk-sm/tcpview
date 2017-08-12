@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     source/cfilesavewrapper.cpp \
     source/updatethread.cpp \
     source/cportservicenames.cpp \
-    source/cusername.cpp
+    source/cusername.cpp \
+    source/clanguage.cpp
 
 HEADERS  += mainwindow.h \
     source/buffer.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     source/cfilesavewrapper.h \
     source/updatethread.h \
     source/cportservicenames.h \
-    source/cusername.h
+    source/cusername.h \
+    source/clanguage.h
 
 FORMS    += mainwindow.ui
 
@@ -72,3 +74,14 @@ DISTFILES += \
 
 RESOURCES += \
     tcpview.qrc
+
+
+#1 lupdate -no-obsolete -verbose -pro tcpview.pro
+
+#2 linguist language_ru.ts
+
+#3 lrelease -removeidentical -compress tcpview.pro
+
+TRANSLATIONS += \
+    translations/language_en.ts \
+    translations/language_ru.ts
