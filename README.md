@@ -16,57 +16,67 @@ https://github.com/chipmunk-sm/tcpview
 
 # How to build
 
-# Install Qt
+## Install Qt
 
-$sudo apt-get install build-essential
+```sh
+$ sudo apt-get install build-essential
+$ sudo apt-get install qtcreator
+$ sudo apt-get install qt5-default
+```
 
-$sudo apt-get install qtcreator
+## Clone
+Open terminal in your preferred folder:
 
-$sudo apt-get install qt5-default
+```sh
+$ git clone https://github.com/chipmunk-sm/tcpview.git
+```
 
-# Clone sourcess with HTTPS. 
-Open terminal in your preferred folder
+## Build
 
-$git clone https://github.com/chipmunk-sm/tcpview.git
+Either open `tcpview.pro` with Qt Creator for editing and building, or from the terminal:
 
-# Open tcpview.pro with Qt Creator for edit/build 
+```sh
+$ cd tcpview
+$ qmake
+$ make
+```
 
-or build from terminal
+## Run tcpview
 
-$cd tcpview
+```sh
+$ ./tcpview
+```
 
-$qmake
+# Translation
 
-$make
+Use the Qt Linguist tool to translate text
 
-# Run tcpview
+```
+$ sudo apt-get install qttools5-dev-tools
+```
 
-$./tcpview
+Open tcpview folder with terminal and update translations:
 
-# Use the Qt Linguist tool to translate text
+```sh
+$ lupdate -no-obsolete -verbose -pro tcpview.pro
+```
 
-$sudo apt-get install qttools5-dev-tools
+Open all editable translations:
 
-open tcpview folder with terminal
+```sh
+$ cd translations
+$ linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+$ cd ..
+```
 
-update translations
+And update `.qm` files:
 
-$lupdate -no-obsolete -verbose -pro tcpview.pro
+```sh
+$ lrelease -removeidentical -compress tcpview.pro
+```
 
-open all available translations for edit
+Finally, [rebuild tcpview](#how-to-build).
 
-$cd translations
+## Adding new translations
 
-$linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
-
-$cd ..
-
-update .qm files
-
-$lrelease -removeidentical -compress tcpview.pro
-
-rebuild tcpview
-
-# Add new translations
-
-*add new translations xx.ts (just write name) to tcpview.pro, rebuild tcpview and add new xx.qm to tcpview.qrc, rebuild tcpview*
+Add a new translations `xx.ts` file to tcpview.pro, rebuild tcpview and add your new `xx.qm` to `tcpview.qrc`. Finally [rebuild tcpview](#how-to-build).
