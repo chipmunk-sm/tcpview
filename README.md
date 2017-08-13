@@ -42,3 +42,31 @@ $make
 # Run tcpview
 
 $./tcpview
+
+# Use the Qt Linguist tool to translate text
+
+$sudo apt-get install qttools5-dev-tools
+
+open tcpview folder with terminal
+
+update translations
+
+$lupdate -no-obsolete -verbose -pro tcpview.pro
+
+open all available translations for edit
+
+$cd translations
+
+$linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+
+$cd ..
+
+update .qm files
+
+$lrelease -removeidentical -compress tcpview.pro
+
+rebuild tcpview
+
+# Add new translations
+
+*add new translations xx.ts (just write name) to tcpview.pro, rebuild tcpview and add new xx.qm to tcpview.qrc, rebuild tcpview*
