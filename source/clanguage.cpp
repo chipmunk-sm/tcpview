@@ -18,30 +18,43 @@
 
 #include "clanguage.h"
 
-#include <QDir>
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QFileInfo>
 #include <QCoreApplication>
 #include <QLocale>
+#include <iostream>
 
 CLanguage::CLanguage()
 {
 
     GetSysLocale();
 
-    QDir dir(":/translations");
+    LoadTranslations(QDir(":/translations"));
 
+}
+
+void CLanguage::LoadTranslations(const QDir &dir)
+{
     auto fileNames = dir.entryList(QStringList("*.qm"), QDir::Files, QDir::Name);
     foreach (const QString &str, fileNames)
     {
         auto path = dir.filePath(str);
         auto langName = ExtractLanguageName(path);
+
+        //std::cout << path.toStdString() << " " << langName.toStdString() << " " << str.toStdString() << std::endl;
+
+        if(langName.length() < 1)
+            continue;
+
         if(m_langList.find(langName) != m_langList.end())
             continue;
+
         m_langList.insert(langName, path);
         m_langNames.append(langName);
     }
+
+    //std::cout << m_sysLocale.toStdString() << std::endl;
 
 }
 

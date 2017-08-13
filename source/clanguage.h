@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QCoreApplication>
 #include <QTranslator>
+#include <QDir>
 
 
 class CLanguage
@@ -33,7 +34,8 @@ public:
     void SetLang(const QString &langName);
     void SetLangByLocale();
     const QStringList GetListLangNames();
-
+    void LoadTranslations(const QDir &dir);
+    
 private:
     QString ExtractLanguageName(const QString &fileName);
     void GetSysLocale();

@@ -108,8 +108,8 @@ tcp\b|udp\b</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../source/clanguage.cpp" line="84"/>
-        <location filename="../source/clanguage.cpp" line="89"/>
+        <location filename="../source/clanguage.cpp" line="97"/>
+        <location filename="../source/clanguage.cpp" line="102"/>
         <source>English</source>
         <translation>Русский</translation>
     </message>
