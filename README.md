@@ -4,6 +4,7 @@ Graphical network connections viewer for Linux
 
 To get the last release version, please use the PPA:
 
+Artful, Zesty 
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
 Home page:
