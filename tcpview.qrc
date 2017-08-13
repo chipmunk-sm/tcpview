@@ -5,5 +5,13 @@
         <file>data/tcpvieww.svg</file>
         <file>translations/language_en.qm</file>
         <file>translations/language_ru.qm</file>
+        <file>translations/language_zh_TW.qm</file>
+        <file>translations/language_zh_CN.qm</file>
+        <file>translations/language_sl.qm</file>
+        <file>translations/language_pl.qm</file>
+        <file>translations/language_ja.qm</file>
+        <file>translations/language_fr.qm</file>
+        <file>translations/language_de.qm</file>
+        <file>translations/language_cs.qm</file>
     </qresource>
 </RCC>

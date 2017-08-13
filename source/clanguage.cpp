@@ -28,8 +28,6 @@
 CLanguage::CLanguage()
 {
 
-    GetSysLocale();
-
     LoadTranslations(QDir(":/translations"));
 
 }
@@ -42,7 +40,7 @@ void CLanguage::LoadTranslations(const QDir &dir)
         auto path = dir.filePath(str);
         auto langName = ExtractLanguageName(path);
 
-        //std::cout << path.toStdString() << " " << langName.toStdString() << " " << str.toStdString() << std::endl;
+        std::cout << langName.toStdString()  << "\t" << str.toStdString()<< "\t" << path.toStdString() << std::endl;
 
         if(langName.length() < 1)
             continue;
@@ -53,8 +51,6 @@ void CLanguage::LoadTranslations(const QDir &dir)
         m_langList.insert(langName, path);
         m_langNames.append(langName);
     }
-
-    //std::cout << m_sysLocale.toStdString() << std::endl;
 
 }
 
@@ -73,17 +69,42 @@ void CLanguage::SetLang(const QString &langName)
 
 void CLanguage::SetLangByLocale()
 {
+
+    //xx_XX
+    auto localeName = QLocale::system().name();
+    if(SetLangByLocale(localeName))
+        return;
+
+    //xx
+    auto list = localeName.split(QRegExp("(_|-)"), QString::SkipEmptyParts);
+    foreach (auto tmp, list)
+    {
+        if(SetLangByLocale(tmp))
+            return;
+        break;
+    }
+
+}
+
+bool CLanguage::SetLangByLocale(QString localeName)
+{
+
+    localeName = QString("language_%1.qm").arg(localeName);
+
     foreach (auto value, m_langList)
     {
-        if(value.contains(m_sysLocale, Qt::CaseInsensitive))
+        if(value.contains(localeName, Qt::CaseInsensitive))
         {
             if (!m_translator.load(value))
-                return;
+                return false;
 
             QCoreApplication::instance()->installTranslator(&m_translator);
-            return;
+            return true;
         }
     }
+
+    return false;
+
 }
 
 const QStringList CLanguage::GetListLangNames()
@@ -93,7 +114,6 @@ const QStringList CLanguage::GetListLangNames()
 
 QString CLanguage::ExtractLanguageName(const QString &fileName)
 {
-
     auto writeLanguageName = QObject::tr("English");
     Q_UNUSED(writeLanguageName);
 
@@ -102,18 +122,6 @@ QString CLanguage::ExtractLanguageName(const QString &fileName)
     return translator.translate("QObject", "English");
 }
 
-void CLanguage::GetSysLocale()
-{
 
-    auto list = QLocale::system().name().split(
-                QRegExp("(_|-)"),
-                QString::SkipEmptyParts);
-
-    foreach (auto tmp, list)
-    {
-        m_sysLocale = QString("language_%1.qm").arg(tmp.toLower());
-        break;
-    }
-}
 
 

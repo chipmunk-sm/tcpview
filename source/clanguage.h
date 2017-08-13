@@ -33,16 +33,15 @@ public:
     CLanguage();
     void SetLang(const QString &langName);
     void SetLangByLocale();
+    bool SetLangByLocale(QString localeName);
     const QStringList GetListLangNames();
     void LoadTranslations(const QDir &dir);
-    
-private:
     QString ExtractLanguageName(const QString &fileName);
-    void GetSysLocale();
+
+private:
 
     QStringList            m_langNames;
     QMap<QString, QString> m_langList;
-    QString                m_sysLocale;
     QTranslator            m_translator;
 
 };

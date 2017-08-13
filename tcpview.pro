@@ -76,12 +76,24 @@ RESOURCES += \
     tcpview.qrc
 
 
-#1 lupdate -no-obsolete -verbose -pro tcpview.pro
+# lupdate -no-obsolete -verbose -pro tcpview.pro
 
-#2 linguist language_ru.ts
+# cd translations
 
-#3 lrelease -removeidentical -compress tcpview.pro
+# linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+
+# cd ..
+
+# lrelease -removeidentical -compress tcpview.pro
 
 TRANSLATIONS += \
     translations/language_en.ts \
-    translations/language_ru.ts
+    translations/language_cs.ts \
+    translations/language_de.ts \
+    translations/language_fr.ts \
+    translations/language_ja.ts \
+    translations/language_pl.ts \
+    translations/language_ru.ts \
+    translations/language_sl.ts \
+    translations/language_zh_CN.ts \
+    translations/language_zh_TW.ts
