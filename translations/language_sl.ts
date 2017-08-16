@@ -96,18 +96,43 @@ tcp\b|udp\b</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainwindow.cpp" line="68"/>
+        <location filename="../mainwindow.cpp" line="380"/>
+        <source>Cannot start module, because 
+%1
+ is missing or execution access is denied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="383"/>
+        <location filename="../mainwindow.cpp" line="413"/>
+        <location filename="../mainwindow.cpp" line="422"/>
         <source>Run as root</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="68"/>
-        <source>Failed</source>
+        <location filename="../mainwindow.cpp" line="413"/>
+        <source>Failed on start
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="152"/>
+        <location filename="../mainwindow.cpp" line="422"/>
+        <source>Failed on &apos;init&apos; client module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="137"/>
         <source>Failed on showEvent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="326"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="331"/>
+        <source>Copy row</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -327,6 +352,11 @@ tcp\b|udp\b</source>
         <location filename="../source/clanguage.cpp" line="117"/>
         <location filename="../source/clanguage.cpp" line="122"/>
         <source>English</source>
+        <translation>Slovenščina</translation>
+    </message>
+    <message>
+        <location filename="../source/datasource.cpp" line="91"/>
+        <source>Failed to load data from RootModule</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

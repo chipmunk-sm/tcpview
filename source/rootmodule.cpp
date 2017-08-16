@@ -56,14 +56,15 @@ CRootModule::CRootModule(__pid_t processId)
 
         if(mkfifo(m_fifoNameSrv.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP) == -1)
         {
-            m_error = "error making fifo ";
+            m_error = "Error fifo ";
             m_error += m_fifoNameSrv;
             return;
         }
 
-        if ( (m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC|O_NONBLOCK)) <= 0 )
+        //if ( (m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC|O_NONBLOCK)) <= 0 )
+        if ( (m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC)) <= 0 )
         {
-            m_error = "client error open ";
+            m_error = "Error open ";
             m_error += m_fifoNameSrv;
             return;
         }
@@ -418,10 +419,11 @@ int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
     inf->startcode1 = 0;
     inf->startcode2 = 0;
 
+    int readFifoTimeout = 25;//5 sec
     int output = 0;
     try
     {
-        while(true)
+        while(readFifoTimeout)
         {
             auto readRes = read(fifo, bufferPtr + output, sizeof(ItemInfo) - output);
             if (readRes == (ssize_t)-1)
@@ -435,6 +437,11 @@ int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
 
             if(output < (int)sizeof(ItemInfo))
             {
+                if(readRes == 0)
+                {
+                    readFifoTimeout--;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                }
                 continue;
             }
 

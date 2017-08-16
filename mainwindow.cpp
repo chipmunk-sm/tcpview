@@ -17,12 +17,13 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include <QCloseEvent>
 #include <QSettings>
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QClipboard>
+#include <QMenu>
+#include <thread>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,22 +53,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_pushButton_displayNames_clicked()
-{
-    ui->pushButton_displayNames->setEnabled(false);
-
-    m_rootResolver.start( "pkexec " + QCoreApplication::applicationFilePath() + " --rootmodule");
-
-    m_rootResolver.waitForStarted();
-
-    if(!m_NetData.InitRootLoader())
-    {
-        ui->pushButton_displayNames->setEnabled(true);
-        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Failed"), QMessageBox::Ok);
-        return;
-    }
 }
 
 void MainWindow::on_pushButton_Pause_toggled(bool checked)
@@ -306,5 +291,142 @@ void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly
     infoDialog->show();
     infoDialog->raise();
     infoDialog->activateWindow();
+}
+
+void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint &pos)
+{
+
+    typedef enum{
+        CopyCell = 1,
+        CopyRow
+    }MenuAction;
+
+    auto selCell = ui->treeView_connection->indexAt(pos);
+    if (!selCell.isValid())
+        return;
+
+    auto src = qobject_cast<QSortFilterProxyModel*>(ui->treeView_connection->model());
+    if(src == nullptr)
+        return;
+
+    src->setDynamicSortFilter(false);
+
+    auto cellText = selCell.data().toString();
+    auto rowText = QString();
+
+    for(auto index = 0; index < CDataSource::COLUMN_DATA_DATA; index++)
+        rowText += src->data(src->index(selCell.row(), index)).toString() + "\t";
+
+    src->setDynamicSortFilter(true);
+
+    QMenu menu;
+
+    if(!cellText.isEmpty())
+    {
+        auto actionCell = new QAction(QObject::tr("Copy") + " \"" + cellText + "\"", &menu);
+        actionCell->setData(CopyCell);
+        menu.addAction(actionCell);
+    }
+
+    auto actionRow = new QAction(QObject::tr("Copy row"), &menu);
+    actionRow->setData(CopyRow);
+    menu.addAction(actionRow);
+
+    auto ret = menu.exec(QCursor::pos());
+    if(ret == nullptr)
+        return;
+
+    if(QApplication::clipboard() == nullptr)
+        return;
+
+    if(ret->data() == CopyRow)
+    {
+        QApplication::clipboard()->setText(rowText);
+        return;
+    }
+
+    if(ret->data() == CopyCell)
+    {
+        QApplication::clipboard()->setText(cellText);
+        return;
+    }
+
+}
+
+
+const QString MainWindow::GetAuthGuiName()
+{
+    QStringList passwordReqApp;
+    passwordReqApp << "/usr/bin/pkexec";
+    passwordReqApp << "/usr/bin/kdesudo";
+    passwordReqApp << "/usr/bin/gksudo";
+    passwordReqApp << "/usr/bin/kdesu";
+    passwordReqApp << "/usr/bin/gksu";
+
+
+    foreach(auto tmpv, passwordReqApp)
+    {
+        auto name = tmpv.split(" ").at(0);
+        if( access(name.toLatin1(), X_OK ) == 0 )
+        {
+            if(name.startsWith("/usr/bin/pkexec"))
+                return  QString("%1 %2 --rootmodule").arg(tmpv, QCoreApplication::applicationFilePath());
+
+            return QString("%1 \"%2 --rootmodule\"").arg(tmpv, QCoreApplication::applicationFilePath());
+        }
+    }
+
+    auto errorString = QString(
+                QObject::tr("Cannot start module, because \n%1\n is missing or execution access is denied."))
+                .arg(passwordReqApp.join("\n"));
+
+    QMessageBox::critical(this, QObject::tr("Run as root"), errorString, QMessageBox::Ok);
+
+    return "";
+
+}
+
+void MainWindow::on_pushButton_displayNames_clicked()
+{
+
+    auto cmd = GetAuthGuiName();
+    if(cmd.isEmpty())
+        return;
+
+    std::cout << cmd.toStdString() << std::endl;
+
+    auto pause = m_NetData.IsPause();
+    m_NetData.pauseUpdate(true);
+    setEnabled(false);
+    //setDisabled(true);
+
+    auto rootResolver = new QProcess(this);
+    rootResolver->start(cmd);
+    if(!rootResolver->waitForStarted(-1))
+    {
+        auto retErrString = rootResolver->errorString();
+        std::cout << "QProcess error: " << retErrString.toStdString() << std::endl;
+
+        m_NetData.pauseUpdate(pause);
+        setEnabled(true);
+        //setDisabled(false);
+        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Failed on start\n") + retErrString + "\n" + cmd, QMessageBox::Ok);
+        return;
+    }
+
+    if(!m_NetData.InitRootLoader())
+    {
+        m_NetData.pauseUpdate(pause);
+        setEnabled(true);
+        //setDisabled(false);
+        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Failed on 'init' client module"), QMessageBox::Ok);
+        return;
+    }
+
+    setEnabled(true);
+    //setDisabled(false);
+    m_NetData.pauseUpdate(pause);
+    ui->pushButton_displayNames->setEnabled(false);
+
 }
 

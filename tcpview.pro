@@ -97,3 +97,75 @@ TRANSLATIONS += \
     translations/language_sl.ts \
     translations/language_zh_CN.ts \
     translations/language_zh_TW.ts
+
+
+
+#af		Afrikaans
+#sq		Albanian
+#ar		Arabic
+#eu		Basque
+#be		Belarusian
+#bs		Bosnian
+#bg		Bulgarian
+#ca		Catalan
+#hr		Croatian
+#zh_cn		Chinese (Simplified)
+#zh_tw		Chinese (Traditional)
+#cs		Czech
+#da		Danish
+#nl		Dutch
+#en		English
+#en_us		English (US)
+#et		Estonian
+#fa		Farsi
+#fil		Filipino
+#fi		Finnish
+#fr		French
+#fr_ca		French (Canada)
+#ga		Gaelic
+#gl		Gallego
+#ka		Georgian
+#de		German
+#de_du		German (Personal)
+#el		Greek
+#gu		Gujarati
+#he		Hebrew
+#hi		Hindi
+#hu		Hungarian
+#is		Icelandic
+#id		Indonesian
+#it		Italian
+#ja		Japanese
+#kn		Kannada
+#km		Khmer
+#ko		Korean
+#lo		Lao
+#lt		Lithuanian
+#lv		Latvian
+#ml		Malayalam
+#ms		Malaysian
+#mi_tn		Maori (Ngai Tahu)
+#mi_wwow	Maori (Waikoto Uni)
+#mn		Mongolian
+#no		Norwegian
+#no_gr		Norwegian (Primary)
+#nn		Nynorsk
+#pl		Polish
+#pt		Portuguese
+#pt_br		Portuguese (Brazil)
+#ro		Romanian
+#ru		Russian
+#sm		Samoan
+#sr		Serbian
+#sk		Slovak
+#sl		Slovenian
+#so		Somali
+#es		Spanish (International)
+#sv		Swedish
+#tl		Tagalog
+#ta		Tamil
+#th		Thai
+#to		Tongan
+#tr		Turkish
+#uk		Ukrainian
+#vi		Vietnamese

@@ -19,10 +19,12 @@
 #include <unistd.h>
 #include <spawn.h>
 #include <sys/wait.h>
+#include <QMessageBox>
 
 CDataSource::CDataSource()
     : m_loadCycles(0)
     , m_pRootModule(nullptr)
+    , m_RootModuleInvalid(false)
 {
     m_enableRootMod = false;
 
@@ -44,7 +46,10 @@ void CDataSource::DeleteRootLoader()
 {
     if(!m_pRootModule)
         return;
+
+    m_RootModuleInvalid = false;
     m_enableRootMod = false;
+
     auto tmp = m_pRootModule;
     m_pRootModule = nullptr;
     delete tmp;
@@ -54,12 +59,12 @@ bool CDataSource::InitRootLoader()
 {
 
    if(m_pRootModule)
-       return true;
+       return false;
 
     auto tmpptr = new CRootModule(-1);
     if(tmpptr->m_error.length() > 1)
     {
-        std::cout << "CRootModule failed " << tmpptr->m_processId << " error " << tmpptr->m_error << std::endl;
+        std::cout << "CRootModule failed. " << tmpptr->m_error << std::endl;
         delete tmpptr;
         return false;
     }
@@ -67,7 +72,7 @@ bool CDataSource::InitRootLoader()
     m_pRootModule = tmpptr;
     m_enableRootMod = true;
 
-    return true;
+    return m_enableRootMod;
 }
 
 void CDataSource::UpdateTable()
@@ -79,7 +84,14 @@ void CDataSource::UpdateTable()
     std::map<unsigned int, std::string> procCommand;
 
     if(m_enableRootMod && m_pRootModule)
-        m_pRootModule->RunClient(&procInodeList, &procCommand);
+    {
+      auto retv = m_pRootModule->RunClient(&procInodeList, &procCommand);
+      if(!retv)
+      {
+          QMessageBox::critical(nullptr, "Datasource", QObject::tr("Failed to load data from RootModule"), QMessageBox::Ok);
+          m_RootModuleInvalid = true;
+      }
+    }
 
     /* load socket connections */
     for (const auto& it : m_eNetTypeList)
@@ -103,6 +115,11 @@ void CDataSource::UpdateTable()
         ++it;
     }
 
+}
+
+bool CDataSource::IsRootLoaderValid()
+{
+    return !m_RootModuleInvalid;
 }
 
 bool CDataSource::FillCommand(unsigned long long inode,

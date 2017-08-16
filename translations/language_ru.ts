@@ -114,19 +114,47 @@ tcp\b|udp\b</translation>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="68"/>
+        <location filename="../mainwindow.cpp" line="380"/>
+        <source>Cannot start module, because 
+%1
+ is missing or execution access is denied.</source>
+        <translation>Не удается запустить модуль, потому что
+%1
+Отсутствуют или доступ к выполнению запрещен.</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="383"/>
+        <location filename="../mainwindow.cpp" line="413"/>
+        <location filename="../mainwindow.cpp" line="422"/>
         <source>Run as root</source>
         <translation>Запуск с правами root</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="68"/>
-        <source>Failed</source>
-        <translation>Неудался</translation>
+        <location filename="../mainwindow.cpp" line="413"/>
+        <source>Failed on start
+</source>
+        <translation>Ошибка при запуске
+</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="152"/>
+        <location filename="../mainwindow.cpp" line="422"/>
+        <source>Failed on &apos;init&apos; client module</source>
+        <translation>Не удалось подключить клиентский модуль «init»</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="137"/>
         <source>Failed on showEvent</source>
         <translation>Ошибка события showEvent</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="326"/>
+        <source>Copy</source>
+        <translation>Копировать</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="331"/>
+        <source>Copy row</source>
+        <translation>Копировать строку</translation>
     </message>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="46"/>
@@ -205,7 +233,7 @@ tcp\b|udp\b</translation>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="55"/>
         <source>Inode</source>
-        <translation>ID процесса</translation>
+        <translation>Инода</translation>
     </message>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="56"/>
@@ -339,7 +367,13 @@ tcp\b|udp\b</translation>
         <location filename="../source/cfilesavewrapper.h" line="27"/>
         <source>Error: Cannot write file
 </source>
-        <translation>Ошибка: невозможно записать файл</translation>
+        <translation>Ошибка: невозможно записать файл
+</translation>
+    </message>
+    <message>
+        <location filename="../source/datasource.cpp" line="91"/>
+        <source>Failed to load data from RootModule</source>
+        <translation>Не удалось загрузить данные из RootModule</translation>
     </message>
 </context>
 </TS>

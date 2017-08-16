@@ -52,7 +52,7 @@ void CUpdateThread::CoreProc()
 
     do{
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
         if(m_updateUi || m_pauseUpdate)
         {
@@ -68,6 +68,9 @@ void CUpdateThread::CoreProc()
             m_netdatahelper.UpdateTable();
 
             m_updateData = false;
+
+            if(!m_netdatahelper.IsRootLoaderValid())
+                DeleteRootLoader();
 
             m_callbackUpdate();
 
@@ -138,11 +141,13 @@ bool CUpdateThread::InitRootLoader()
 
 void CUpdateThread::DeleteRootLoader()
 {
+    auto tmp = m_pauseUpdate;
     m_pauseUpdate = true;
     while(m_updateData)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
     m_netdatahelper.DeleteRootLoader();
+    m_pauseUpdate = tmp;
 }
 

@@ -58,6 +58,7 @@ private slots:
     void on_horizontalSlider_valueChanged(int value);
     void updateGui();
     void currentSelectionChanged(const QModelIndex current, const QModelIndex previous);
+    void on_treeView_connection_customContextMenuRequested(const QPoint &pos);
 
 signals:
     void callUpdateGui();
@@ -67,7 +68,6 @@ private:
     Ui::MainWindow  *ui;
     CConnectionsTree m_cconnectionstree;
     CCFontSize       m_ccfontsize;
-    QProcess         m_rootResolver;
     CUpdateThread    m_NetData;
     bool             m_captureEnable;
     QString          m_whoisText;
@@ -77,6 +77,7 @@ private:
     void SaveAppState();
     void ShowWhois(QString rowText, QString whoisText);
     void ShowInfoDialog(QString title, QString dialogText, bool readonly);
+    const QString GetAuthGuiName();
 };
 
 #endif // MAINWINDOW_H

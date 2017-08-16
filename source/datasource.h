@@ -117,7 +117,7 @@ public:
     }SocketInfo;
 
     void UpdateTable();
-
+    bool IsRootLoaderValid();
     std::unordered_map<std::string, SocketInfo> *GetConnectionsList();
 
     bool InitRootLoader();
@@ -129,6 +129,7 @@ private:
     CRootModule                                *m_pRootModule;
     std::atomic_bool                            m_enableRootMod;
     CPortServiceNames                           m_CPortServiceNames;
+    bool                                        m_RootModuleInvalid;
 
     static void LoadConnections(eNetType netType,
                                const char *commandLine,
@@ -143,7 +144,6 @@ private:
                              std::map<unsigned long long, unsigned int> *procInodeList,
                              char *pBuff,
                              size_t bufferLen);
-
 };
 
 #endif // PROCESSLOADER_H

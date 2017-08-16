@@ -216,6 +216,9 @@ tcp\b|udp\b</string>
     </item>
     <item row="1" column="0" colspan="2">
      <widget class="QTreeView" name="treeView_connection">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
