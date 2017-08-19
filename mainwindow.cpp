@@ -24,11 +24,17 @@
 #include <QClipboard>
 #include <QMenu>
 #include <thread>
+#include <QStandardItemModel>
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_captureEnable(false)
+    , m_visibleItems(0)
+    , m_totalItems(0)
+
 {
 
     ui->setupUi(this);
@@ -167,6 +173,9 @@ void MainWindow::updateGui()
                         ++it;
                 }
             }
+
+            UpdateStatusText();
+
 
             m_NetData.EnableUpdateData();
 
@@ -453,5 +462,38 @@ QString MainWindow::CutLongText(const QString &sourceText, int maxLength)
 //    QFontMetrics metrix(this->font());
 //    int cellWidth = this->width();
 //    return  metrix.elidedText(sourceText, Qt::ElideRight, cellWidth);
+
+}
+
+void MainWindow::UpdateStatusText()
+{
+    auto visibleItems = 0;
+    auto totalItems = 0;
+
+    auto proxy = qobject_cast<QSortFilterProxyModel*>(ui->treeView_connection->model());
+    if(proxy != nullptr)
+    {
+
+        visibleItems = proxy->rowCount();
+
+        auto source = qobject_cast<QStandardItemModel*>(proxy->sourceModel());
+        if(source != nullptr)
+        {
+            totalItems = source->rowCount();
+        }
+
+    }
+
+    if(visibleItems == m_visibleItems && totalItems == m_totalItems)
+        return;
+
+    m_visibleItems = visibleItems;
+    m_totalItems = totalItems;
+
+    auto labelText = QString(tr("  %1 / %2  ")).arg(visibleItems).arg(totalItems);
+    ui->label_status->setText(labelText);
+
+    auto labelToolTip = QString(tr(" Visible %1 / Total %2 ")).arg(visibleItems).arg(totalItems);
+    ui->label_status->setToolTip(labelToolTip);
 
 }

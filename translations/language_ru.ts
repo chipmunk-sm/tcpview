@@ -104,6 +104,16 @@ tcp\b|udp\b</translation>
         <source>Zoom</source>
         <translation>Размер шрифта интерфейса</translation>
     </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="493"/>
+        <source>  %1 / %2  </source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="496"/>
+        <source> Visible %1 / Total %2 </source>
+        <translation>Отображается %1 / Всего %2</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -114,7 +124,7 @@ tcp\b|udp\b</translation>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="380"/>
+        <location filename="../mainwindow.cpp" line="389"/>
         <source>Cannot start module, because 
 %1
  is missing or execution access is denied.</source>
@@ -123,36 +133,36 @@ tcp\b|udp\b</translation>
 Отсутствуют или доступ к выполнению запрещен.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="383"/>
-        <location filename="../mainwindow.cpp" line="413"/>
+        <location filename="../mainwindow.cpp" line="392"/>
         <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="431"/>
         <source>Run as root</source>
         <translation>Запуск с правами root</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="413"/>
+        <location filename="../mainwindow.cpp" line="422"/>
         <source>Failed on start
 </source>
         <translation>Ошибка при запуске
 </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="431"/>
         <source>Failed on &apos;init&apos; client module</source>
         <translation>Не удалось подключить клиентский модуль «init»</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="137"/>
+        <location filename="../mainwindow.cpp" line="143"/>
         <source>Failed on showEvent</source>
         <translation>Ошибка события showEvent</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="326"/>
+        <location filename="../mainwindow.cpp" line="335"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="331"/>
+        <location filename="../mainwindow.cpp" line="340"/>
         <source>Copy row</source>
         <translation>Копировать строку</translation>
     </message>

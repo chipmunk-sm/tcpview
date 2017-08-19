@@ -43,7 +43,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QString CutLongText(const QString &sourceText, int maxLength);
 protected:
     void closeEvent(QCloseEvent *event);
     void showEvent( QShowEvent* event );
@@ -74,11 +73,15 @@ private:
     QString          m_whoisText;
     QString          m_RowText;
     QString          m_ClipBoardString;
+    int              m_visibleItems;
+    int              m_totalItems;
 
     void SaveAppState();
     void ShowWhois(QString rowText, QString whoisText);
     void ShowInfoDialog(QString title, QString dialogText, bool readonly);
     const QString GetAuthGuiName();
+    QString CutLongText(const QString &sourceText, int maxLength);
+    void UpdateStatusText();
 };
 
 #endif // MAINWINDOW_H
