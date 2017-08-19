@@ -14,6 +14,47 @@ https://github.com/chipmunk-sm/tcpview
 ![screenshot_201708111](https://user-images.githubusercontent.com/29524958/29194415-231f2b9e-7e32-11e7-8c94-8eac6ea0bf98.png)
 
 
+## Description
+TcpView For Linux. Touch screen friendly design graphical network connections viewer for Linux.
+```
+Names – Show command line, name of the process that owns endpoint.
+Pause - Stop loading new records
+Record - Do not delete old records.
+Copy - Copy the data of a row to the clipboard
+Save – Export data to a CSV or XML file
+Whois - Service gives you the ability to find out the registered domain holder.
+Zoom slider - Will help you select appropriate font size.
+```
+## How does it work?
+### "Base module" 
+Read and parse the information available from 
+```
+    /proc/net/tcp
+    /proc/net/udp
+    /proc/net/tcp6
+    /proc/net/udp6
+    /proc/net/raw
+    /proc/net/raw6
+```
+The data used from output is:
+```
+sl - The number of the line in the output listing.
+local_address
+rem_address
+st - The socket status.
+Uid - The ID of the user that owns the socket.
+Inode - A cryptic-looking number that identifies the socket to the Linux virtual filesystem.
+```
+
+### "Root module"
+Loop through  /proc/pid/fd/ for collect "inode list" and associated "command line" data
+
+
+
+## Known issues
+For connections with a short lifetime, sometimes we can not find the owner of the inode in /proc/pid/fd/, because the associated index was deleted.
+
+
 # How to build
 
 ## Install Qt
