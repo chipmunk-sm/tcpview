@@ -323,7 +323,7 @@ void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint 
 
     if(!cellText.isEmpty())
     {
-        auto actionCell = new QAction(QObject::tr("Copy") + " \"" + cellText + "\"", &menu);
+        auto actionCell = new QAction(QObject::tr("Copy") + " \"" + CutLongText(cellText, 80) + "\"", &menu);
         actionCell->setData(CopyCell);
         menu.addAction(actionCell);
     }
@@ -430,3 +430,28 @@ void MainWindow::on_pushButton_displayNames_clicked()
 
 }
 
+QString MainWindow::CutLongText(const QString &sourceText, int maxLength)
+{
+
+    if(sourceText.length() < maxLength)
+        return sourceText;
+
+    auto splitText = sourceText.split(" ");
+
+    QString retText;
+    foreach(auto varTmp, splitText)
+    {
+        if(retText.length() + varTmp.length() > maxLength)
+        {
+            retText += "...";
+            break;
+        }
+        retText += " " + varTmp;
+    }
+    return retText;
+
+//    QFontMetrics metrix(this->font());
+//    int cellWidth = this->width();
+//    return  metrix.elidedText(sourceText, Qt::ElideRight, cellWidth);
+
+}

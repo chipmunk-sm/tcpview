@@ -43,6 +43,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    QString CutLongText(const QString &sourceText, int maxLength);
 protected:
     void closeEvent(QCloseEvent *event);
     void showEvent( QShowEvent* event );
