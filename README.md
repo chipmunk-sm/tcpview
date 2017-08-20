@@ -7,6 +7,13 @@ To get the last release version, please use the PPA:
 Artful, Zesty, Xenial  
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
+
+```
+$ sudo add-apt-repository ppa:chipmunk.sm/ppa
+$ sudo apt-get update
+$ sudo apt-get install tcpview
+```
+
 Home page:
 
 https://github.com/chipmunk-sm/tcpview
