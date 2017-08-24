@@ -344,20 +344,20 @@ tcp\b|udp\b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="240"/>
+        <location filename="../source/cconnectionstree.cpp" line="242"/>
         <source>Save as ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="279"/>
-        <location filename="../source/cconnectionstree.cpp" line="283"/>
+        <location filename="../source/cconnectionstree.cpp" line="281"/>
+        <location filename="../source/cconnectionstree.cpp" line="285"/>
         <location filename="../source/cfilesavewrapper.cpp" line="44"/>
         <location filename="../source/cfilesavewrapper.cpp" line="84"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="283"/>
+        <location filename="../source/cconnectionstree.cpp" line="285"/>
         <source>Unexpected exception</source>
         <translation type="unfinished"></translation>
     </message>
@@ -365,11 +365,6 @@ tcp\b|udp\b</source>
         <location filename="../source/cfilesavewrapper.h" line="27"/>
         <source>Error: Cannot write file
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../source/datasource.cpp" line="91"/>
-        <source>Failed to load data from RootModule</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

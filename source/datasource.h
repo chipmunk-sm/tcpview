@@ -24,7 +24,7 @@
 #include <unordered_map>
 #include <locale>
 #include <codecvt>
-#include <string.h>
+#include <string>
 #include <pwd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -35,6 +35,9 @@
 #include <netdb.h>
 #include <uuid/uuid.h>
 #include <atomic>
+#include <cctype>
+#include <algorithm>
+
 
 #include "cportservicenames.h"
 #include "rootmodule.h"
@@ -88,6 +91,15 @@ public:
         conn_raw6
     }eNetType;
 
+    typedef enum{
+        proc_net_tcp = 1,            // Contains detailed TCP socket information.
+        proc_net_tcp6,               //
+        proc_net_udp,                // Contains detailed UDP socket information.
+        proc_net_udp6,               //
+        proc_net_raw,                // Lists raw device statistics.
+        proc_net_raw6,               //
+    }eProcPath;
+
     typedef struct{
 
         char                localAddr[INET6_ADDRSTRLEN];
@@ -130,12 +142,11 @@ private:
     std::atomic_bool                            m_enableRootMod;
     CPortServiceNames                           m_CPortServiceNames;
     bool                                        m_RootModuleInvalid;
+    int                                         m_errors;
 
     static void LoadConnections(eNetType netType,
                                const char *commandLine,
                                std::unordered_map<std::string, SocketInfo> *pSocketList,
-                               std::map<unsigned long long, unsigned int> *procInodeList,
-                               std::map<unsigned int, std::string> *procCommand,
                                CPortServiceNames *pCPortServiceNames,
                                unsigned int loadCycles);
 
@@ -143,7 +154,9 @@ private:
                              std::map<unsigned int, std::string> *procCommand,
                              std::map<unsigned long long, unsigned int> *procInodeList,
                              char *pBuff,
-                             size_t bufferLen);
+                            size_t bufferLen);
+    std::string MakeProcPath(eProcPath ePath);
+    std::string GetEnvVar(const char *var);
 };
 
 #endif // PROCESSLOADER_H

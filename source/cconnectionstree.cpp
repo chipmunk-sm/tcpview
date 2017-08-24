@@ -166,6 +166,8 @@ void CConnectionsTree::UpdateData(CDataSource::SocketInfo * dataSource, bool dis
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_COMMAND),         dataSource->Command);
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_DATA),            uuid);
 
+        dataSource->commandUpdate = false;
+
     }
 
 }

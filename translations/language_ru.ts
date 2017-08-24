@@ -356,20 +356,20 @@ tcp\b|udp\b</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="240"/>
+        <location filename="../source/cconnectionstree.cpp" line="242"/>
         <source>Save as ...</source>
         <translation>Сохранить как...</translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="279"/>
-        <location filename="../source/cconnectionstree.cpp" line="283"/>
+        <location filename="../source/cconnectionstree.cpp" line="281"/>
+        <location filename="../source/cconnectionstree.cpp" line="285"/>
         <location filename="../source/cfilesavewrapper.cpp" line="44"/>
         <location filename="../source/cfilesavewrapper.cpp" line="84"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../source/cconnectionstree.cpp" line="283"/>
+        <location filename="../source/cconnectionstree.cpp" line="285"/>
         <source>Unexpected exception</source>
         <translation>Неожиданная ошибка</translation>
     </message>
@@ -379,11 +379,6 @@ tcp\b|udp\b</translation>
 </source>
         <translation>Ошибка: невозможно записать файл
 </translation>
-    </message>
-    <message>
-        <location filename="../source/datasource.cpp" line="91"/>
-        <source>Failed to load data from RootModule</source>
-        <translation>Не удалось загрузить данные из RootModule</translation>
     </message>
 </context>
 </TS>

@@ -53,7 +53,8 @@ HEADERS  += mainwindow.h \
     source/updatethread.h \
     source/cportservicenames.h \
     source/cusername.h \
-    source/clanguage.h
+    source/clanguage.h \
+    source/defined.h
 
 FORMS    += mainwindow.ui
 

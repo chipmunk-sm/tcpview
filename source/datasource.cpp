@@ -20,20 +20,29 @@
 #include <spawn.h>
 #include <sys/wait.h>
 #include <QMessageBox>
+#include "defined.h"
 
 CDataSource::CDataSource()
     : m_loadCycles(0)
     , m_pRootModule(nullptr)
     , m_RootModuleInvalid(false)
+    , m_errors(0)
 {
     m_enableRootMod = false;
 
-    m_eNetTypeList.insert(std::make_pair(conn_tcp,  std::string("/proc/net/tcp")));
-    m_eNetTypeList.insert(std::make_pair(conn_udp,  std::string("/proc/net/udp")));
-    m_eNetTypeList.insert(std::make_pair(conn_tcp6, std::string("/proc/net/tcp6")));
-    m_eNetTypeList.insert(std::make_pair(conn_udp6, std::string("/proc/net/udp6")));
-    m_eNetTypeList.insert(std::make_pair(conn_raw,  std::string("/proc/net/raw")));
-    m_eNetTypeList.insert(std::make_pair(conn_raw6, std::string("/proc/net/raw6")));
+//    m_eNetTypeList.insert(std::make_pair(conn_tcp,  MakeProcPath(proc_net_tcp)));
+//    m_eNetTypeList.insert(std::make_pair(conn_udp,  MakeProcPath(proc_net_udp)));
+//    m_eNetTypeList.insert(std::make_pair(conn_tcp6, MakeProcPath(proc_net_tcp6)));
+//    m_eNetTypeList.insert(std::make_pair(conn_udp6, MakeProcPath(proc_net_udp6)));
+//    m_eNetTypeList.insert(std::make_pair(conn_raw,  MakeProcPath(proc_net_raw)));
+//    m_eNetTypeList.insert(std::make_pair(conn_raw6, MakeProcPath(proc_net_raw6)));
+
+    m_eNetTypeList.insert(std::make_pair(conn_tcp,  PROC_NET_TCP));
+    m_eNetTypeList.insert(std::make_pair(conn_udp,  PROC_NET_UDP));
+    m_eNetTypeList.insert(std::make_pair(conn_tcp6, PROC_NET_TCP6));
+    m_eNetTypeList.insert(std::make_pair(conn_udp6, PROC_NET_UDP6));
+    m_eNetTypeList.insert(std::make_pair(conn_raw,  PROC_NET_RAW));
+    m_eNetTypeList.insert(std::make_pair(conn_raw6, PROC_NET_RAW6));
 
 }
 
@@ -80,39 +89,55 @@ void CDataSource::UpdateTable()
 
     m_loadCycles++;
 
-    std::map<unsigned long long, unsigned int> procInodeList;
-    std::map<unsigned int, std::string> procCommand;
-
-    if(m_enableRootMod && m_pRootModule)
-    {
-      auto retv = m_pRootModule->RunClient(&procInodeList, &procCommand);
-      if(!retv)
-      {
-          QMessageBox::critical(nullptr, "Datasource", QObject::tr("Failed to load data from RootModule"), QMessageBox::Ok);
-          m_RootModuleInvalid = true;
-      }
-    }
-
     /* load socket connections */
     for (const auto& it : m_eNetTypeList)
          LoadConnections(it.first,
                         it.second.c_str(),
                         &m_socketList,
-                        &procInodeList,
-                        &procCommand,
                         &m_CPortServiceNames,
                         m_loadCycles);
 
-    /* set cleanup flag for old entries in socketList */
-    for (auto it = m_socketList.begin(); it != m_socketList.end(); )
+
+    std::map<unsigned long long, unsigned int> procInodeList;
+    std::map<unsigned int, std::string> procCommand;
+    bool chekCmdUpdate = false;
+
+    if(m_enableRootMod && m_pRootModule)
     {
-        if (it->second.loadCycles != m_loadCycles)
+        auto retv = m_pRootModule->RunClient(&procInodeList, &procCommand);
+        if(retv)
         {
-            it->second.state = CONNECTION_REMOVED;
-            it->second.stateUpdate = true;
-            it->second.deleteItem++;
+            chekCmdUpdate = true;
         }
-        ++it;
+        else
+        {
+            m_RootModuleInvalid = true;
+            if(m_errors++ == 0)
+                QMessageBox::critical(nullptr, "Datasource", "Failed to load data from RootModule", QMessageBox::Ok);
+        }
+    }
+
+    for (auto it = m_socketList.begin(); it != m_socketList.end(); it++)
+    {
+        SocketInfo *sinf = &it->second;
+
+        /* set cleanup flag for old entries in socketList */
+        if (sinf->loadCycles != m_loadCycles)
+        {
+            sinf->state = CONNECTION_REMOVED;
+            sinf->stateUpdate = true;
+            sinf->deleteItem++;
+        }
+
+        if(!chekCmdUpdate || sinf->deleteItem > 3)
+            continue;
+
+        if(sinf->Command[0] == 0)
+        {
+            if(FillCommand( sinf->inode, &procCommand, &procInodeList,
+                            sinf->Command, sizeof(SocketInfo::Command)))
+                sinf->commandUpdate = true;
+        }
     }
 
 }
@@ -150,8 +175,6 @@ bool CDataSource::FillCommand(unsigned long long inode,
 void CDataSource::LoadConnections(eNetType netType,
                                  const char * commandLine,
                                  std::unordered_map<std::string, SocketInfo> *pSocketList,
-                                 std::map<unsigned long long, unsigned int> *procInodeList,
-                                 std::map<unsigned int, std::string> *procCommand,
                                  CPortServiceNames *pCPortServiceNames,
                                  unsigned int loadCycles)
 {
@@ -221,6 +244,7 @@ void CDataSource::LoadConnections(eNetType netType,
 
         SocketInfo socket_info;
 
+        //check for already exist record
         auto search = pSocketList->find(keystring);
         if(search != pSocketList->end())
         {
@@ -233,18 +257,11 @@ void CDataSource::LoadConnections(eNetType netType,
                 search->second.stateUpdate  = true;
             }
 
-            if(strlen(search->second.Command) < 1)
-            {
-                char* ptr = search->second.Command;
-                size_t len = sizeof(socket_info.Command);
-                unsigned int tminod = search->second.inode;
-                if(FillCommand(tminod, procCommand, procInodeList, ptr, len))
-                    search->second.commandUpdate = true;
-            }
-
             continue; // next connection
 
         }
+
+        //process new record
 
         memset(&socket_info, 0, sizeof(socket_info));
 
@@ -254,11 +271,8 @@ void CDataSource::LoadConnections(eNetType netType,
         socket_info.inode       = inode;
         socket_info.state       = state;
 
-        FillCommand(inode, procCommand, procInodeList, socket_info.Command, sizeof(socket_info.Command));
-
         pCPortServiceNames->GetServiceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort), (netType == conn_tcp || netType == conn_tcp6));
         pCPortServiceNames->GetServiceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort), (netType == conn_tcp || netType == conn_tcp6));
-
 
         if (netType == conn_tcp6 || netType == conn_udp6 || netType == conn_raw6)
         {
@@ -301,5 +315,43 @@ void CDataSource::LoadConnections(eNetType netType,
 std::unordered_map<std::string, CDataSource::SocketInfo> *CDataSource::GetConnectionsList()
 {
     return &m_socketList;
+}
+
+std::string CDataSource::GetEnvVar(const char *var)
+{
+    std::string envVar(var);
+    std::transform(envVar.begin(), envVar.end(), envVar.begin(), (int (*)(int))std::toupper);
+
+    char *retPtr;
+    retPtr = getenv(envVar.c_str());
+    if(retPtr)
+        return std::string(retPtr);
+
+    retPtr = getenv("PROC_ROOT");
+    if(retPtr)
+        return std::string(retPtr);
+
+    return std::string("/proc");
+}
+
+std::string CDataSource::MakeProcPath(eProcPath ePath)
+{
+
+    std::string path;
+    std::string root;
+
+    switch (ePath)
+    {
+    case proc_net_tcp:       root = GetEnvVar("proc_net_tcp");       path = "/net/tcp";break;
+    case proc_net_tcp6:      root = GetEnvVar("proc_net_tcp6");      path = "/net/tcp6";break;
+    case proc_net_udp:       root = GetEnvVar("proc_net_udp");       path = "/net/udp";break;
+    case proc_net_udp6:      root = GetEnvVar("proc_net_udp6");      path = "/net/udp6";break;
+    case proc_net_raw:       root = GetEnvVar("proc_net_raw");       path = "/net/raw";break;
+    case proc_net_raw6:      root = GetEnvVar("proc_net_raw6");      path = "/net/raw6";break;
+    default: return "";
+    }
+
+    return root + path;
+
 }
 

@@ -17,7 +17,7 @@
 
 #include "rootmodule.h"
 
-
+#include "defined.h"
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -188,7 +188,7 @@ void CRootModule::RunServer()
         }
 
         struct dirent *ent;
-        auto dir = opendir("/proc");
+        auto dir = opendir(PROC_PATH);
         while(( ent = readdir(dir) ))
         {
             if( (*ent->d_name < '0') || (*ent->d_name> '9') )
@@ -222,7 +222,7 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
     int retCount = 0;
     char bufferPtr[_POSIX_PATH_MAX + sizeof(ItemInfo) + 1];
     auto bufferSize = sizeof(bufferPtr);
-    snprintf(bufferPtr, bufferSize, "/proc/%d/fd", pid);
+    snprintf(bufferPtr, bufferSize, PROC_PATH_FD, pid);
 
     auto fddir = opendir (bufferPtr);
     if ( fddir == nullptr )
@@ -245,7 +245,7 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
             continue;
 
         char pathBuf[_POSIX_PATH_MAX];
-        auto retl = snprintf(pathBuf, sizeof(pathBuf), "/proc/%d/fd/%s", pid, result->d_name);
+        auto retl = snprintf(pathBuf, sizeof(pathBuf), PROC_PATH_FD2, pid, result->d_name);
         if(retl < 1)
             continue;
 
@@ -351,7 +351,7 @@ void CRootModule::GetCommandString(unsigned int pid, int fifoSrv)
     char bufferPtr[_POSIX_PATH_MAX + sizeof(ItemInfo) + 1];
     auto bufferSize = sizeof(bufferPtr);
 
-    snprintf(bufferPtr, bufferSize, "/proc/%d/cmdline", pid);
+    snprintf(bufferPtr, bufferSize, PROC_PATH_CMD, pid);
 
     auto fd = fopen( bufferPtr, "r" );
     if (fd == 0)

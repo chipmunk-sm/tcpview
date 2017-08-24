@@ -40,7 +40,7 @@ void CLanguage::LoadTranslations(const QDir &dir)
         auto path = dir.filePath(str);
         auto langName = ExtractLanguageName(path);
 
-        std::cout << langName.toStdString()  << "\t" << str.toStdString()<< "\t" << path.toStdString() << std::endl;
+//        std::cout << langName.toStdString()  << "\t" << str.toStdString()<< "\t" << path.toStdString() << std::endl;
 
         if(langName.length() < 1)
             continue;
