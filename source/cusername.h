@@ -24,7 +24,7 @@ class CUserName
 {
 public:
     CUserName();
-    static QString GetUserNameString(__uid_t euid);
+    static QString GetUserNameString(__uid_t euid, bool bErrorUser);
 };
 
 #endif // CUSERNAME_H

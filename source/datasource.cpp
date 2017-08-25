@@ -260,6 +260,12 @@ void CDataSource::LoadConnections(eNetType netType,
             continue; // next connection
         }
 
+        if (inode == 0)
+        {
+            //std::cout << "           sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode" << std::endl;
+            //std::cout << "Zero inode:"  << buffer << std::endl;
+        }
+
         std::snprintf(buffer, sizeof(buffer),"%s%d%s%d%d",loc_addr, loc_port, rem_addr, rem_port, netType);
         std::string keystring(buffer);
 

@@ -160,7 +160,7 @@ void CConnectionsTree::UpdateData(CDataSource::SocketInfo * dataSource, bool dis
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEHOST),      dataSource->remoteHost);
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEADDRESS),   dataSource->remoteAddr);
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEPORT),      dataSource->remotePort);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_UID),             CUserName::GetUserNameString(dataSource->uid));
+        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_UID),             CUserName::GetUserNameString(dataSource->uid, dataSource->inode == 0));
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_INODE),           QString::number(dataSource->inode));
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_TIME),            tmpTime);
         src->setData(src->index(iRow, CDataSource::COLUMN_DATA_COMMAND),         dataSource->Command);
