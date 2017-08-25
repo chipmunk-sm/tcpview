@@ -156,13 +156,12 @@ private:
                                CPortServiceNames *pCPortServiceNames,
                                unsigned int loadCycles);
 
-    static bool FillCommand(unsigned long long inode,
+    static bool LoadCmd(unsigned long long inode,
                              std::map<unsigned int, std::string> *procCommand,
                              std::map<unsigned long long, unsigned int> *procInodeList,
                              char *pBuff,
                             size_t bufferLen);
-    std::string MakeProcPath(eProcPath ePath);
-    std::string GetEnvVar(const char *var);
+
     void DomainNamesResolver(SocketInfo &socket_info);
 };
 

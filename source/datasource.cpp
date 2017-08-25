@@ -30,13 +30,6 @@ CDataSource::CDataSource()
 {
     m_enableRootMod = false;
 
-//    m_eNetTypeList.insert(std::make_pair(conn_tcp,  MakeProcPath(proc_net_tcp)));
-//    m_eNetTypeList.insert(std::make_pair(conn_udp,  MakeProcPath(proc_net_udp)));
-//    m_eNetTypeList.insert(std::make_pair(conn_tcp6, MakeProcPath(proc_net_tcp6)));
-//    m_eNetTypeList.insert(std::make_pair(conn_udp6, MakeProcPath(proc_net_udp6)));
-//    m_eNetTypeList.insert(std::make_pair(conn_raw,  MakeProcPath(proc_net_raw)));
-//    m_eNetTypeList.insert(std::make_pair(conn_raw6, MakeProcPath(proc_net_raw6)));
-
     m_eNetTypeList.insert(std::make_pair(conn_tcp,  PROC_NET_TCP));
     m_eNetTypeList.insert(std::make_pair(conn_udp,  PROC_NET_UDP));
     m_eNetTypeList.insert(std::make_pair(conn_tcp6, PROC_NET_TCP6));
@@ -138,7 +131,7 @@ void CDataSource::UpdateTable()
 
         if(sinf->Command[0] == 0)
         {
-            if(FillCommand( sinf->inode, &procCommand, &procInodeList,
+            if(LoadCmd( sinf->inode, &procCommand, &procInodeList,
                             sinf->Command, sizeof(SocketInfo::Command)))
                 sinf->commandUpdate = true;
         }
@@ -151,7 +144,7 @@ bool CDataSource::IsRootLoaderValid()
     return !m_RootModuleInvalid;
 }
 
-bool CDataSource::FillCommand(unsigned long long inode,
+bool CDataSource::LoadCmd(unsigned long long inode,
                               std::map<unsigned int, std::string> *procCommand,
                               std::map<unsigned long long, unsigned int> *procInodeList,
                               char * pBuff,
@@ -333,41 +326,6 @@ std::unordered_map<std::string, CDataSource::SocketInfo> *CDataSource::GetConnec
     return &m_socketList;
 }
 
-std::string CDataSource::GetEnvVar(const char *var)
-{
-    std::string envVar(var);
-    std::transform(envVar.begin(), envVar.end(), envVar.begin(), (int (*)(int))std::toupper);
 
-    char *retPtr;
-    retPtr = getenv(envVar.c_str());
-    if(retPtr)
-        return std::string(retPtr);
 
-    retPtr = getenv("PROC_ROOT");
-    if(retPtr)
-        return std::string(retPtr);
-
-    return std::string("/proc");
-}
-
-std::string CDataSource::MakeProcPath(eProcPath ePath)
-{
-
-    std::string path;
-    std::string root;
-
-    switch (ePath)
-    {
-    case proc_net_tcp:       root = GetEnvVar("proc_net_tcp");       path = "/net/tcp";break;
-    case proc_net_tcp6:      root = GetEnvVar("proc_net_tcp6");      path = "/net/tcp6";break;
-    case proc_net_udp:       root = GetEnvVar("proc_net_udp");       path = "/net/udp";break;
-    case proc_net_udp6:      root = GetEnvVar("proc_net_udp6");      path = "/net/udp6";break;
-    case proc_net_raw:       root = GetEnvVar("proc_net_raw");       path = "/net/raw";break;
-    case proc_net_raw6:      root = GetEnvVar("proc_net_raw6");      path = "/net/raw6";break;
-    default: return "";
-    }
-
-    return root + path;
-
-}
 
