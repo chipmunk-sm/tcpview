@@ -126,6 +126,11 @@ public:
         unsigned int       loadCycles;
         unsigned int       deleteItem;
 
+        struct in6_addr loc6;
+        struct in6_addr rem6;
+        struct in_addr loc4;
+        struct in_addr rem4;
+
     }SocketInfo;
 
     void UpdateTable();
@@ -134,6 +139,7 @@ public:
 
     bool InitRootLoader();
     void DeleteRootLoader();
+    
 private:
     unsigned int m_loadCycles;
     std::map<eNetType, std::string>             m_eNetTypeList;
@@ -157,6 +163,7 @@ private:
                             size_t bufferLen);
     std::string MakeProcPath(eProcPath ePath);
     std::string GetEnvVar(const char *var);
+    void DomainNamesResolver(SocketInfo &socket_info);
 };
 
 #endif // PROCESSLOADER_H

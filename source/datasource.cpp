@@ -119,6 +119,10 @@ void CDataSource::UpdateTable()
 
     for (auto it = m_socketList.begin(); it != m_socketList.end(); it++)
     {
+        const int loadCommandTimeout = 6;
+
+        DomainNamesResolver(it->second);
+
         SocketInfo *sinf = &it->second;
 
         /* set cleanup flag for old entries in socketList */
@@ -129,7 +133,7 @@ void CDataSource::UpdateTable()
             sinf->deleteItem++;
         }
 
-        if(!chekCmdUpdate || sinf->deleteItem > 3)
+        if(!chekCmdUpdate || sinf->deleteItem > loadCommandTimeout)
             continue;
 
         if(sinf->Command[0] == 0)
@@ -170,6 +174,30 @@ bool CDataSource::FillCommand(unsigned long long inode,
         }
     }
     return false;
+}
+
+void CDataSource::DomainNamesResolver(SocketInfo &socket_info)
+{
+
+    if(socket_info.remoteHost[0] != 0)
+        return;
+
+    if (socket_info.netType == conn_tcp6 || socket_info.netType == conn_udp6 || socket_info.netType == conn_raw6)
+    {
+        auto locval = gethostbyaddr(&socket_info.loc6, sizeof(socket_info.loc6), AF_INET6);
+        strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+
+        auto remval = gethostbyaddr(&socket_info.rem6, sizeof(socket_info.rem6), AF_INET6);
+        strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+    }
+    else
+    {
+        auto locval = gethostbyaddr(&socket_info.loc4, sizeof(socket_info.loc4), AF_INET);
+        strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+
+        auto remval = gethostbyaddr(&socket_info.rem4, sizeof(socket_info.rem4), AF_INET);
+        strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+    }
 }
 
 void CDataSource::LoadConnections(eNetType netType,
@@ -274,33 +302,21 @@ void CDataSource::LoadConnections(eNetType netType,
         pCPortServiceNames->GetServiceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort), (netType == conn_tcp || netType == conn_tcp6));
         pCPortServiceNames->GetServiceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort), (netType == conn_tcp || netType == conn_tcp6));
 
-        if (netType == conn_tcp6 || netType == conn_udp6 || netType == conn_raw6)
+        if (socket_info.netType == conn_tcp6 || socket_info.netType == conn_udp6 || socket_info.netType == conn_raw6)
         {
-            struct in6_addr loc;
-            sscanf(loc_addr, "%08X%08X%08X%08X", &loc.s6_addr32[0], &loc.s6_addr32[1], &loc.s6_addr32[2], &loc.s6_addr32[3]);
-            inet_ntop(AF_INET6, &loc, socket_info.localAddr,  INET6_ADDRSTRLEN);
-            auto locval = gethostbyaddr(&loc, sizeof(loc), AF_INET6);
-            strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+            sscanf(loc_addr, "%08X%08X%08X%08X", &socket_info.loc6.s6_addr32[0], &socket_info.loc6.s6_addr32[1], &socket_info.loc6.s6_addr32[2], &socket_info.loc6.s6_addr32[3]);
+            inet_ntop(AF_INET6, &socket_info.loc6, socket_info.localAddr,  INET6_ADDRSTRLEN);
 
-            struct in6_addr rem;
-            sscanf(rem_addr, "%08X%08X%08X%08X", &rem.s6_addr32[0], &rem.s6_addr32[1], &rem.s6_addr32[2], &rem.s6_addr32[3]);
-            inet_ntop(AF_INET6, &rem, socket_info.remoteAddr, INET6_ADDRSTRLEN);
-            auto remval = gethostbyaddr(&rem, sizeof(rem), AF_INET6);
-            strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+            sscanf(rem_addr, "%08X%08X%08X%08X", &socket_info.rem6.s6_addr32[0], &socket_info.rem6.s6_addr32[1], &socket_info.rem6.s6_addr32[2], &socket_info.rem6.s6_addr32[3]);
+            inet_ntop(AF_INET6, &socket_info.rem6, socket_info.remoteAddr, INET6_ADDRSTRLEN);
         }
         else
         {
-            struct in_addr loc;
-            sscanf(loc_addr, "%X", &(loc.s_addr));
-            strcpy(socket_info.localAddr,  inet_ntoa(loc));
-            auto locval = gethostbyaddr(&loc, sizeof(loc), AF_INET);
-            strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+            sscanf(loc_addr, "%X", &(socket_info.loc4.s_addr));
+            strcpy(socket_info.localAddr,  inet_ntoa(socket_info.loc4));
 
-            struct in_addr rem;
-            sscanf(rem_addr, "%X", &(rem.s_addr));
-            strcpy(socket_info.remoteAddr, inet_ntoa(rem));
-            auto remval = gethostbyaddr(&rem, sizeof(rem), AF_INET);
-            strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+            sscanf(rem_addr, "%X", &(socket_info.rem4.s_addr));
+            strcpy(socket_info.remoteAddr, inet_ntoa(socket_info.rem4));
         }
 
         uuid_generate(socket_info.uuid);
