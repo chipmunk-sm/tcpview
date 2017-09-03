@@ -1,0 +1,20 @@
+[Desktop Entry]
+Categories=Utility;
+Comment[en_US]=Graphical Network Connections Viewer
+Comment=Graphical Network Connections Viewer
+Exec=tcpview
+GenericName[en_US]=Network Connections Viewer
+GenericName=Network Connections Viewer
+Icon=/usr/share/tcpview/tcpviewb
+MimeType=
+Name[en_US]=TcpView
+Name=TcpView
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
