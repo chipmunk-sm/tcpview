@@ -1,5 +1,5 @@
 tcpview usr/bin
 data/tcpview.desktop  usr/share/applications
-data/tcpview.svg      usr/share/tcpview
-data/tcpviewb.svg     usr/share/tcpview
-data/tcpvieww.svg     usr/share/tcpview
+data/tcpview.svg      usr/share/icons/hicolor/scalable/apps
+data/tcpviewb.svg     usr/share/icons/hicolor/scalable/apps
+data/tcpvieww.svg     usr/share/icons/hicolor/scalable/apps
