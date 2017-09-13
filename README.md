@@ -56,12 +56,6 @@ Inode - A cryptic-looking number that identifies the socket to the Linux virtual
 ### "Root module"
 Loop through  /proc/pid/fd/ for collect "inode list" and associated "command line" data
 
-
-
-## Known issues
-For connections with a short lifetime, sometimes we can not find the owner of the inode in /proc/pid/fd/, because the associated index was deleted.
-
-
 # How to build
 
 ## Install Qt
