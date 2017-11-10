@@ -38,8 +38,11 @@ void CCFontSize::ConfigureSlider(QSlider* slider, QWidget *pObj)
 
 }
 
-void CCFontSize::Init()
+bool CCFontSize::Init()
 {
+
+    if(m_fontSize != -1)
+        return false;
 
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     auto initialFontSize = settings.value(GetConfigName(), m_qwidget->font().pointSize());
@@ -70,6 +73,7 @@ void CCFontSize::Init()
     if(index >= 0)
         SetFontSize(index);
 
+    return true;
 }
 
 void CCFontSize::SetFontSize(int fontIndex)

@@ -122,7 +122,9 @@ void MainWindow::showEvent(QShowEvent *event)
 
     try
     {
-        m_ccfontsize.Init();
+
+        if(!m_ccfontsize.Init())
+            return; //avoid reinitialization on show/hide form
 
         QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
         auto testv = settings.value(DEFCFG_MAINWINDOWGEOM);

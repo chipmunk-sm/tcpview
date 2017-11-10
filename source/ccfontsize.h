@@ -25,7 +25,7 @@ class CCFontSize
 {
 public:
     CCFontSize();
-    void Init();
+    bool Init();
     void SetFontSize(int fontIndex);
     void ConfigureSlider(QSlider* slider, QWidget *pObj);
     void SaveConfig();
