@@ -12,7 +12,6 @@ https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 $ sudo add-apt-repository ppa:chipmunk.sm/ppa
 $ sudo apt-get update
 $ sudo apt-get install tcpview
-$ sudo apt-get install uuid-dev
 ```
 
 Home page:
@@ -65,6 +64,7 @@ Loop through  /proc/pid/fd/ for collect "inode list" and associated "command lin
 $ sudo apt-get install build-essential
 $ sudo apt-get install qtcreator
 $ sudo apt-get install qt5-default
+$ sudo apt-get install uuid-dev
 ```
 
 ## Clone
