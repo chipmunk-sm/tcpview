@@ -8,7 +8,7 @@ Bionic, Artful, Zesty, Xenial
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
 
-```
+```bash
 $ sudo add-apt-repository ppa:chipmunk.sm/ppa
 $ sudo apt-get update
 $ sudo apt-get install tcpview
@@ -58,9 +58,9 @@ Loop through  /proc/pid/fd/ for collect "inode list" and associated "command lin
 
 # How to build
 
-## Install Qt
+## Install the build-dependencies on the host system
 
-```sh
+```bash
 $ sudo apt-get install build-essential
 $ sudo apt-get install qtcreator
 $ sudo apt-get install qt5-default
@@ -70,7 +70,7 @@ $ sudo apt-get install uuid-dev
 ## Clone
 Open terminal in your preferred folder:
 
-```sh
+```bash
 $ git clone https://github.com/chipmunk-sm/tcpview.git
 ```
 
@@ -78,7 +78,7 @@ $ git clone https://github.com/chipmunk-sm/tcpview.git
 
 Either open `tcpview.pro` with Qt Creator for editing and building, or from the terminal:
 
-```sh
+```bash
 $ cd tcpview
 $ qmake
 $ make
@@ -86,7 +86,7 @@ $ make
 
 ## Run tcpview
 
-```sh
+```bash
 $ ./tcpview
 ```
 
@@ -94,19 +94,19 @@ $ ./tcpview
 
 Use the Qt Linguist tool to translate text
 
-```
+```bash
 $ sudo apt-get install qttools5-dev-tools
 ```
 
 Open tcpview folder with terminal and update translations:
 
-```sh
+```bash
 $ lupdate -no-obsolete -verbose -pro tcpview.pro
 ```
 
 Open all editable translations:
 
-```sh
+```bash
 $ cd translations
 $ linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
 $ cd ..
@@ -114,7 +114,7 @@ $ cd ..
 
 And update `.qm` files:
 
-```sh
+```bash
 $ lrelease -removeidentical -compress tcpview.pro
 ```
 
