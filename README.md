@@ -12,6 +12,7 @@ https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 $ sudo add-apt-repository ppa:chipmunk.sm/ppa
 $ sudo apt-get update
 $ sudo apt-get install tcpview
+$ sudo apt-get install uuid-dev
 ```
 
 Home page:
