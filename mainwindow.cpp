@@ -263,11 +263,36 @@ void MainWindow::ShowWhois(QString rowText, QString whoisText)
     rowText.replace("\t"," ");
     rowText += "\n\n";
 
-    QProcess exec;
+    QString whoisOutput;
+    QString err;
     QString commandString = "whois " + whoisText;
-    exec.start(commandString);
-    exec.waitForFinished();
-    rowText += exec.readAllStandardOutput();
+
+    try {
+        QProcess exec;
+        exec.start(commandString);
+        exec.waitForFinished();
+        whoisOutput = QString(exec.readAllStandardOutput());
+    } catch(const std::exception &e) {
+        err = QString(e.what());
+    } catch(...) {
+        err = QObject::tr("Unexpected exception");
+    }
+
+    if(whoisOutput.isEmpty())
+    {
+        if(err.isEmpty())
+        {
+            whoisOutput = QObject::tr("Command 'whois' not found,\n"
+                                      "but can be installed with:\n"
+                                      "sudo apt install whois");
+        }
+        else
+        {
+            whoisOutput = QObject::tr("Failed run 'whois':\n") + err;
+        }
+    }
+
+    rowText += whoisOutput;
     ShowInfoDialog(commandString, rowText, true);
 }
 
