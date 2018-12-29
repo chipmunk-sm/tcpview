@@ -3,8 +3,6 @@
 Graphical network connections viewer for Linux
 
 To get the last release version, please use the PPA:
-
-Bionic, Artful, Zesty, Xenial  
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
 
@@ -13,6 +11,10 @@ $ sudo add-apt-repository ppa:chipmunk.sm/ppa
 $ sudo apt-get update
 $ sudo apt-get install tcpview
 ```
+
+## Debian packages (.deb)
+https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa/+packages
+
 
 Home page:
 
