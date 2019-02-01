@@ -7,9 +7,8 @@ Build-Depends: debhelper (>=9),
             qtbase5-dev
 Standards-Version: 3.9.8
 Homepage: https://github.com/chipmunk-sm/tcpview
-Vcs-Bzr: https://code.launchpad.net/~chipmunk.sm/tcpview/master
 
 Package: tcpview
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Graphical Network Connections Viewer For Linux
+Description: TcpView For Linux - Graphical Network Connections Viewer For Linux

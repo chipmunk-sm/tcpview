@@ -1,3 +1,4 @@
 build/*
 tcpview.pro.user
 *.autosave
+/translations/*.txt
