@@ -1,0 +1,25 @@
+language: cpp
+
+dist: xenial
+
+matrix:
+  include:
+#GCC 8
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+
+install:
+ - sudo apt-get install  qt5-qmake qtbase5-dev uuid-dev
+ - eval "${MATRIX_EVAL}"
+
+script:
+ - qmake  -qt=qt5
+ - make -j4

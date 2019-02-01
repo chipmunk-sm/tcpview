@@ -1,5 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: tcpview
+Upstream-Name: TcpView For Linux
 Source: https://github.com/chipmunk-sm/tcpview
 
 Files: *

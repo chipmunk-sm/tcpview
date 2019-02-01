@@ -4,11 +4,6 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.ui" line="14"/>
-        <source>TcpView</source>
-        <translation>TcpView</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.ui" line="36"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
@@ -93,12 +88,12 @@ tcp\b|udp\b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="493"/>
+        <location filename="../mainwindow.cpp" line="520"/>
         <source>  %1 / %2  </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="496"/>
+        <location filename="../mainwindow.cpp" line="523"/>
         <source> Visible %1 / Total %2 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -106,42 +101,55 @@ tcp\b|udp\b</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainwindow.cpp" line="389"/>
+        <location filename="../mainwindow.cpp" line="416"/>
         <source>Cannot start module, because 
 %1
  is missing or execution access is denied.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="392"/>
-        <location filename="../mainwindow.cpp" line="422"/>
-        <location filename="../mainwindow.cpp" line="431"/>
+        <location filename="../mainwindow.cpp" line="419"/>
+        <location filename="../mainwindow.cpp" line="449"/>
+        <location filename="../mainwindow.cpp" line="458"/>
         <source>Run as root</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="449"/>
         <source>Failed on start
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="431"/>
+        <location filename="../mainwindow.cpp" line="458"/>
         <source>Failed on &apos;init&apos; client module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="143"/>
+        <location filename="../mainwindow.cpp" line="145"/>
         <source>Failed on showEvent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="335"/>
+        <location filename="../mainwindow.cpp" line="285"/>
+        <source>Command &apos;whois&apos; not found,
+but can be installed with:
+sudo apt install whois</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="291"/>
+        <source>Failed run &apos;whois&apos;:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="362"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="340"/>
+        <location filename="../mainwindow.cpp" line="367"/>
         <source>Copy row</source>
         <translation type="unfinished"></translation>
     </message>
@@ -348,6 +356,7 @@ tcp\b|udp\b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="278"/>
         <location filename="../source/cconnectionstree.cpp" line="285"/>
         <source>Unexpected exception</source>
         <translation type="unfinished"></translation>

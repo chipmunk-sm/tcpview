@@ -1,5 +1,5 @@
-#/* This file is part of tcpview - network connections viewer for Linux
-# * Copyright (C) 2017 chipmunk-sm <dannico@linuxmail.org>
+#/* This file is part of "TcpView For Linux" - network connections viewer for Linux
+# * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
 # *
 # * This program is free software: you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -67,11 +67,11 @@ DISTFILES += \
     debian/control \
     debian/copyright \
     debian/tcpview.install \
-    debian/changelog \
     debian/rules \
     debian/source/format \
     README.md \
-    LICENSE
+    LICENSE \
+    debian/changelog
 
 RESOURCES += \
     tcpview.qrc

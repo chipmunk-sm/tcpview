@@ -4,11 +4,6 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.ui" line="14"/>
-        <source>TcpView</source>
-        <translation>TcpView</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.ui" line="36"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
@@ -59,7 +54,7 @@ tcp\b|udp\b</translation>
     <message>
         <location filename="../mainwindow.ui" line="143"/>
         <source>Copy to Clipboard</source>
-        <translation>Копировать строку в буфер обмена </translation>
+        <translation>Копировать строку в буфер обмена</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="146"/>
@@ -105,14 +100,14 @@ tcp\b|udp\b</translation>
         <translation>Размер шрифта интерфейса</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="493"/>
+        <location filename="../mainwindow.cpp" line="520"/>
         <source>  %1 / %2  </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="496"/>
+        <location filename="../mainwindow.cpp" line="523"/>
         <source> Visible %1 / Total %2 </source>
-        <translation>Отображается %1 / Всего %2</translation>
+        <translation> Отображается %1 / Всего %2 </translation>
     </message>
 </context>
 <context>
@@ -124,7 +119,7 @@ tcp\b|udp\b</translation>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="389"/>
+        <location filename="../mainwindow.cpp" line="416"/>
         <source>Cannot start module, because 
 %1
  is missing or execution access is denied.</source>
@@ -133,36 +128,50 @@ tcp\b|udp\b</translation>
 Отсутствуют или доступ к выполнению запрещен.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="392"/>
-        <location filename="../mainwindow.cpp" line="422"/>
-        <location filename="../mainwindow.cpp" line="431"/>
+        <location filename="../mainwindow.cpp" line="419"/>
+        <location filename="../mainwindow.cpp" line="449"/>
+        <location filename="../mainwindow.cpp" line="458"/>
         <source>Run as root</source>
         <translation>Запуск с правами root</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="449"/>
         <source>Failed on start
 </source>
         <translation>Ошибка при запуске
 </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="431"/>
+        <location filename="../mainwindow.cpp" line="458"/>
         <source>Failed on &apos;init&apos; client module</source>
         <translation>Не удалось подключить клиентский модуль «init»</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="143"/>
+        <location filename="../mainwindow.cpp" line="145"/>
         <source>Failed on showEvent</source>
         <translation>Ошибка события showEvent</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="335"/>
+        <location filename="../mainwindow.cpp" line="285"/>
+        <source>Command &apos;whois&apos; not found,
+but can be installed with:
+sudo apt install whois</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="291"/>
+        <source>Failed run &apos;whois&apos;:
+</source>
+        <translation>Ошибка при запуске &apos;whois&apos;:
+</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="362"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="340"/>
+        <location filename="../mainwindow.cpp" line="367"/>
         <source>Copy row</source>
         <translation>Копировать строку</translation>
     </message>
@@ -232,7 +241,7 @@ tcp\b|udp\b</translation>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="54"/>
         <source>User</source>
-        <translation>Пользователь</translation>
+        <translation>Владелец</translation>
     </message>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="54"/>
@@ -258,7 +267,7 @@ tcp\b|udp\b</translation>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="57"/>
         <source>Command</source>
-        <translation>Программа</translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location filename="../source/cconnectionstree.cpp" line="58"/>
@@ -369,6 +378,7 @@ tcp\b|udp\b</translation>
         <translation>Сохранить</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="278"/>
         <location filename="../source/cconnectionstree.cpp" line="285"/>
         <source>Unexpected exception</source>
         <translation>Неожиданная ошибка</translation>
