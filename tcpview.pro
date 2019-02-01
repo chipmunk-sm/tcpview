@@ -70,7 +70,8 @@ DISTFILES += \
     debian/rules \
     debian/source/format \
     README.md \
-    LICENSE
+    LICENSE \
+    debian/changelog
 
 RESOURCES += \
     tcpview.qrc
