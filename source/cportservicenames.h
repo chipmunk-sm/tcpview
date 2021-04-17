@@ -19,6 +19,7 @@
 #define CPORTSERVICENAMES_H
 
 #include <map>
+#include <string>
 
 class CPortServiceNames
 {

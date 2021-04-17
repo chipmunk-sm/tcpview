@@ -31,7 +31,7 @@ public:
     void SaveConfig();
 
 private:
-    int                 m_fontSize;
+    int                 m_fontSize = -1;
     QWidget             *m_qwidget;
     QSlider             *m_slider;
     QList<int>          m_fontSizeList;

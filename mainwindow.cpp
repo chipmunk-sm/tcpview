@@ -202,7 +202,7 @@ void MainWindow::updateGui()
 void MainWindow::currentSelectionChanged(const QModelIndex current, const QModelIndex previous)
 {
 
-    Q_UNUSED(previous);
+    Q_UNUSED(previous)
 
     m_whoisText = "";
     m_RowText = "";
@@ -332,7 +332,7 @@ void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly
 void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint &pos)
 {
 
-    typedef enum{
+    typedef enum MenuAction{
         CopyCell = 1,
         CopyRow
     }MenuAction;
@@ -360,12 +360,12 @@ void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint 
     if(!cellText.isEmpty())
     {
         auto actionCell = new QAction(QObject::tr("Copy") + " \"" + CutLongText(cellText, 80) + "\"", &menu);
-        actionCell->setData(CopyCell);
+        actionCell->setData(MenuAction::CopyCell);
         menu.addAction(actionCell);
     }
 
     auto actionRow = new QAction(QObject::tr("Copy row"), &menu);
-    actionRow->setData(CopyRow);
+    actionRow->setData(MenuAction::CopyRow);
     menu.addAction(actionRow);
 
     auto ret = menu.exec(QCursor::pos());
@@ -375,13 +375,13 @@ void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint 
     if(QApplication::clipboard() == nullptr)
         return;
 
-    if(ret->data() == CopyRow)
+    if(ret->data() == MenuAction::CopyRow)
     {
         QApplication::clipboard()->setText(rowText);
         return;
     }
 
-    if(ret->data() == CopyCell)
+    if(ret->data() == MenuAction::CopyCell)
     {
         QApplication::clipboard()->setText(cellText);
         return;
