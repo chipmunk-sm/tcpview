@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +18,11 @@
 #ifndef CCFONTSIZE_H
 #define CCFONTSIZE_H
 
-#include <QSlider>
-#include <QWidget>
-
 class CCFontSize
 {
 public:
-    CCFontSize();
-    bool Init();
-    void SetFontSize(int fontIndex);
-    void ConfigureSlider(QSlider* slider, QWidget *pObj);
-    void SaveConfig();
-
-private:
-    int                 m_fontSize = -1;
-    QWidget             *m_qwidget;
-    QSlider             *m_slider;
-    QList<int>          m_fontSizeList;
-
-    int GetPointSize();
-    QString GetConfigName();
-
+    static double changeFontSize(double change);
+    static const char* GetConfigName();
 };
 
 #endif // CCFONTSIZE_H

@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ CConnectionsTree::CConnectionsTree()
 {
     PrepareTableCaptionString();
     PrepareTableProtocolString();
-    PrepareTableStateString();
 }
 
 CConnectionsTree::~CConnectionsTree()
@@ -42,57 +41,32 @@ CConnectionsTree::~CConnectionsTree()
 
 void CConnectionsTree::PrepareTableCaptionString()
 {
-    //                                                              caption                                             captionSample                   captionToolTip
-    m_caption.insert(CDataSource::COLUMN_DATA_PROTOCOL,        TableHeaderCaption(QObject::tr("Protocol"),         QObject::tr("tcp6"),            QObject::tr("Protocol")));
-    m_caption.insert(CDataSource::COLUMN_DATA_LOCALHOST,       TableHeaderCaption(QObject::tr("Local Host"),       QObject::tr("Local Host"),      QObject::tr("Local Host")));
-    m_caption.insert(CDataSource::COLUMN_DATA_LOCALADDRESS,    TableHeaderCaption(QObject::tr("Local Address"),    QObject::tr("255.255.255.255"), QObject::tr("Local Address")));
-    m_caption.insert(CDataSource::COLUMN_DATA_LOCALPORT,       TableHeaderCaption(QObject::tr("Local Port"),       QObject::tr("65535"),           QObject::tr("Local Port")));
-    m_caption.insert(CDataSource::COLUMN_DATA_STATE,           TableHeaderCaption(QObject::tr("State"),            QObject::tr("ESTABLISHED"),     QObject::tr("State")));
-    m_caption.insert(CDataSource::COLUMN_DATA_REMOTEHOST,      TableHeaderCaption(QObject::tr("Remote Host"),      QObject::tr("Remote Host"),     QObject::tr("Remote Host")));
-    m_caption.insert(CDataSource::COLUMN_DATA_REMOTEADDRESS,   TableHeaderCaption(QObject::tr("Remote Address"),   QObject::tr("255.255.255.255"), QObject::tr("Remote Address")));
-    m_caption.insert(CDataSource::COLUMN_DATA_REMOTEPORT,      TableHeaderCaption(QObject::tr("Remote Port"),      QObject::tr("65535"),           QObject::tr("Remote Port")));
-    m_caption.insert(CDataSource::COLUMN_DATA_UID,             TableHeaderCaption(QObject::tr("User"),             QObject::tr("0000000"),         QObject::tr("User")));
-    m_caption.insert(CDataSource::COLUMN_DATA_INODE,           TableHeaderCaption(QObject::tr("Inode"),            QObject::tr("0000000"),         QObject::tr("Inode")));
-    m_caption.insert(CDataSource::COLUMN_DATA_TIME,            TableHeaderCaption(QObject::tr("Time"),             QObject::tr("2017-01-01 00:00:00"), QObject::tr("Time")));
-    m_caption.insert(CDataSource::COLUMN_DATA_COMMAND,         TableHeaderCaption(QObject::tr("Command"),          QObject::tr("Command"),         QObject::tr("Command")));
-    m_caption.insert(CDataSource::COLUMN_DATA_DATA,            TableHeaderCaption(QObject::tr("RowId"),            QObject::tr("RowId"),           QObject::tr("RowId")));
+    //                                                              caption                                     captionSample                   captionToolTip
+    m_caption.insert(COLUMN_DATA_PROTOCOL,        TableHeaderCaption(QObject::tr("Protocol"),         QObject::tr("tcp6"),                QObject::tr("Protocol")));
+    m_caption.insert(COLUMN_DATA_LOCALHOST,       TableHeaderCaption(QObject::tr("Local Host"),       QObject::tr("Local Host"),          QObject::tr("Local Host")));
+    m_caption.insert(COLUMN_DATA_LOCALADDRESS,    TableHeaderCaption(QObject::tr("Local Address"),    QObject::tr("255.255.255.255"),     QObject::tr("Local Address")));
+    m_caption.insert(COLUMN_DATA_LOCALPORT,       TableHeaderCaption(QObject::tr("Local Port"),       QObject::tr("65535"),               QObject::tr("Local Port")));
+    m_caption.insert(COLUMN_DATA_STATE,           TableHeaderCaption(QObject::tr("State"),            QObject::tr("ESTABLISHED"),         QObject::tr("State")));
+    m_caption.insert(COLUMN_DATA_REMOTEHOST,      TableHeaderCaption(QObject::tr("Remote Host"),      QObject::tr("Remote Host"),         QObject::tr("Remote Host")));
+    m_caption.insert(COLUMN_DATA_REMOTEADDRESS,   TableHeaderCaption(QObject::tr("Remote Address"),   QObject::tr("255.255.255.255"),     QObject::tr("Remote Address")));
+    m_caption.insert(COLUMN_DATA_REMOTEPORT,      TableHeaderCaption(QObject::tr("Remote Port"),      QObject::tr("65535"),               QObject::tr("Remote Port")));
+    m_caption.insert(COLUMN_DATA_UID,             TableHeaderCaption(QObject::tr("User"),             QObject::tr("0000000"),             QObject::tr("User")));
+    m_caption.insert(COLUMN_DATA_INODE,           TableHeaderCaption(QObject::tr("Inode"),            QObject::tr("0000000"),             QObject::tr("Inode")));
+    m_caption.insert(COLUMN_DATA_TIME,            TableHeaderCaption(QObject::tr("Time"),             QObject::tr("2017-01-01 00:00:00"), QObject::tr("Time")));
+    m_caption.insert(COLUMN_DATA_COMMAND,         TableHeaderCaption(QObject::tr("Process path"),     QObject::tr("Process path"),        QObject::tr("Process path")));
 }
 
 void CConnectionsTree::PrepareTableProtocolString()
 {
-    m_protocol.insert(CDataSource::conn_tcp,    QObject::tr("tcp"));
-    m_protocol.insert(CDataSource::conn_udp,    QObject::tr("udp"));
-    m_protocol.insert(CDataSource::conn_tcp6,   QObject::tr("tcp6"));
-    m_protocol.insert(CDataSource::conn_udp6,   QObject::tr("udp6"));
-    m_protocol.insert(CDataSource::conn_raw,    QObject::tr("raw"));
-    m_protocol.insert(CDataSource::conn_raw6,   QObject::tr("raw6"));
+    m_protocol.insert(conn_tcp,    QObject::tr("tcp"));
+    m_protocol.insert(conn_udp,    QObject::tr("udp"));
+    m_protocol.insert(conn_tcp6,   QObject::tr("tcp6"));
+    m_protocol.insert(conn_udp6,   QObject::tr("udp6"));
+    m_protocol.insert(conn_raw,    QObject::tr("raw"));
+    m_protocol.insert(conn_raw6,   QObject::tr("raw6"));
 }
 
-void CConnectionsTree::PrepareTableStateString()
-{
-    m_state.insert(CDataSource::CONNECTION_TCP_EMPTY,         QObject::tr(""));
-    m_state.insert(CDataSource::CONNECTION_TCP_ESTABLISHED,   QObject::tr("established"));
-    m_state.insert(CDataSource::CONNECTION_TCP_SYN_SENT,      QObject::tr("syn_sent"));
-    m_state.insert(CDataSource::CONNECTION_TCP_SYN_RECV,      QObject::tr("syn_recv"));
-    m_state.insert(CDataSource::CONNECTION_TCP_FIN_WAIT1,     QObject::tr("fin_wait1"));
-    m_state.insert(CDataSource::CONNECTION_TCP_FIN_WAIT2,     QObject::tr("fin_wait2"));
-    m_state.insert(CDataSource::CONNECTION_TCP_TIME_WAIT,     QObject::tr("time_wait"));
-    m_state.insert(CDataSource::CONNECTION_TCP_CLOSE,         QObject::tr("unconnected"));
-    m_state.insert(CDataSource::CONNECTION_TCP_CLOSE_WAIT,    QObject::tr("close_wait"));
-    m_state.insert(CDataSource::CONNECTION_TCP_LAST_ACK,      QObject::tr("last_ack"));
-    m_state.insert(CDataSource::CONNECTION_TCP_LISTEN,        QObject::tr("listen"));
-    m_state.insert(CDataSource::CONNECTION_TCP_CLOSING,       QObject::tr("closing"));
-    m_state.insert(CDataSource::CONNECTION_TCP_CLOSED,        QObject::tr("closed"));
-    m_state.insert(CDataSource::CONNECTION_REMOVED,           QObject::tr("removed"));
-}
-
-QString CConnectionsTree::GetStateString(uint state)
-{
-    auto it= m_state.find((CDataSource::ConnectionTcpState)state);
-    return it == m_state.end() ? QString::number(state) : it.value();
-}
-
-void CConnectionsTree::UpdateData(CDataSource::SocketInfo * dataSource, bool disableCleanup)
+void CConnectionsTree::UpdateData(SocketInfo * dataSource, bool disableCleanup)
 {
 
     char guid[64];
@@ -103,18 +77,17 @@ void CConnectionsTree::UpdateData(CDataSource::SocketInfo * dataSource, bool dis
     if(src == nullptr)
         throw std::runtime_error("Error Update Proxy Data qobject_cast<QStandardItemModel*>(m_pProxyModel->sourceModel())");
 
-    auto start = src->index(0, CDataSource::COLUMN_DATA_DATA);
+    auto start = src->index(0, COLUMN_DATA_STATE);
     auto pParent = src->parent(start);
     auto totalRow = src->rowCount(pParent);
-    auto value = uuid.toString();
     QModelIndex Item;
     for (int rowTmp = 0; rowTmp < totalRow; ++rowTmp)
     {
-        auto idx = src->index(rowTmp, CDataSource::COLUMN_DATA_DATA, pParent);
+        auto idx = src->index(rowTmp, COLUMN_DATA_STATE, pParent);
         if (!idx.isValid())
             continue;
-
-        if (src->data(idx).toString().compare(value, Qt::CaseInsensitive) == 0)
+        auto rowid = src->data(idx, DataTyp::DataTyp_TypId).toUuid();
+        if (rowid == uuid)
         {
             Item = idx;
             break;
@@ -123,51 +96,51 @@ void CConnectionsTree::UpdateData(CDataSource::SocketInfo * dataSource, bool dis
 
     if(!disableCleanup && Item.isValid() && dataSource->deleteItem > 0)
     {
-       src->removeRow(Item.row());
-       return;
+        src->removeRow(Item.row());
+        return;
     }
 
     if(Item.isValid())
     {
-
         auto iRow = Item.row();
         if(dataSource->stateUpdate)
         {
             dataSource->stateUpdate = false;
-            src->setData(src->index(iRow, CDataSource::COLUMN_DATA_STATE), GetStateString(dataSource->state));
+            src->setData(src->index(iRow, COLUMN_DATA_STATE), m_ConnectionStateHelper.getStateName(static_cast<eConnectionTcpState>(dataSource->state)));
+            src->setData(src->index(iRow, COLUMN_DATA_STATE), dataSource->state, DataTyp::DataTyp_TypState);
+            emit src->dataChanged(src->index(iRow, 0), src->index(iRow, src->columnCount() - 1));
         }
 
         if(dataSource->commandUpdate)
         {
             dataSource->commandUpdate = false;
-            src->setData(src->index(iRow, CDataSource::COLUMN_DATA_COMMAND), dataSource->Command);
+            src->setData(src->index(iRow, COLUMN_DATA_COMMAND), dataSource->command);
         }
-
     }
     else
     {
-
         auto iRow = src->rowCount();
         src->insertRows(iRow, 1);
 
         auto tmpTime = QDateTime::currentDateTime().toString("yy-MM-dd hh:mm:ss.zzz");
 
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_PROTOCOL),        m_protocol[dataSource->netType]);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_LOCALHOST),       dataSource->localHost);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_LOCALADDRESS),    dataSource->localAddr);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_LOCALPORT),       dataSource->localPort);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_STATE),           GetStateString(dataSource->state));
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEHOST),      dataSource->remoteHost);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEADDRESS),   dataSource->remoteAddr);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_REMOTEPORT),      dataSource->remotePort);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_UID),             CUserName::GetUserNameString(dataSource->uid, dataSource->inode == 0));
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_INODE),           QString::number(dataSource->inode));
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_TIME),            tmpTime);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_COMMAND),         dataSource->Command);
-        src->setData(src->index(iRow, CDataSource::COLUMN_DATA_DATA),            uuid);
+        src->setData(src->index(iRow, COLUMN_DATA_PROTOCOL),        m_protocol[dataSource->netType]);
+        src->setData(src->index(iRow, COLUMN_DATA_LOCALHOST),       dataSource->localHost);
+        src->setData(src->index(iRow, COLUMN_DATA_LOCALADDRESS),    dataSource->localAddr);
+        src->setData(src->index(iRow, COLUMN_DATA_LOCALPORT),       dataSource->localPort);
+        src->setData(src->index(iRow, COLUMN_DATA_STATE),           m_ConnectionStateHelper.getStateName(static_cast<eConnectionTcpState>(dataSource->state)));
+        src->setData(src->index(iRow, COLUMN_DATA_STATE),           dataSource->state, DataTyp::DataTyp_TypState);
+        src->setData(src->index(iRow, COLUMN_DATA_STATE),           uuid, DataTyp::DataTyp_TypId);
+        src->setData(src->index(iRow, COLUMN_DATA_REMOTEHOST),      dataSource->remoteHost);
+        src->setData(src->index(iRow, COLUMN_DATA_REMOTEADDRESS),   dataSource->remoteAddr);
+        src->setData(src->index(iRow, COLUMN_DATA_REMOTEPORT),      dataSource->remotePort);
+        src->setData(src->index(iRow, COLUMN_DATA_UID),             CUserName::GetUserNameString(dataSource->uid, dataSource->inode == 0));
+        src->setData(src->index(iRow, COLUMN_DATA_INODE),           QString::number(dataSource->inode));
+        src->setData(src->index(iRow, COLUMN_DATA_TIME),            tmpTime);
+        src->setData(src->index(iRow, COLUMN_DATA_COMMAND),         dataSource->command);
 
         dataSource->commandUpdate = false;
-
+        dataSource->stateUpdate = false;
     }
 
 }
@@ -177,21 +150,19 @@ void CConnectionsTree::InitConnectonsTree(QTreeView *connView)
 
     connView->setSelectionMode(QAbstractItemView::SingleSelection);
 
+    auto pStandardModel = new QStandardItemModel(0, m_caption.size(), connView);
     auto pProxyModel = new CCustomProxyModel(connView);
     m_pProxyModel = pProxyModel;
-
-    auto pStandardModel = new QStandardItemModel(0, m_caption.size(), connView);
+    connView->setModel(pProxyModel);
+    pProxyModel->setSourceModel(pStandardModel);
 
     //1) adjust column width
-    QMapIterator<CDataSource::ColumnData, TableHeaderCaption> tmpCaptionName(m_caption);
+    QMapIterator<eColumnData, TableHeaderCaption> tmpCaptionName(m_caption);
     while (tmpCaptionName.hasNext())
     {
         tmpCaptionName.next();
         pStandardModel->setHeaderData(tmpCaptionName.key(), Qt::Horizontal, tmpCaptionName.value().captionSample());
     }
-
-    connView->setModel(pProxyModel);
-    pProxyModel->setSourceModel(pStandardModel);
 
     tmpCaptionName.toFront();
     while (tmpCaptionName.hasNext())
@@ -211,8 +182,6 @@ void CConnectionsTree::InitConnectonsTree(QTreeView *connView)
     }
 
     pProxyModel->setDynamicSortFilter(true);
-
-
 }
 
 void CConnectionsTree::UpdateIncludeFilter(const QString &value)
@@ -220,15 +189,12 @@ void CConnectionsTree::UpdateIncludeFilter(const QString &value)
     m_pProxyModel->setFilterRegExpEx(value);
 }
 
-void CConnectionsTree::SetDataColumnHiden(QTreeView *tree)
-{
-
-    for(auto idx = 0; idx < CDataSource::COLUMN_DATA_DATA; idx++)
-        tree->setColumnHidden(idx, false);
-
-    tree->setColumnHidden(CDataSource::COLUMN_DATA_DATA, true);
-
-}
+//void CConnectionsTree::SetDataColumnHiden(QTreeView *tree)
+//{
+//    for(auto idx = 0; idx < COLUMN_DATA_DATA; idx++)
+//        tree->setColumnHidden(idx, false);
+//    tree->setColumnHidden(COLUMN_DATA_DATA, true);
+//}
 
 void CConnectionsTree::Save(QWidget *parent)
 {
@@ -243,11 +209,11 @@ void CConnectionsTree::Save(QWidget *parent)
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setNameFilters(filters);
 
-    if (dialog.exec() == QDialog::Accepted)
+    if (dialog.exec() == QDialog::Accepted && !dialog.selectedFiles().empty())
     {
 
         auto selectedFilter = dialog.selectedNameFilter();
-        auto fileName = dialog.selectedFiles()[0];
+        auto fileName = dialog.selectedFiles().at(0);
 
         try
         {

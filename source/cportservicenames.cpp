@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,18 +29,18 @@ CPortServiceNames::CPortServiceNames()
     while ( (sentry = getservent()) != nullptr )
     {
         if(std::strcmp(sentry->s_proto,"tcp") == 0)
-            m_PortServiceNamesTcp.insert(std::pair<int, std::string>(ntohs(sentry->s_port), std::string(sentry->s_name)));
+            m_portTcp.insert(std::pair<int, std::string>(ntohl(static_cast<uint32_t>(sentry->s_port)), std::string(sentry->s_name)));
         else if(std::strcmp(sentry->s_proto,"udp") == 0)
-            m_PortServiceNamesUdp.insert(std::pair<int, std::string>(ntohs(sentry->s_port), std::string(sentry->s_name)));
+            m_portUdp.insert(std::pair<int, std::string>(ntohl(static_cast<uint32_t>(sentry->s_port)), std::string(sentry->s_name)));
     }
     endservent();
 
 }
 
-void CPortServiceNames::GetServiceName(int port, char *buff, size_t buffLength, bool IsTcp)
+void CPortServiceNames::getServiceName(int port, char *buff, size_t buffLength, bool IsTcp)
 {
 
-    auto pNames = IsTcp ? &m_PortServiceNamesTcp : &m_PortServiceNamesUdp;
+    auto pNames = IsTcp ? &m_portTcp : &m_portUdp;
 
     auto it = pNames->find(port);
     if (it == pNames->end())

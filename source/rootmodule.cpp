@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,124 +37,117 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-#define TIMEOUT_SERVER_START 5000
-
-CRootModule::CRootModule(__pid_t processId)
-    : m_error("")
-    , m_syncCounter(0)
+CRootModule::CRootModule(__pid_t processId, std::string)
+    : m_syncCounter(0)
     , m_processId(processId)
-    , m_fifoNameSrv("/tmp/TcpViewFifoSrv")
+    , m_fifoNameSrv("/tmp/TcpView_2021")
+    , m_fifoNameSrvRun(m_fifoNameSrv + "_run")
     , m_fifoSrv(-1)
-
+    , m_abort(false)
 {
 
+    int timeout = TIMEOUT_SERVER_START;
+
     auto serverMode = m_processId > 0;//server - child  process with root access
-    if(!serverMode)
+    if (!serverMode)
     {
 
         unlink(m_fifoNameSrv.c_str());
 
-        if(mkfifo(m_fifoNameSrv.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP) == -1)
+        if (mkfifo(m_fifoNameSrv.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) == -1)
         {
-            m_error = "Error fifo ";
-            m_error += m_fifoNameSrv;
+            setAbort();
             return;
         }
 
-        //if ( (m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC|O_NONBLOCK)) <= 0 )
-        if ( (m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC)) <= 0 )
+        if ((m_fifoSrv = open(m_fifoNameSrv.c_str(), O_RDONLY|O_TRUNC|O_NONBLOCK)) <= 0)
         {
-            m_error = "Error open ";
-            m_error += m_fifoNameSrv;
-            return;
+            unlink(m_fifoNameSrv.c_str());
+            setAbort();
         }
-
     }
     else
     {
 
-        auto timeout = TIMEOUT_SERVER_START;
-        while((m_fifoSrv = open(m_fifoNameSrv.c_str(), O_WRONLY|O_TRUNC)) <= 0 && timeout--)
+        unlink(m_fifoNameSrvRun.c_str());
+        if (mkfifo(m_fifoNameSrvRun.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) == -1)
         {
+            setAbort();
+            return;
+        }
+        chmod(m_fifoNameSrvRun.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+
+
+        //        chmod(m_fifoNameSrv.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+
+        while ((m_fifoSrv = open(m_fifoNameSrv.c_str(), O_WRONLY|O_TRUNC)) <= 0)
+        {
+            if(!timeout--)
+                break;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
-        if(timeout <= 0)
-        {
-            m_error = "server error open ";
-            m_error += m_fifoNameSrv;
-        }
-
+        if (m_fifoSrv <= 0)
+            setAbort();
     }
-
 }
 
 CRootModule::~CRootModule()
 {
-
-    if(m_fifoSrv)
-        close(m_fifoSrv);
-
-    auto serverMode = m_processId > 0;//server - child  process with root access
-    if(!serverMode)
-    {
-        unlink(m_fifoNameSrv.c_str());
-    }
-
+    setAbort();
 }
 
-bool CRootModule::RunClient(
+void CRootModule::RunClient(
         std::map<unsigned long long, unsigned int> *pProcInodeList,
         std::map<unsigned int, std::string> *procCommand)
 {
 
-
-    while(true)
+    if (m_fifoSrv <= 0 || isAbort())
     {
+        setAbort();
+        return;
+    }
 
+    while(true && !isAbort())
+    {
         auto retv = ReadFifo(m_fifoSrv, &m_buffer);
-        if(retv <= 0)
-        {
-            return false;
-        }
+        if (retv <= 0)
+            return;
 
-        auto const itemInf = (ItemInfo*)(m_buffer.GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1));
-        if(itemInf->startcode1 != DEF_STARTCODE || itemInf->startcode1 != DEF_STARTCODE)
+        auto const itemInf = reinterpret_cast<ItemInfo*>(m_buffer.GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1));
+        if (itemInf->startcode1 != DEF_STARTCODE || itemInf->startcode1 != DEF_STARTCODE)
         {
-            return false;
+            setAbort();
+            return;
         }
 
         switch (itemInf->command)
         {
-            default:
-            case ItemType_ERROR:
+        case ItemType_ERROR:
+        default:
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        case ItemType_none:
+            continue;
+        case ItemType_end:
+            return;
+        case ItemType_inode:
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                continue;
-            }
-            case ItemType_none:
-            {
-                continue;
-            }
-            case ItemType_end:
-            {
-                return true;
-            }
-            case ItemType_inode:
-            {
-                auto inodePtr = (unsigned int*)(itemInf + 1);
-                for(unsigned int inodeInd = 0; inodeInd < itemInf->dataCount/sizeof(unsigned int); inodeInd++)
+                auto inodePtr = reinterpret_cast<unsigned int*>(itemInf + 1);
+
+                for (unsigned int inodeInd = 0; inodeInd < itemInf->dataCount/sizeof(unsigned int); inodeInd++)
                     pProcInodeList->insert(std::pair<unsigned int, unsigned int>(*inodePtr++, itemInf->procId));
+
                 continue;
             }
-            case ItemType_cmd:
+        case ItemType_cmd:
             {
-                if(itemInf->dataCount > 0 )
+                if (itemInf->dataCount > 0 )
                 {
-                    auto dataPtr = (char*)(itemInf + 1);
+                    auto dataPtr = reinterpret_cast<char*>(itemInf + 1);
 
                     if(itemInf->dataCount > _POSIX_PATH_MAX)
-                       itemInf->dataCount = _POSIX_PATH_MAX;
+                        itemInf->dataCount = _POSIX_PATH_MAX;
 
                     dataPtr[itemInf->dataCount - 1] = 0;
                     procCommand->insert(std::pair<unsigned int, std::string>(itemInf->procId, std::string(dataPtr)));
@@ -163,38 +156,53 @@ bool CRootModule::RunClient(
             }
         }
     }
+}
 
-    return true;
+bool CRootModule::isAbort() const
+{
+    return m_abort;
+}
+
+void CRootModule::setAbort()
+{
+    if (m_fifoSrv)
+    {
+        close(m_fifoSrv);
+        m_fifoSrv = -1;
+    }
+
+//    auto serverMode = m_processId > 0;//server - child  process with root access
+//    if (!serverMode)
+    unlink(m_fifoNameSrv.c_str());
+    unlink(m_fifoNameSrvRun.c_str());
+
+    m_abort = true;
 }
 
 void CRootModule::RunServer()
 {
-
     char bufferPtr[sizeof(ItemInfo)];
-    auto const inf  = (ItemInfo*)(bufferPtr);
+    auto const inf  = reinterpret_cast<ItemInfo*>(bufferPtr);
     inf->dataCount  = 0;
     inf->startcode1 = DEF_STARTCODE;
     inf->startcode2 = DEF_STARTCODE;
 
     inf->procId     = 0;
     auto bActive = true;
-    while(bActive)
+    while (bActive)
     {
-
         inf->command = ItemType_none;
-        if(!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
-        {
+        if (!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
             break;
-        }
 
         struct dirent *ent;
         auto dir = opendir(PROC_PATH);
-        while(( ent = readdir(dir) ))
+        while (( ent = readdir(dir) ))
         {
-            if( (*ent->d_name < '0') || (*ent->d_name> '9') )
-               continue;
+            if ((*ent->d_name < '0') || (*ent->d_name> '9'))
+                continue;
             auto procId = strtoul(ent->d_name, nullptr, 0);
-            if(!LoadProcessInodeList(procId, m_fifoSrv))
+            if (!LoadProcessInodeList(static_cast<unsigned int>(procId), m_fifoSrv))
             {
                 bActive = false;
                 break;
@@ -203,16 +211,16 @@ void CRootModule::RunServer()
 
         closedir(dir);
 
-        if(!bActive)
+        if (!bActive)
             break;
 
         inf->command = ItemType_end;
-        if(!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
-        {
+        if (!WriteFifo(m_fifoSrv, bufferPtr, sizeof(ItemInfo)))
             break;
-        }
 
     } // while(bActive)
+
+    setAbort();
 
 }
 
@@ -225,28 +233,27 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
     snprintf(bufferPtr, bufferSize, PROC_PATH_FD, pid);
 
     auto fddir = opendir (bufferPtr);
-    if ( fddir == nullptr )
+    if (fddir == nullptr)
         return true;
 
-    auto const inf  = (ItemInfo*)(bufferPtr);
+    auto const inf  = reinterpret_cast<ItemInfo*>(bufferPtr);
     inf->procId     = pid;
     inf->command    = ItemType_inode;
     inf->dataCount  = 0;
     inf->startcode1 = DEF_STARTCODE;
     inf->startcode2 = DEF_STARTCODE;
 
-    auto dataptr = (unsigned int*)(inf + 1);
+    auto dataptr = reinterpret_cast<unsigned int*>(inf + 1);
 
     struct dirent *result;
     while ((result = readdir(fddir)) != nullptr)
     {
-
         if (result->d_type != DT_LNK)
             continue;
 
         char pathBuf[_POSIX_PATH_MAX];
         auto retl = snprintf(pathBuf, sizeof(pathBuf), PROC_PATH_FD2, pid, result->d_name);
-        if(retl < 1)
+        if (retl < 1)
             continue;
 
         char tmpBuf[_POSIX_PATH_MAX];
@@ -257,9 +264,9 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
 
         tmpBuf[retlen] = 0x0;
 
-        auto inode = GetSocketFromNameTypeA(tmpBuf, retlen);
+        auto inode = GetSocketFromNameTypeA(tmpBuf, static_cast<size_t>(retlen));
         if ( inode <= 0 )
-             inode = GetSocketFromNameTypeB(tmpBuf, retlen);
+            inode = GetSocketFromNameTypeB(tmpBuf,  static_cast<size_t>(retlen));
 
         if ( inode > 0 )
         {
@@ -280,19 +287,15 @@ bool CRootModule::LoadProcessInodeList(unsigned int pid, int fifoSrv)
 
     closedir(fddir);
 
-    if(inf->dataCount > 0)
+    if (inf->dataCount > 0)
     {
         inf->dataCount *= sizeof(dataptr[0]);
-        if(!WriteFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
-        {
+        if (!WriteFifo(fifoSrv, bufferPtr, sizeof(ItemInfo) + inf->dataCount))
             return false;
-        }
     }
 
-    if(retCount)
-    {
+    if (retCount)
         GetCommandString(pid, fifoSrv);
-    }
 
     return true;
 
@@ -315,7 +318,8 @@ unsigned int CRootModule::GetSocketFromNameTypeA(const char *buf, size_t strLen)
     const char *inodeStr = buf + keyALen;
     char *endP = nullptr;
     errno = 0;
-    unsigned int inodeVal = strtoul(inodeStr, &endP, 0);
+
+    auto inodeVal = static_cast<unsigned int>(strtoul(inodeStr, &endP, 0));
 
     if (endP == (buf+strLen-1) && errno == 0)
         return inodeVal;
@@ -337,7 +341,8 @@ unsigned int CRootModule::GetSocketFromNameTypeB(const char *buf, size_t strLen)
     const char *inodeStr = buf + keyBLen;
     char *endP = nullptr;
     errno = 0;
-    unsigned int inodeVal = strtoul(inodeStr, &endP, 0);
+
+    auto inodeVal = static_cast<unsigned int>(strtoul(inodeStr, &endP, 0));
 
     if (endP == (buf+strLen) && errno == 0)
         return inodeVal;
@@ -354,30 +359,30 @@ void CRootModule::GetCommandString(unsigned int pid, int fifoSrv)
     snprintf(bufferPtr, bufferSize, PROC_PATH_CMD, pid);
 
     auto fd = fopen( bufferPtr, "r" );
-    if (fd == 0)
+    if (fd == nullptr)
         return;
 
-    auto const inf  = (ItemInfo*)(bufferPtr);
+    auto const inf  = reinterpret_cast<ItemInfo*>(bufferPtr);
     inf->procId     = pid;
     inf->command    = ItemType_cmd;
     inf->dataCount  = 0;
     inf->startcode1 = DEF_STARTCODE;
     inf->startcode2 = DEF_STARTCODE;
 
-    auto dataPtr = (unsigned char*)(inf + 1);
+    auto dataPtr = reinterpret_cast<unsigned char*>(inf + 1);
     int c = EOF;
-    while( (c = fgetc(fd)) != EOF && inf->dataCount < (_POSIX_PATH_MAX - 1) )
+    while ((c = fgetc(fd)) != EOF && inf->dataCount < (_POSIX_PATH_MAX - 1))
     {
-        *dataPtr++ = ((char)c == '\0' ||
-                      (char)c == '\t' ||
-                      (char)c == '\n' ||
-                      (char)c == '\r' ) ? ' ' : (char)c;
+        *dataPtr++ = (static_cast<char>(c) == '\0' ||
+                      static_cast<char>(c) == '\t' ||
+                      static_cast<char>(c) == '\n' ||
+                      static_cast<char>(c) == '\r' ) ? ' ' : static_cast<unsigned char>(c);
         inf->dataCount++;
     }
 
     fclose( fd );
 
-    if(inf->dataCount < 1)
+    if (inf->dataCount < 1)
         return;
 
     *dataPtr = '\0';
@@ -389,105 +394,88 @@ void CRootModule::GetCommandString(unsigned int pid, int fifoSrv)
 
 bool CRootModule::WriteFifo(int fifo, const char *pBuffer, size_t size)
 {
-    try
+    while(size > 0)
     {
-        while(size > 0)
+        auto written = write(fifo, pBuffer, size);
+        if (written == static_cast<decltype(written)>(-1))
         {
-            auto written = write(fifo, pBuffer, size);
-            if (written == (ssize_t)-1)
-            {
-                if (errno == EINTR)
-                    continue;
-                return false;
-            }
-            pBuffer += written;
-            size    -= written;
+            if (errno == EINTR)
+                continue;
+            return false;
         }
-        return true;
+        pBuffer += written;
+        size    -= static_cast<decltype(size)>(written);
     }
-    catch(...)
-    {
-        return false;
-    }
+    return true;
 }
 
 int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
 {
     auto bufferPtr  = pBuffer->GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1);
-    auto inf        = (ItemInfo*)bufferPtr;
+    auto inf        = reinterpret_cast<ItemInfo*>(bufferPtr);
     inf->command    = ItemType_ERROR;
     inf->startcode1 = 0;
     inf->startcode2 = 0;
 
-    int readFifoTimeout = 25;//5 sec
+    int readFifoAttempt = 25;
     int output = 0;
-    try
+
+    while (readFifoAttempt && !isAbort())
     {
-        while(readFifoTimeout)
+        auto readRes = read(fifo, bufferPtr + output, sizeof(ItemInfo) - static_cast<uint>(output));
+        if (readRes == static_cast<decltype(readRes)>(-1))
         {
-            auto readRes = read(fifo, bufferPtr + output, sizeof(ItemInfo) - output);
-            if (readRes == (ssize_t)-1)
-            {
-                if (errno == EINTR)
-                    continue;
-                return -1;
-            }
-
-            output += readRes;
-
-            if(output < (int)sizeof(ItemInfo))
-            {
-                if(readRes == 0)
-                {
-                    readFifoTimeout--;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-                }
+            if (!isAbort() && errno == EINTR)
                 continue;
-            }
-
-            if(inf->startcode1 == DEF_STARTCODE && inf->startcode2 == DEF_STARTCODE)
-            {
-                break;
-            }
-
-            memmove(bufferPtr, bufferPtr + 1, output--);
-
+            return -1;
         }
 
-        switch (inf->command)
+        output += readRes;
+
+        if (output < static_cast<decltype(output)>(sizeof(ItemInfo)))
         {
-            case ItemType_cmd:
-            case ItemType_inode:
-               break;
-            default:
-            case ItemType_none:
-            case ItemType_end:
-               return output;
-        }
-
-        if(inf->dataCount > _POSIX_PATH_MAX)
-           inf->dataCount = _POSIX_PATH_MAX;
-
-        auto toread = inf->dataCount;
-        while(toread > 0)
-        {
-            auto readRes = read(fifo, bufferPtr + output, toread);
-            if (readRes == (ssize_t)-1)
+            if(readRes == 0)
             {
-                if (errno == EINTR)
-                    continue;
-                return -1;
+                readFifoAttempt--;
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
             }
-            output += readRes;
-            toread -= readRes;
+            continue;
         }
 
-        return output;
+        if (inf->startcode1 == DEF_STARTCODE && inf->startcode2 == DEF_STARTCODE)
+            break;
+
+        memmove(bufferPtr, bufferPtr + 1, static_cast<uint>(output));
+        output--;
 
     }
-    catch(...)
+
+    switch (inf->command)
     {
-        return -1;
+    case ItemType_cmd:
+    case ItemType_inode:
+        break;
+    default:
+    case ItemType_none:
+    case ItemType_end:
+        return output;
     }
 
+    if(inf->dataCount > _POSIX_PATH_MAX)
+        inf->dataCount = _POSIX_PATH_MAX;
+
+    auto toread = inf->dataCount;
+    while (toread > 0)
+    {
+        auto readRes = read(fifo, bufferPtr + output, toread);
+        if (readRes == static_cast<decltype(readRes)>(-1))
+        {
+            if (errno == EINTR)
+                continue;
+            return -1;
+        }
+        output += readRes;
+        toread -= readRes;
+    }
+    return output;
 }

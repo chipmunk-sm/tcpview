@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ uint8_t *CBuffer::GetBufferPtr(size_t lBufferSize)
     try
     {
 
-        auto pNew = (uint8_t*)malloc(lBufferSize);
+        auto pNew = reinterpret_cast<uint8_t*>(malloc(lBufferSize));
         if(pNew == nullptr)
         {
             m_error = "malloc failed";

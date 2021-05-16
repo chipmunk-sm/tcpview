@@ -2,11 +2,21 @@
 
 Graphical network connections viewer for Linux
 
+## Project status (appveyor)
+
+[![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
+
+## Master branch status (appveyor)
+
+[![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
+
+## Project status (travis-ci)
+
 [![Build Status](https://travis-ci.org/chipmunk-sm/tcpview.svg?branch=master)](https://travis-ci.org/chipmunk-sm/tcpview)
 
-To get the last release version, please use the PPA:
-https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
+### To get the last release version, please use the PPA:
+https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
 ```bash
 $ sudo add-apt-repository ppa:chipmunk.sm/ppa
@@ -17,10 +27,11 @@ $ sudo apt-get install tcpview
 ## Debian packages (.deb)
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa/+packages
 
-
 Home page:
 
 https://github.com/chipmunk-sm/tcpview
+
+![screen](https://user-images.githubusercontent.com/29524958/118386224-7e994e00-b605-11eb-8a24-2feef8a62815.png)
 
 ![screenshot_201708111](https://user-images.githubusercontent.com/29524958/29194415-231f2b9e-7e32-11e7-8c94-8eac6ea0bf98.png)
 
@@ -28,13 +39,13 @@ https://github.com/chipmunk-sm/tcpview
 ## Description
 TcpView For Linux. Touch screen friendly design graphical network connections viewer for Linux.
 ```
-Names – Show command line, name of the process that owns endpoint.
+Show processes – Display the path of the executable process.  (Password required)
 Pause - Stop loading new records
-Record - Do not delete old records.
+Record - Stop delete old records.
 Copy - Copy the data of a row to the clipboard
 Save – Export data to a CSV or XML file
 Whois - Service gives you the ability to find out the registered domain holder.
-Zoom slider - Will help you select appropriate font size.
+*Zoom - ctrl + mouse wheel
 ```
 ## How does it work?
 ### "Base module" 
@@ -112,7 +123,7 @@ Open all editable translations:
 
 ```bash
 $ cd translations
-$ linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+$ linguist language_cs.ts language_de.ts language_es.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
 $ cd ..
 ```
 

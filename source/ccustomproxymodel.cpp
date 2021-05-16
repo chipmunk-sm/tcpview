@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,28 @@
 
 #include "ccustomproxymodel.h"
 
+#include <QColor>
+#include <QDebug>
+#include "datasource.h"
+
 CCustomProxyModel::CCustomProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    updateColorMap();
     m_QRegExp.setCaseSensitivity(Qt::CaseInsensitive);
     m_QRegExp.setPatternSyntax(QRegExp::RegExp);
+}
+
+void CCustomProxyModel::updateColorMap()
+{
+    m_updateColor = true;
+    ConnectionStateHelper m_ConnectionStateHelper;
+    for(auto & item : m_ConnectionStateHelper.getArray())
+    {
+        m_color[item.first].Foreground = item.second.foreground;
+        m_color[item.first].Background = item.second.background;
+    }
+    m_updateColor = false;
 }
 
 void CCustomProxyModel::setFilterRegExpEx(const QString &val)
@@ -36,7 +53,7 @@ bool CCustomProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
     if (filterRegExp().isEmpty())
         return true;
 
-    for(int ind = 0; ind < sourceModel()->columnCount() - 1; ind++)
+    for (int ind = 0; ind < sourceModel()->columnCount() - 1; ind++)
     {
         QModelIndex index = sourceModel()->index(sourceRow, ind, sourceParent);
         if(sourceModel()->data(index).toString().contains(filterRegExp()))
@@ -46,4 +63,25 @@ bool CCustomProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
     return false;
 }
 
+QVariant CCustomProxyModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
 
+    if (role == Qt::ForegroundRole)
+    {
+        auto connectionStateIndex = index.model()->index(index.row(), COLUMN_DATA_STATE, index.parent());
+        auto connectionState = static_cast<eConnectionTcpState>(connectionStateIndex.data(DataTyp::DataTyp_TypState).toInt());
+        if (!m_updateColor)
+            return m_color[connectionState].Foreground;
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        auto connectionStateIndex = index.model()->index(index.row(), COLUMN_DATA_STATE, index.parent());
+        auto connectionState = static_cast<eConnectionTcpState>(connectionStateIndex.data(DataTyp::DataTyp_TypState).toInt());
+        if (!m_updateColor)
+            return m_color[connectionState].Background;
+    }
+
+    return QSortFilterProxyModel::data(index, role);
+}

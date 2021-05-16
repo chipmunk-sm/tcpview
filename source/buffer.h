@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #define CBUFFER_H
 
 #include <stdio.h>
+#include <string>
 #include <cstdint>
 
 #define CSTREAMBUFFER_MAX_100MB 1024 * 1024 * 100
@@ -29,19 +30,16 @@
 class CBuffer
 {
 public:
-   CBuffer();
-   ~CBuffer();
-
-   void Clear();
-
-   uint8_t* GetBufferPtr(size_t lBufferSize);
-   size_t GetBufferSize();
+    CBuffer();
+    ~CBuffer();
+    void Clear();
+    uint8_t* GetBufferPtr(size_t lBufferSize);
+    size_t GetBufferSize();
 
 private:
-   uint8_t* m_pBuffer;
-   size_t m_bufferSize;
-   std::string m_error;
-
+    uint8_t* m_pBuffer;
+    size_t m_bufferSize;
+    std::string m_error;
 };
 
 #endif // CBUFFER_H

@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,10 @@ public:
     QString captionSample() const { return m_captionSample; }
     QString captionToolTip() const { return m_captionToolTip; }
 
-  private:
+private:
     QString m_caption;
     QString m_captionSample;
     QString m_captionToolTip;
-
 };
 
 #endif // TABLEHEADERCAPTION_H

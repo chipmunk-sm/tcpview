@@ -1,25 +1,25 @@
 language: cpp
 
-dist: xenial
-
-matrix:
+jobs:
   include:
-#GCC 8
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
-      env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    - name: "Xenial.16.04"
+      dist: xenial
+      os: linux
+      env: BUILD_FLAG=-qt=qt5
 
-install:
- - sudo apt-get install  qt5-qmake qtbase5-dev uuid-dev
- - eval "${MATRIX_EVAL}"
+    - name: "Bionic.18.04"
+      dist: bionic
+      os: linux
+      env: BUILD_FLAG=-qt=qt5
+
+    - name: "Focal.20.04"
+      dist: focal
+      os: linux
+
+before_install:
+    - sudo apt-get update;
+    - sudo apt-get install -y qtbase5-dev qttools5-dev-tools;
 
 script:
- - qmake  -qt=qt5
- - make -j4
+    - qmake $BUILD_FLAG
+    - make -j$(nproc)

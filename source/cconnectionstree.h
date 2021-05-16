@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,33 +25,24 @@
 #include "datasource.h"
 #include "tableheadercaption.h"
 #include "ccustomproxymodel.h"
+#include "connectionstatehelper.h"
 
 class CConnectionsTree
 {
 public:
     CConnectionsTree();
     ~CConnectionsTree();
-
-
     void InitConnectonsTree(QTreeView *connView);
     void UpdateIncludeFilter(const QString &value);
-    void UpdateData(CDataSource::SocketInfo * dataSource, bool disableCleanup);
-
-
-    void SetDataColumnHiden(QTreeView *tree);
+    void UpdateData(SocketInfo * dataSource, bool disableCleanup);
     void Save(QWidget *parent);
 
-    QString GetStateString(uint state);
-
 private:
-    QMap<CDataSource::ColumnData, TableHeaderCaption>   m_caption;
-    QMap<CDataSource::eNetType, QString>                m_protocol;
-    QMap<CDataSource::ConnectionTcpState, QString>      m_state;
-    CCustomProxyModel                                   *m_pProxyModel;
-
-
+    QMap<eColumnData, TableHeaderCaption>   m_caption;
+    QMap<eNetType, QString>                 m_protocol;
+    CCustomProxyModel                       *m_pProxyModel;
+    ConnectionStateHelper                   m_ConnectionStateHelper;
     void PrepareTableCaptionString();
-    void PrepareTableStateString();
     void PrepareTableProtocolString();
 
 };

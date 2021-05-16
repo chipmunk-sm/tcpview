@@ -3,11 +3,11 @@ Upstream-Name: TcpView For Linux
 Source: https://github.com/chipmunk-sm/tcpview
 
 Files: *
-Copyright: 2017 chipmunk-sm <dannico@linuxmail.org>
+Copyright: 2021 chipmunk-sm <dannico@linuxmail.org>
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2017 chipmunk-sm <dannico@linuxmail.org>
+Copyright: 2021 chipmunk-sm <dannico@linuxmail.org>
 License: GPL-3.0+
 
 License: GPL-3.0+

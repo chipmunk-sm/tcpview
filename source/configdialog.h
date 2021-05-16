@@ -16,36 +16,42 @@
  */
 
 #include "connectionstatehelper.h"
-#include <QSortFilterProxyModel>
-#include <atomic>
 
-#ifndef CCUSTOMPROXYMODEL_H
-#define CCUSTOMPROXYMODEL_H
+#include <QDialog>
+#include <functional>
 
-typedef struct ColorItem
-{
-    QColor Foreground;
-    QColor Background;
-}ColorItem;
+#ifndef CONFIGDIALOG_H
+#define CONFIGDIALOG_H
 
-typedef enum DataTyp{
-    DataTyp_TypId = Qt::UserRole + 50,
-    DataTyp_TypState = Qt::UserRole + 51
-}DataTyp;
+class QLabel;
 
-class CCustomProxyModel : public QSortFilterProxyModel
+namespace Ui {
+    class ConfigDialog;
+}
+
+class ConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CCustomProxyModel(QObject *parent = nullptr);
-    void setFilterRegExpEx(const QString &val);
-    void updateColorMap();
+    explicit ConfigDialog(const std::function<void ()> &callbackUpdate, const std::function<void ()> &callbackClose, QWidget *parent = nullptr);
+    ~ConfigDialog() override;
+
+    void setLabelColor(const QColor &frg, const QColor &bkg, QLabel *pLabel);
+
+public slots:
+    void onClick();
+    void onReset();
+
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const Q_DECL_OVERRIDE;
-    QRegExp m_QRegExp;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
-    std::atomic<bool> m_updateColor = ATOMIC_FLAG_INIT;
-    mutable std::map<eConnectionTcpState, ColorItem> m_color;
+    void wheelEvent(QWheelEvent *event) override;
+
+private:
+    Ui::ConfigDialog* m_ui;
+    std::function<void(void)> m_callbackUpdate;
+    std::function<void(void)> m_callbackClose;
+    ConnectionStateHelper     m_ConnectionStateHelper;
+
+    void tooltipText(const QString &text);
 };
 
-#endif // CCUSTOMPROXYMODEL_H
+#endif // CONFIGDIALOG_H
