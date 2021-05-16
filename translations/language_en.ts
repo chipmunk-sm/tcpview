@@ -144,8 +144,8 @@ tcp\b|udp\b</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../source/clanguage.cpp" line="104"/>
-        <location filename="../source/clanguage.cpp" line="109"/>
+        <location filename="../source/clanguage.cpp" line="108"/>
+        <location filename="../source/clanguage.cpp" line="113"/>
         <source>English</source>
         <translation>English.</translation>
     </message>

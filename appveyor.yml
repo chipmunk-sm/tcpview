@@ -19,7 +19,7 @@ environment:
 
 install:
     - sh: sudo apt-get update
-    - sh: sudo apt-get install -y --no-install-recommends qtbase5-dev qttools5-dev-tools
+    - sh: sudo apt-get install -y qtbase5-dev uuid-dev
   
 build_script:
     - sh: qmake $BUILD_FLAG
