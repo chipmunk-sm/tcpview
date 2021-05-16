@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ void CFileSaveWrapper::Open(const QString fileName, const QString fileType, QWid
     m_pQFile = new QFile(fileName);
     if (!m_pQFile->open(QFile::WriteOnly | QFile::Text))
     {
-        QString mess(MSG_ERR_WRITE_FILE + fileName + "\n" +  m_pQFile->errorString());
+        QString mess(QObject::tr("Error: Cannot write file\n") + fileName + "\n" +  m_pQFile->errorString());
         QMessageBox::critical(m_parent, QObject::tr("Save"), mess, QMessageBox::Ok);
         return;
     }
@@ -80,7 +80,7 @@ void CFileSaveWrapper::Close()
         m_pQFile->close();
         if (m_pQFile->error())
         {
-            QString mess(MSG_ERR_WRITE_FILE + m_pQFile->errorString());
+            QString mess(QObject::tr("Error: Cannot write file\n") + m_pQFile->errorString());
             QMessageBox::critical(m_parent, QObject::tr("Save"), mess, QMessageBox::Ok);
         }
         delete m_pQFile;

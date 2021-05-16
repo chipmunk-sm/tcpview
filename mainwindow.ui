@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>885</width>
     <height>360</height>
    </rect>
   </property>
@@ -52,7 +52,7 @@ word1|word2|word3
 Word Boundaries - \b
 \bWord     - start  with Word
 Word\b     - end with Word
-\bWord\b - whole words only 
+\bWord\b - whole words only
 
 Example. Only UDP and TCP (not TCP6 ot UDP6)
 tcp\b|udp\b</string>
@@ -66,22 +66,22 @@ tcp\b|udp\b</string>
         <enum>QLayout::SetMinimumSize</enum>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="spacing">
-        <number>0</number>
+        <number>5</number>
        </property>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_Pause">
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButton_copyToClipboard">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -89,28 +89,12 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Stops loading records</string>
+          <string>Copy to Clipboard</string>
          </property>
          <property name="text">
-          <string>Pause</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
+          <string>Copy</string>
          </property>
         </widget>
-       </item>
-       <item row="0" column="8">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="pushButton_Record">
@@ -131,38 +115,6 @@ tcp\b|udp\b</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="pushButton_copyToClipboard">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Copy to Clipboard</string>
-         </property>
-         <property name="text">
-          <string>Copy</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="pushButton_SaveToFile">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Save to XML or CVS</string>
-         </property>
-         <property name="text">
-          <string>Save</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QPushButton" name="pushButton_displayNames">
          <property name="sizePolicy">
@@ -172,14 +124,49 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Display program names (Password required)</string>
+          <string>Display the path of the executable process.  (Password required)</string>
          </property>
          <property name="text">
-          <string>Names</string>
+          <string>Show processes</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="5" colspan="3">
+       <item row="0" column="6">
+        <widget class="QPushButton" name="pushButton_Settings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Settings</string>
+         </property>
+         <property name="text">
+          <string>Settings</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_Pause">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Stop reading new records</string>
+         </property>
+         <property name="text">
+          <string>Pause</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
         <widget class="QPushButton" name="pushButton_whois">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -195,8 +182,8 @@ tcp\b|udp\b</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="10">
-        <widget class="QSlider" name="horizontalSlider">
+       <item row="0" column="5">
+        <widget class="QPushButton" name="pushButton_SaveToFile">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -204,20 +191,23 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Zoom</string>
+          <string>Save to XML or CVS</string>
          </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+         <property name="text">
+          <string>Save</string>
          </property>
         </widget>
        </item>
        <item row="0" column="9">
         <widget class="QLabel" name="label_status">
          <property name="text">
-          <string/>
+          <string>&lt;a href=&quot;https://github.com/chipmunk-sm/tcpview&quot;&gt;https://github.com/chipmunk-sm/tcpview&lt;/a&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

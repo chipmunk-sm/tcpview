@@ -1,158 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="48"
-   height="48"
-   id="svg3360"
-   version="1.1"
-   inkscape:version="0.91 r13725"
-   viewBox="0 0 48 48"
-   sodipodi:docname="tcpview.svg">
-  <defs
-     id="defs3362">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient5644">
-      <stop
-         style="stop-color:#ff0000;stop-opacity:1;"
-         offset="0"
-         id="stop5646" />
-      <stop
-         style="stop-color:#ff0000;stop-opacity:0;"
-         offset="1"
-         id="stop5648" />
-    </linearGradient>
-    <linearGradient
-       id="linearGradient5580"
-       osb:paint="gradient">
-      <stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop5582" />
-      <stop
-         style="stop-color:#000000;stop-opacity:0;"
-         offset="1"
-         id="stop5584" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5644"
-       id="linearGradient5650"
-       x1="13.483981"
-       y1="10.872717"
-       x2="34.768284"
-       y2="10.872717"
-       gradientUnits="userSpaceOnUse" />
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5644"
-       id="radialGradient5654"
-       cx="24.126131"
-       cy="10.872717"
-       fx="24.126131"
-       fy="10.872717"
-       r="10.642151"
-       gradientTransform="matrix(1,0,0,0.95140377,0,0.52837303)"
-       gradientUnits="userSpaceOnUse" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="11.313709"
-     inkscape:cx="20.485654"
-     inkscape:cy="23.323066"
-     inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="999"
-     inkscape:window-x="0"
-     inkscape:window-y="44"
-     inkscape:window-maximized="1" />
-  <metadata
-     id="metadata3365">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>chipmunk-sm  dannico@linuxmail.org</dc:title>
-          </cc:Agent>
-        </dc:creator>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer">
-    <rect
-       style="fill:#fffe61;fill-opacity:1"
-       id="rect4138"
-       width="47.949829"
-       height="47.956562"
-       x="0.021710137"
-       y="0.026698399" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:20.85125351px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="5.1312799"
-       y="42.839703"
-       id="text4140"
-       sodipodi:linespacing="125%"
-       transform="scale(0.97997383,1.0204354)"><tspan
-         sodipodi:role="line"
-         id="tspan4142"
-         x="5.1312799"
-         y="42.839703">TCP</tspan></text>
-    <path
-       sodipodi:type="star"
-       style="fill:url(#linearGradient5650);fill-opacity:1;fill-rule:nonzero;stroke:url(#radialGradient5654);stroke-width:1.0004096;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path4144"
-       sodipodi:sides="5"
-       sodipodi:cx="24.130018"
-       sodipodi:cy="11.937554"
-       sodipodi:r1="10.059588"
-       sodipodi:r2="5.0297942"
-       sodipodi:arg1="0.94135405"
-       sodipodi:arg2="1.5696726"
-       inkscape:flatsided="false"
-       inkscape:rounded="0"
-       inkscape:randomized="0"
-       d="M 30.052038,20.069283 24.13567,16.967345 18.22629,20.082572 19.348149,13.497221 14.559294,8.8397237 21.169009,7.8716902 24.118714,1.8779723 27.081883,7.8650457 33.693756,8.8182214 28.91538,13.48647 Z"
-       inkscape:transform-center-x="0.004679532"
-       inkscape:transform-center-y="-0.80089768"
-       transform="matrix(1.338944,0,0,0.83663675,-7.8682267,4.0743044)" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:16.87905884px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#00d900;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="4.1584153"
-       y="14.331515"
-       id="text5656"
-       sodipodi:linespacing="125%"
-       transform="scale(0.67663617,1.4778991)"><tspan
-         sodipodi:role="line"
-         id="tspan5658"
-         x="4.1584153"
-         y="14.331515">((       ))</tspan></text>
-  </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="135.47mm" height="135.47mm" version="1.1" viewBox="0 0 135.47 135.47" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+    <dc:rights>
+     <cc:Agent>
+      <dc:title>Copyright (C) 2021 chipmunk.sm &lt;dannico@linuxmail.org&gt;</dc:title>
+     </cc:Agent>
+    </dc:rights>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g opacity=".999" aria-label="TCP">
+  <path d="m101.79 47.366v16.428h7.438q4.1289 0 6.3838-2.1377 2.2548-2.1377 2.2548-6.0909 0-3.924-2.2548-6.0616-2.2548-2.1377-6.3838-2.1377zm-5.9152-4.861h13.353q7.3501 0 11.098 3.3383 3.7776 3.309 3.7776 9.7221 0 6.4716-3.7776 9.7806-3.7483 3.309-11.098 3.309h-7.438v17.57h-5.9152zm-11.052 3.3676v6.2373q-2.9869-2.7819-6.3838-4.1582-3.3676-1.3763-7.1744-1.3763-7.4965 0-11.479 4.5975-3.9825 4.5682-3.9825 13.236 0 8.6386 3.9825 13.236 3.9825 4.5682 11.479 4.5682 3.8068 0 7.1744-1.3763 3.3969-1.3763 6.3838-4.1582v6.1788q-3.104 2.1084-6.5887 3.1626-3.4554 1.0542-7.3208 1.0542-9.927 0-15.637-6.0616-5.7102-6.0909-5.7102-16.604 0-10.542 5.7102-16.604 5.7102-6.0909 15.637-6.0909 3.924 0 7.3794 1.0542 3.4847 1.0249 6.5302 3.104zm-73.806-3.3676h36.985v4.9782h-15.52v38.742h-5.9445v-38.742h-15.52z" stroke="#fff" stroke-width="6.365" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"/>
+  <path d="m101.79 47.366v16.428h7.438q4.1289 0 6.3838-2.1377 2.2548-2.1377 2.2548-6.0909 0-3.924-2.2548-6.0616-2.2548-2.1377-6.3838-2.1377zm-5.9152-4.861h13.353q7.3501 0 11.098 3.3383 3.7776 3.309 3.7776 9.7221 0 6.4716-3.7776 9.7806-3.7483 3.309-11.098 3.309h-7.438v17.57h-5.9152zm-11.052 3.3676v6.2373q-2.9869-2.7819-6.3838-4.1582-3.3676-1.3763-7.1744-1.3763-7.4965 0-11.479 4.5975-3.9825 4.5682-3.9825 13.236 0 8.6386 3.9825 13.236 3.9825 4.5682 11.479 4.5682 3.8068 0 7.1744-1.3763 3.3969-1.3763 6.3838-4.1582v6.1788q-3.104 2.1084-6.5887 3.1626-3.4554 1.0542-7.3208 1.0542-9.927 0-15.637-6.0616-5.7102-6.0909-5.7102-16.604 0-10.542 5.7102-16.604 5.7102-6.0909 15.637-6.0909 3.924 0 7.3794 1.0542 3.4847 1.0249 6.5302 3.104zm-73.806-3.3676h36.985v4.9782h-15.52v38.742h-5.9445v-38.742h-15.52z" stroke-width=".26458" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal"/>
+ </g>
 </svg>

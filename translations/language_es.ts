@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_TW">
+<TS version="2.1" language="es_ES">
 <context>
     <name>ConfigDialog</name>
     <message>
@@ -48,13 +48,23 @@ Copyright (C) chipmunk-sm&lt;br&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="159"/>
-        <source>Stop reading new records</source>
+        <location filename="../mainwindow.ui" line="92"/>
+        <source>Copy to Clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="162"/>
-        <source>Pause</source>
+        <location filename="../mainwindow.ui" line="95"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="194"/>
+        <source>Save to XML or CVS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="197"/>
+        <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -68,8 +78,23 @@ Copyright (C) chipmunk-sm&lt;br&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="92"/>
-        <source>Copy to Clipboard</source>
+        <location filename="../mainwindow.ui" line="204"/>
+        <source>&lt;a href=&quot;https://github.com/chipmunk-sm/tcpview&quot;&gt;https://github.com/chipmunk-sm/tcpview&lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="178"/>
+        <source>WHOIS - Lookup service to search for the domain name registration information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="181"/>
+        <source>whois</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="159"/>
+        <source>Stop reading new records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -87,33 +112,6 @@ tcp\b|udp\b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="95"/>
-        <source>Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="143"/>
-        <location filename="../mainwindow.ui" line="146"/>
-        <location filename="../mainwindow.cpp" line="185"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="194"/>
-        <source>Save to XML or CVS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="197"/>
-        <source>Save</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="204"/>
-        <source>&lt;a href=&quot;https://github.com/chipmunk-sm/tcpview&quot;&gt;https://github.com/chipmunk-sm/tcpview&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.ui" line="127"/>
         <source>Display the path of the executable process.  (Password required)</source>
         <translation type="unfinished"></translation>
@@ -124,13 +122,15 @@ tcp\b|udp\b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="178"/>
-        <source>WHOIS - Lookup service to search for the domain name registration information</source>
+        <location filename="../mainwindow.ui" line="143"/>
+        <location filename="../mainwindow.ui" line="146"/>
+        <location filename="../mainwindow.cpp" line="185"/>
+        <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="181"/>
-        <source>whois</source>
+        <location filename="../mainwindow.ui" line="162"/>
+        <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -142,18 +142,10 @@ tcp\b|udp\b</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainwindow.cpp" line="433"/>
-        <source>Cannot start module, because 
-%1
- is missing or execution access is denied.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="434"/>
-        <location filename="../mainwindow.cpp" line="484"/>
-        <location filename="../mainwindow.cpp" line="490"/>
-        <source>Run as root</source>
-        <translation type="unfinished"></translation>
+        <location filename="../mainwindow.cpp" line="158"/>
+        <location filename="../source/cconnectionstree.cpp" line="251"/>
+        <source>Unexpected exception</source>
+        <translation>Excepción inesperada</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="165"/>
@@ -176,6 +168,20 @@ sudo apt install whois</source>
     <message>
         <location filename="../mainwindow.cpp" line="387"/>
         <source>Copy row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="433"/>
+        <source>Cannot start module, because 
+%1
+ is missing or execution access is denied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="434"/>
+        <location filename="../mainwindow.cpp" line="484"/>
+        <location filename="../mainwindow.cpp" line="490"/>
+        <source>Run as root</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -391,12 +397,6 @@ sudo apt install whois</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="158"/>
-        <location filename="../source/cconnectionstree.cpp" line="251"/>
-        <source>Unexpected exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../source/cfilesavewrapper.cpp" line="43"/>
         <location filename="../source/cfilesavewrapper.cpp" line="83"/>
         <source>Error: Cannot write file
@@ -407,7 +407,7 @@ sudo apt install whois</source>
         <location filename="../source/clanguage.cpp" line="104"/>
         <location filename="../source/clanguage.cpp" line="109"/>
         <source>English</source>
-        <translation>中文 (繁體)</translation>
+        <translation>España</translation>
     </message>
 </context>
 </TS>

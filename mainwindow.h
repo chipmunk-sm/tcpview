@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,22 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProcess>
+#include <QApplication>
+
 #include <stdio.h>
 #include <cstdint>
 #include <iostream>
-#include <QProcess>
+
 #include "source/cconnectionstree.h"
 #include "source/ccfontsize.h"
-#include "source/updatethread.h"
 #include "source/clanguage.h"
 
-#define DEFCFG_MAINWINDOWGEOM  "base/MainWindowGeometry"
+#define MAIN_WINDOW_LAYOUT  "base/MAIN_WINDOW_LAYOUT"
 #define DEFCFG_CONNECTIONTABLE "base/TableHeaderState"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -41,11 +43,10 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
 protected:
-    void closeEvent(QCloseEvent *event);
-    void showEvent( QShowEvent* event );
+    void wheelEvent(QWheelEvent *e) override;
 
 private slots:
     void on_pushButton_displayNames_clicked();
@@ -54,34 +55,36 @@ private slots:
     void on_pushButton_copyToClipboard_clicked();
     void on_pushButton_SaveToFile_clicked();
     void on_pushButton_whois_clicked();
+    void on_pushButton_Settings_clicked();
     void on_lineEdit_include_textChanged(const QString &arg1);
-    void on_horizontalSlider_valueChanged(int value);
-    void updateGui();
-    void currentSelectionChanged(const QModelIndex current, const QModelIndex previous);
     void on_treeView_connection_customContextMenuRequested(const QPoint &pos);
+    void updateGui();
+    void onCurrentSelectionChanged(const QModelIndex current, const QModelIndex previous);
 
 signals:
     void callUpdateGui();
 
 private:
-
     Ui::MainWindow  *ui;
     CConnectionsTree m_cconnectionstree;
     CCFontSize       m_ccfontsize;
-    CUpdateThread    m_NetData;
     bool             m_captureEnable;
     QString          m_whoisText;
     QString          m_RowText;
     QString          m_ClipBoardString;
     int              m_visibleItems;
     int              m_totalItems;
+    QFont            m_deffont = QApplication::font();
 
-    void SaveAppState();
-    void ShowWhois(QString rowText, QString whoisText);
     void ShowInfoDialog(QString title, QString dialogText, bool readonly);
-    const QString GetAuthGuiName();
+    bool GetAuthGuiName(QString &command, QStringList &cmdArgs);
     QString CutLongText(const QString &sourceText, int maxLength);
     void UpdateStatusText();
+
+    void tooltipText(const QString & text);
+
+    void UpdateConfig();
+    void CloseConfig();
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,154 +19,256 @@
 #include <unistd.h>
 #include <spawn.h>
 #include <sys/wait.h>
-#include <QMessageBox>
 #include "defined.h"
 
-CDataSource::CDataSource()
-    : m_loadCycles(0)
-    , m_pRootModule(nullptr)
-    , m_RootModuleInvalid(false)
-    , m_errors(0)
-{
-    m_enableRootMod = false;
+//#if __cplusplus > 201103L
+//using namespace std::chrono_literals;
+//#else
+//constexpr std::chrono::milliseconds operator "" ms(unsigned long long x_val)
+//{
+//    return (std::chrono::milliseconds(x_val));
+//}
+//#endif
 
+CDataSource::CDataSource()
+{
     m_eNetTypeList.insert(std::make_pair(conn_tcp,  PROC_NET_TCP));
     m_eNetTypeList.insert(std::make_pair(conn_udp,  PROC_NET_UDP));
     m_eNetTypeList.insert(std::make_pair(conn_tcp6, PROC_NET_TCP6));
     m_eNetTypeList.insert(std::make_pair(conn_udp6, PROC_NET_UDP6));
     m_eNetTypeList.insert(std::make_pair(conn_raw,  PROC_NET_RAW));
     m_eNetTypeList.insert(std::make_pair(conn_raw6, PROC_NET_RAW6));
-
 }
 
 CDataSource::~CDataSource()
 {
-   DeleteRootLoader();
+
+    if (m_rootModule)
+        m_rootModule->setAbort();
+
+    m_threadStop = true;
+
+    int32_t timeout = 3000;
+    while (!m_threadExit && timeout--)
+    {
+        //std::this_thread::yield();
+        if(!m_threadExit)
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+
+    m_rootModule = nullptr;
+
 }
 
-void CDataSource::DeleteRootLoader()
+void CDataSource::Init(const std::function<void ()> &callbackUpdate)
 {
-    if(!m_pRootModule)
+
+     m_callbackUpdate = callbackUpdate;
+
+    if(!m_threadExit)
         return;
 
-    m_RootModuleInvalid = false;
-    m_enableRootMod = false;
+    m_threadExit = false;
 
-    auto tmp = m_pRootModule;
-    m_pRootModule = nullptr;
-    delete tmp;
+    auto threadBase = [](CDataSource* pThis)
+    {
+
+        try
+        {
+            pThis->m_threadStop = false;
+            pThis->ThreadMain();
+        }
+        catch(const std::exception &e)
+        {
+            //qFatal("CDataSource: %s", e.what());
+        }
+        catch(...)
+        {
+            //qFatal("CDataSource: Unexpected exception");
+        }
+
+        //qInfo("Shutdown CDataSource thread");
+
+        pThis->m_threadStop = true;
+        pThis->m_threadExit = true;
+
+    };
+    (std::thread(threadBase, this)).detach();
 }
 
-bool CDataSource::InitRootLoader()
+void CDataSource::setAbort()
 {
+    if (m_rootModule)
+        m_rootModule->setAbort();
 
-   if(m_pRootModule)
-       return false;
+    m_threadStop = true;
+}
 
-    auto tmpptr = new CRootModule(-1);
-    if(tmpptr->m_error.length() > 1)
+void CDataSource::ThreadMain()
+{
+    while (!m_threadStop) {
+        m_updateInProgress = true;
+        UpdateTable();
+        m_updateInProgress = false;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
+#ifdef USECONSTFUNCTION
+
+bool CDataSource::pauseUpdate() const
+{
+    while(m_updateInProgress && !m_pauseUpdate && !m_threadStop)
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    return m_pauseUpdate;
+}
+
+void CDataSource::setPauseUpdate(bool pauseUpdate)
+{
+    while(m_updateInProgress && !m_pauseUpdate && !m_threadStop)
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    m_pauseUpdate = pauseUpdate;
+}
+
+#else
+
+bool CDataSource::pauseUpdate()
+{
+    const std::lock_guard<std::mutex> guard(m_run_update);
+    return m_pauseUpdate;
+}
+
+void CDataSource::setPauseUpdate(bool pauseUpdate)
+{
+    const std::lock_guard<std::mutex> guard(m_run_update);
+    m_pauseUpdate = pauseUpdate;
+}
+
+#endif
+
+int CDataSource::timeoutSec() const
+{
+    return m_removeRecordTimeoutSec;
+}
+
+void CDataSource::setTimeoutSec(int timeoutSec)
+{
+    m_removeRecordTimeoutSec = timeoutSec;
+}
+
+bool CDataSource::InitRootLoader(std::string name)
+{
+    if(m_rootModule)
+        return true;
+
+    auto pause = pauseUpdate();
+    setPauseUpdate(true);
+
+    std::shared_ptr<CRootModule> tmp_ptr = std::make_shared<CRootModule>(-1, name);
+    if(tmp_ptr->isAbort())
     {
-        std::cout << "CRootModule failed. " << tmpptr->m_error << std::endl;
-        delete tmpptr;
+        setPauseUpdate(pause);
         return false;
     }
 
-    m_pRootModule = tmpptr;
-    m_enableRootMod = true;
+    m_rootModule = tmp_ptr;
+    setPauseUpdate(pause);
+    return true;
+}
 
-    return m_enableRootMod;
+bool CDataSource::rootLoaderActive() {
+    return m_rootModule != nullptr;
+}
+
+void CDataSource::shutdownRootModule() {
+    if (m_rootModule) {
+        m_rootModule->setAbort();
+    }
 }
 
 void CDataSource::UpdateTable()
 {
 
-    m_loadCycles++;
+    if(m_pauseUpdate || m_connectionsListInUse)
+        return;
+
+#ifdef USECONSTFUNCTION
+
+#else
+    const std::lock_guard<std::mutex> guard(m_run_update);
+#endif
+
+
+    time_t nowtime = time(nullptr);
 
     /* load socket connections */
     for (const auto& it : m_eNetTypeList)
-         LoadConnections(it.first,
-                        it.second.c_str(),
-                        &m_socketList,
-                        &m_CPortServiceNames,
-                        m_loadCycles);
-
+        LoadConnections(it.first, it.second.c_str(), &m_socketList, &m_portServiceNames, nowtime);
 
     std::map<unsigned long long, unsigned int> procInodeList;
     std::map<unsigned int, std::string> procCommand;
-    bool chekCmdUpdate = false;
 
-    if(m_enableRootMod && m_pRootModule)
+    if (m_rootModule)
     {
-        auto retv = m_pRootModule->RunClient(&procInodeList, &procCommand);
-        if(retv)
-        {
-            chekCmdUpdate = true;
-        }
-        else
-        {
-            m_RootModuleInvalid = true;
-            if(m_errors++ == 0)
-                QMessageBox::critical(nullptr, "Datasource", "Failed to load data from RootModule", QMessageBox::Ok);
-        }
+        m_rootModule->RunClient(&procInodeList, &procCommand);
+        if (m_rootModule->isAbort())
+            m_rootModule = nullptr;
     }
 
+    int  update = 0;
     for (auto it = m_socketList.begin(); it != m_socketList.end(); it++)
     {
-        const int loadCommandTimeout = 6;
 
         DomainNamesResolver(it->second);
 
         SocketInfo *sinf = &it->second;
 
         /* set cleanup flag for old entries in socketList */
-        if (sinf->loadCycles != m_loadCycles)
+        if (nowtime != sinf->last_time)
         {
             sinf->state = CONNECTION_REMOVED;
             sinf->stateUpdate = true;
-            sinf->deleteItem++;
+            auto diff = nowtime - sinf->last_time;
+            if(diff > timeoutSec())
+                sinf->deleteItem++;
         }
 
-        if(!chekCmdUpdate || sinf->deleteItem > loadCommandTimeout)
-            continue;
-
-        if(sinf->Command[0] == 0)
+        if(sinf->command[0] == 0 && procCommand.size())
         {
-            if(LoadCmd( sinf->inode, &procCommand, &procInodeList,
-                            sinf->Command, sizeof(SocketInfo::Command)))
+            if(LoadCmd( sinf->inode, &procCommand, &procInodeList, sinf->command, sizeof(SocketInfo::command)))
                 sinf->commandUpdate = true;
         }
+
+        if(sinf->stateUpdate || sinf->commandUpdate)
+            update++;
     }
 
-}
+    if(update)
+    {
+        m_connectionsListInUse = true;
+        m_callbackUpdate();
+    }
 
-bool CDataSource::IsRootLoaderValid()
-{
-    return !m_RootModuleInvalid;
 }
 
 bool CDataSource::LoadCmd(unsigned long long inode,
-                              std::map<unsigned int, std::string> *procCommand,
-                              std::map<unsigned long long, unsigned int> *procInodeList,
-                              char * pBuff,
-                              size_t bufferLen)
+                          std::map<unsigned int, std::string> *procCommand,
+                          std::map<unsigned long long, unsigned int> *procInodeList,
+                          char * pBuff,
+                          size_t bufferLen)
 {
     auto it = procInodeList->find(inode);
-    if (it != procInodeList->end())
-    {
-        auto pid = it->second;
-        auto comm = procCommand->find(pid);
-        if ( comm != procCommand->end() )
-        {
-            snprintf(pBuff, bufferLen, "(%u) %s", pid, comm->second.c_str());
-            return true;
-        }
-        else
-        {
-            snprintf(pBuff, bufferLen, "(%u)", pid);
-            return true;
-        }
-    }
-    return false;
+    if (it == procInodeList->end())
+        return false;
+
+    auto pid = it->second;
+    auto comm = procCommand->find(pid);
+    if ( comm != procCommand->end() )
+        snprintf(pBuff, bufferLen, "(%u) %s", pid, comm->second.c_str());
+    else
+        snprintf(pBuff, bufferLen, "(%u)", pid);
+
+    return true;
 }
 
 void CDataSource::DomainNamesResolver(SocketInfo &socket_info)
@@ -178,26 +280,26 @@ void CDataSource::DomainNamesResolver(SocketInfo &socket_info)
     if (socket_info.netType == conn_tcp6 || socket_info.netType == conn_udp6 || socket_info.netType == conn_raw6)
     {
         auto locval = gethostbyaddr(&socket_info.loc6, sizeof(socket_info.loc6), AF_INET6);
-        strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+        strncpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name, NI_MAXHOST);
 
         auto remval = gethostbyaddr(&socket_info.rem6, sizeof(socket_info.rem6), AF_INET6);
-        strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+        strncpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name, NI_MAXHOST);
     }
     else
     {
         auto locval = gethostbyaddr(&socket_info.loc4, sizeof(socket_info.loc4), AF_INET);
-        strcpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name);
+        strncpy(socket_info.localHost,  locval == nullptr ? "*" : locval->h_name, NI_MAXHOST);
 
         auto remval = gethostbyaddr(&socket_info.rem4, sizeof(socket_info.rem4), AF_INET);
-        strcpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name);
+        strncpy(socket_info.remoteHost, remval == nullptr ? "*" : remval->h_name, NI_MAXHOST);
     }
 }
 
 void CDataSource::LoadConnections(eNetType netType,
-                                 const char * commandLine,
-                                 std::unordered_map<std::string, SocketInfo> *pSocketList,
-                                 CPortServiceNames *pCPortServiceNames,
-                                 unsigned int loadCycles)
+                                  const char * commandLine,
+                                  std::unordered_map<std::string, SocketInfo> *pSocketList,
+                                  CPortServiceNames *pCPortServiceNames,
+                                  const time_t nowtime)
 {
 
     FILE *netstat;
@@ -223,83 +325,74 @@ void CDataSource::LoadConnections(eNetType netType,
         char rem_addr[INET6_ADDRSTRLEN*2] = {0};
         int rem_port = 0;
 
-        unsigned int state = -1;
+        unsigned int state = static_cast<unsigned int>(-1);
         unsigned int uid = 0;
         unsigned long long inode = 0;
-//    sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
-//     0: 0100007F:0277 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 374316 1 0000000000000000 100 0 0 10 0
-//     1: 00000000:14EB 00000000:0000 0A 00000000:00000000 00:00000000 00000000   102        0 11821  1 0000000000000000 100 0 0 10 0
-//     2: 0101007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 14305  1 0000000000000000 100 0 0 10 0
-//     3: 3500007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000   102        0 11819  1 0000000000000000 100 0 0 10 0
+        //    sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+        //     0: 0100007F:0277 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 374316 1 0000000000000000 100 0 0 10 0
+        //     1: 00000000:14EB 00000000:0000 0A 00000000:00000000 00:00000000 00000000   102        0 11821  1 0000000000000000 100 0 0 10 0
+        //     2: 0101007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 14305  1 0000000000000000 100 0 0 10 0
+        //     3: 3500007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000   102        0 11819  1 0000000000000000 100 0 0 10 0
 
-//kernel 4.8
-//tcp  0  1        2    3        4    5  6        7        8  9        10          11  12      13
-//     0: 0100007F:0277 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 20167 1 ffff95d359afbc00 100 0 0 10 0
-//    sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+        //kernel 4.8
+        //tcp  0  1        2    3        4    5  6        7        8  9        10          11  12      13
+        //     0: 0100007F:0277 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 20167 1 ffff95d359afbc00 100 0 0 10 0
+        //    sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
 
-//tcp6 0  1                                2    3                                4    5  6        7        8  9        10         11   12      13
-//     0: 00000000000000000000000001000000:0277 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 151787 1 ffff95d35a92b9c0 100 0 0 10 0
-//    sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+        //tcp6 0  1                                2    3                                4    5  6        7        8  9        10         11   12      13
+        //     0: 00000000000000000000000001000000:0277 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 151787 1 ffff95d35a92b9c0 100 0 0 10 0
+        //    sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
         auto num = sscanf(buffer,
-           //0    1              2  3              4  5  6   7   8   9   10  11 12  13
-            "%*d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %*x:%*x %*x:%*x %*x %u %*d %llu\n",
-          /*1         2*/
-            loc_addr, &loc_port,
-          /*3         4*/
-            rem_addr, &rem_port,
-          /*5*/
-            &state,
-          /*11*/
-            &uid,
-          /*13*/
-            &inode);
+                          //0    1              2  3              4  5  6   7   8   9   10  11 12  13
+                          "%*d: %64[0-9A-Fa-f]:%X %64[0-9A-Fa-f]:%X %X %*x:%*x %*x:%*x %*x %u %*d %llu\n",
+                          /*1         2*/
+                          loc_addr, &loc_port,
+                          /*3         4*/
+                          rem_addr, &rem_port,
+                          /*5*/
+                          &state,
+                          /*11*/
+                          &uid,
+                          /*13*/
+                          &inode);
 
         if (num != 7)
         {
-            std::cout << "Parser error for:\t"  << buffer << std::endl;
+            //qWarning("Parser error for:\t %s", buffer);
             continue; // next connection
         }
 
         if (inode == 0)
         {
-            //std::cout << "           sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode" << std::endl;
-            //std::cout << "Zero inode:"  << buffer << std::endl;
+            //qInfo("Zero inode: %s", buffer);
         }
 
         std::snprintf(buffer, sizeof(buffer),"%s%d%s%d%d",loc_addr, loc_port, rem_addr, rem_port, netType);
         std::string keystring(buffer);
 
-        SocketInfo socket_info;
-
         //check for already exist record
         auto search = pSocketList->find(keystring);
         if(search != pSocketList->end())
         {
-
-            search->second.loadCycles = loadCycles;
-
-            if(search->second.state != state)
-            {
-                search->second.state        = state;
-                search->second.stateUpdate  = true;
-            }
-
+            search->second.last_time = nowtime;
+            search->second.stateUpdate = search->second.state != state;
+            search->second.state = state;
             continue; // next connection
-
         }
 
         //process new record
-
+        SocketInfo socket_info;
         memset(&socket_info, 0, sizeof(socket_info));
 
-        socket_info.loadCycles  = loadCycles;
+        socket_info.last_time   = nowtime;
         socket_info.netType     = netType;
         socket_info.uid         = uid;
         socket_info.inode       = inode;
+        socket_info.stateUpdate = true;
         socket_info.state       = state;
 
-        pCPortServiceNames->GetServiceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort), (netType == conn_tcp || netType == conn_tcp6));
-        pCPortServiceNames->GetServiceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort), (netType == conn_tcp || netType == conn_tcp6));
+        pCPortServiceNames->getServiceName(loc_port, socket_info.localPort, sizeof(socket_info.localPort), (netType == conn_tcp || netType == conn_tcp6));
+        pCPortServiceNames->getServiceName(rem_port, socket_info.remotePort, sizeof(socket_info.remotePort), (netType == conn_tcp || netType == conn_tcp6));
 
         if (socket_info.netType == conn_tcp6 || socket_info.netType == conn_udp6 || socket_info.netType == conn_raw6)
         {
@@ -312,10 +405,10 @@ void CDataSource::LoadConnections(eNetType netType,
         else
         {
             sscanf(loc_addr, "%X", &(socket_info.loc4.s_addr));
-            strcpy(socket_info.localAddr,  inet_ntoa(socket_info.loc4));
+            strncpy(socket_info.localAddr,  inet_ntoa(socket_info.loc4), INET6_ADDRSTRLEN);
 
             sscanf(rem_addr, "%X", &(socket_info.rem4.s_addr));
-            strcpy(socket_info.remoteAddr, inet_ntoa(socket_info.rem4));
+            strncpy(socket_info.remoteAddr, inet_ntoa(socket_info.rem4), INET6_ADDRSTRLEN);
         }
 
         uuid_generate(socket_info.uuid);
@@ -327,9 +420,14 @@ void CDataSource::LoadConnections(eNetType netType,
 
 }
 
-std::unordered_map<std::string, CDataSource::SocketInfo> *CDataSource::GetConnectionsList()
+std::unordered_map<std::string, SocketInfo> *CDataSource::GetConnectionsList()
 {
     return &m_socketList;
+}
+
+void CDataSource::FreeConnectionsList()
+{
+    m_connectionsListInUse = false;
 }
 
 

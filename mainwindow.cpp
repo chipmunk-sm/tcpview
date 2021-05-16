@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,20 @@
 #include <QTextEdit>
 #include <QClipboard>
 #include <QMenu>
-#include <thread>
 #include <QStandardItemModel>
+#include <QToolTip>
+#include <QDebug>
 
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 15) || QT_VERSION_MAJOR >= 6)
+#   include <QScreen>
+#else
+#   include <QDesktopWidget>
+#   define OLDVERSION
+#endif
 
+#include <thread>
+
+#include <source/configdialog.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,34 +46,70 @@ MainWindow::MainWindow(QWidget *parent)
     , m_totalItems(0)
 
 {
-
     ui->setupUi(this);
 
-    setWindowIcon(QPixmap(":/data/tcpviewb.svg"));
+    setWindowIcon(QPixmap(":/data/tcpview.svg"));
 
     m_cconnectionstree.InitConnectonsTree(ui->treeView_connection);
 
-    m_ccfontsize.ConfigureSlider(ui->horizontalSlider, this);
+    connect(this, SIGNAL(callUpdateGui()),        this, SLOT(updateGui()));
 
-    connect(this, SIGNAL(callUpdateGui()),   this, SLOT(updateGui()));
-
-    connect(ui->treeView_connection->selectionModel(),
-            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this,
-            SLOT(currentSelectionChanged(const QModelIndex, const QModelIndex)));
+    connect(ui->treeView_connection->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), this, SLOT(onCurrentSelectionChanged(QModelIndex,QModelIndex)));
 
     ui->pushButton_whois->setEnabled(false);
+
+    CDataSource::Instance().Init([&](void)->void{ emit callUpdateGui(); });
+
+    CDataSource::Instance().setPauseUpdate(false);
+
+
+#if defined (Q_OS_ANDROID)
+
+#else
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        const QByteArray restoredGeometry = settings.value(QLatin1String(MAIN_WINDOW_LAYOUT)).toByteArray();
+        if (restoredGeometry.isEmpty() || !restoreGeometry(restoredGeometry))
+        {
+
+#ifdef OLDVERSION
+            const QRect availableGeometry = QApplication::desktop()->availableGeometry();
+#else
+            const QRect availableGeometry = screen()->availableGeometry();
+#endif
+            const QSize size = (availableGeometry.size() * 4) / 5;
+            resize(size);
+            move(availableGeometry.center() - QPoint(size.width(), size.height()) / 2);
+        }
+    }
+#endif
+
+    CCFontSize::changeFontSize(0.0);
+
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    ui->treeView_connection->header()->restoreState(settings.value(DEFCFG_CONNECTIONTABLE, "").toByteArray());
 
 }
 
 MainWindow::~MainWindow()
 {
+    CDataSource::Instance().setAbort();
+#if defined (Q_OS_ANDROID)
+
+#else
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    //    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    settings.setValue(QLatin1String(MAIN_WINDOW_LAYOUT), saveGeometry());
+    settings.setValue(DEFCFG_CONNECTIONTABLE, ui->treeView_connection->header()->saveState());
+#endif
     delete ui;
 }
 
 void MainWindow::on_pushButton_Pause_toggled(bool checked)
 {
-    m_NetData.pauseUpdate(checked);
+    CDataSource::Instance().setPauseUpdate(checked);
 }
 
 void MainWindow::on_pushButton_Record_toggled(bool checked)
@@ -76,24 +122,72 @@ void MainWindow::on_pushButton_copyToClipboard_clicked()
     auto pClp = QApplication::clipboard();
     if( pClp != nullptr )
         pClp->setText(m_ClipBoardString);
+    tooltipText("Copied");
 }
 
 void MainWindow::on_pushButton_SaveToFile_clicked()
 {
-    auto pause = m_NetData.IsPause();
-    m_NetData.pauseUpdate(true);
+    auto pause = CDataSource::Instance().pauseUpdate();
+    CDataSource::Instance().setPauseUpdate(true);
     m_cconnectionstree.Save(ui->treeView_connection);
-    m_NetData.pauseUpdate(pause);
+    CDataSource::Instance().setPauseUpdate(pause);
 }
 
 void MainWindow::on_pushButton_whois_clicked()
 {
-    ShowWhois(m_RowText, m_whoisText);
+    auto rowText = m_RowText;
+    auto whoisText = m_whoisText;
+
+    rowText.replace("\t"," ");
+    rowText += "\n\n";
+
+    QString whoisOutput;
+    QString err;
+    QString commandString = "whois " + whoisText;
+
+    try {
+        QProcess exec;
+        //exec.start(commandString);
+        exec.start("whois", QStringList(whoisText));
+
+        exec.waitForFinished();
+        whoisOutput = QString(exec.readAllStandardOutput());
+    } catch(const std::exception &e) {
+        err = QString(e.what());
+    } catch(...) {
+        err = QObject::tr("Unexpected exception");
+    }
+
+    if(whoisOutput.isEmpty())
+    {
+        if(err.isEmpty())
+        {
+            whoisOutput = QObject::tr("Command 'whois' not found,\n"
+                                      "but can be installed with:\n"
+                                      "sudo apt install whois");
+        }
+        else
+        {
+            whoisOutput = QObject::tr("Failed run 'whois':\n") + err;
+        }
+    }
+
+    rowText += whoisOutput;
+
+    ShowInfoDialog(commandString, rowText, true);
+
 }
 
-void MainWindow::on_horizontalSlider_valueChanged(int value)
+void MainWindow::on_pushButton_Settings_clicked()
 {
-    m_ccfontsize.SetFontSize(value);
+    ui->pushButton_Settings->setEnabled(false);
+    auto cfg = new ConfigDialog( [&](void)->void { UpdateConfig(); }, [&](void)->void { CloseConfig(); } );
+    cfg->setWindowTitle(windowTitle() + " " + tr("Settings"));
+    cfg->setAttribute (Qt::WA_DeleteOnClose);
+    auto flags = cfg->windowFlags() & (~Qt::WindowContextHelpButtonHint);
+    cfg->setWindowFlags(flags);
+    cfg->setWindowIcon(windowIcon());
+    cfg->show();
 }
 
 void MainWindow::on_lineEdit_include_textChanged(const QString &arg1)
@@ -101,89 +195,55 @@ void MainWindow::on_lineEdit_include_textChanged(const QString &arg1)
     m_cconnectionstree.UpdateIncludeFilter(arg1);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::wheelEvent(QWheelEvent *event)
 {
-    m_NetData.DeleteRootLoader();
-    SaveAppState();
-    event->accept();
-}
-
-void MainWindow::SaveAppState()
-{
-    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-    settings.setValue(DEFCFG_MAINWINDOWGEOM, saveGeometry());
-    settings.setValue(DEFCFG_CONNECTIONTABLE, ui->treeView_connection->header()->saveState());
-    m_ccfontsize.SaveConfig();
-}
-
-void MainWindow::showEvent(QShowEvent *event)
-{
-    QMainWindow::showEvent( event );
-
-    try
+    auto bControl = (event->modifiers() & Qt::ControlModifier) == Qt::ControlModifier;
+    if (bControl)
     {
+        const auto numPixels = event->pixelDelta();
+        const auto numDegrees = event->angleDelta();
 
-        if(!m_ccfontsize.Init())
-            return; //avoid reinitialization on show/hide form
-
-        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-        auto testv = settings.value(DEFCFG_MAINWINDOWGEOM);
-
-        if(testv.isValid() && !testv.isNull())
+        if (!numPixels.isNull())
         {
-            restoreGeometry(settings.value(DEFCFG_MAINWINDOWGEOM).toByteArray());
-            ui->treeView_connection->header()->restoreState(settings.value(DEFCFG_CONNECTIONTABLE, "").toByteArray());
+            auto fontSize = CCFontSize::changeFontSize((numPixels.y() < 0.0) ? -1 : 1);
+            tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
+        }
+        else if (!numDegrees.isNull())
+        {
+            auto fontSize = CCFontSize::changeFontSize((numDegrees.y() < 0.0) ? -1 : 1);
+            tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
         }
 
-        m_cconnectionstree.SetDataColumnHiden(ui->treeView_connection);
-
-        m_NetData.setUpdateCallback([&](void)->void{ emit callUpdateGui(); });
-
+        event->accept();
+        return;
     }
-    catch(...)
-    {
-        QMessageBox::critical(this, windowTitle(), QObject::tr("Failed on showEvent"), QMessageBox::Ok);
-    }
+    QMainWindow::wheelEvent(event);
 }
 
 void MainWindow::updateGui()
 {
-
     try
     {
+        auto captureEnable = m_captureEnable;
 
-        auto dataHelper = m_NetData.GetData();
-        if(dataHelper != nullptr)
+        auto connList = CDataSource::Instance().GetConnectionsList();
+        for (auto it = connList->begin(); it != connList->end(); it++ )
         {
-
-            /* start update code here */
-            auto captureEnable = m_captureEnable;
-
-            auto connList = dataHelper->GetConnectionsList();
-            for (auto it = connList->begin(); it != connList->end(); it++ )
-            {
-                m_cconnectionstree.UpdateData(&it->second, captureEnable);
-            }
-
-            if(!captureEnable)
-            {
-                for (auto it = connList->begin(); it != connList->end(); )
-                {
-                    if (it->second.deleteItem > 0)
-                        it = connList->erase(it);
-                    else
-                        ++it;
-                }
-            }
-
-            UpdateStatusText();
-
-
-            m_NetData.EnableUpdateData();
-
-            /* end update code here */
-
+            m_cconnectionstree.UpdateData(&it->second, captureEnable);
         }
+
+        if(!captureEnable)
+        {
+            for (auto it = connList->begin(); it != connList->end(); )
+            {
+                if (it->second.deleteItem > 0)
+                    it = connList->erase(it);
+                else
+                    ++it;
+            }
+        }
+
+        UpdateStatusText();
     }
     catch(std::exception &e)
     {
@@ -195,11 +255,10 @@ void MainWindow::updateGui()
         QMessageBox::critical(this, this->windowTitle(), "Unexpected exception", QMessageBox::Ok);
         exit(-1);
     }
-
-
+    CDataSource::Instance().FreeConnectionsList();
 }
 
-void MainWindow::currentSelectionChanged(const QModelIndex current, const QModelIndex previous)
+void MainWindow::onCurrentSelectionChanged(const QModelIndex current, const QModelIndex previous)
 {
 
     Q_UNUSED(previous)
@@ -226,16 +285,16 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
 
     QString tmpToolTipStr;
 
-    for(auto index = 0; index < CDataSource::COLUMN_DATA_DATA; index++)
+    for(auto index = 0; index < COLUMN_DATA_COUNT; index++)
     {
         auto tmpStr = src->data(src->index(row, index)).toString();
 
         m_RowText += tmpStr + "\t";
         tmpToolTipStr +=  tmpStr + "\n";
 
-        if(index == CDataSource::COLUMN_DATA_REMOTEADDRESS)
+        if(index == COLUMN_DATA_REMOTEADDRESS)
         {
-           auto whoisText = src->data(src->index(row, index)).toString();
+            auto whoisText = src->data(src->index(row, index)).toString();
             if(QString::compare(whoisText, "0.0.0.0", Qt::CaseInsensitive) != 0 &&
                QString::compare(whoisText, "::", Qt::CaseInsensitive) != 0)
             {
@@ -248,7 +307,6 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
                 ui->pushButton_whois->setEnabled(false);
                 ui->pushButton_whois->setText("Whois");
             }
-
         }
     }
 
@@ -256,44 +314,6 @@ void MainWindow::currentSelectionChanged(const QModelIndex current, const QModel
 
     m_ClipBoardString = m_RowText;
 
-}
-
-void MainWindow::ShowWhois(QString rowText, QString whoisText)
-{
-    rowText.replace("\t"," ");
-    rowText += "\n\n";
-
-    QString whoisOutput;
-    QString err;
-    QString commandString = "whois " + whoisText;
-
-    try {
-        QProcess exec;
-        exec.start(commandString);
-        exec.waitForFinished();
-        whoisOutput = QString(exec.readAllStandardOutput());
-    } catch(const std::exception &e) {
-        err = QString(e.what());
-    } catch(...) {
-        err = QObject::tr("Unexpected exception");
-    }
-
-    if(whoisOutput.isEmpty())
-    {
-        if(err.isEmpty())
-        {
-            whoisOutput = QObject::tr("Command 'whois' not found,\n"
-                                      "but can be installed with:\n"
-                                      "sudo apt install whois");
-        }
-        else
-        {
-            whoisOutput = QObject::tr("Failed run 'whois':\n") + err;
-        }
-    }
-
-    rowText += whoisOutput;
-    ShowInfoDialog(commandString, rowText, true);
 }
 
 void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly)
@@ -309,7 +329,7 @@ void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly
     if(readonly)
     {
         infoEditor->setReadOnly(true);
-     }
+    }
 
     QFont newfont("monospace");
     newfont.setStyleHint(QFont::Monospace);
@@ -350,7 +370,7 @@ void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint 
     auto cellText = selCell.data().toString();
     auto rowText = QString();
 
-    for(auto index = 0; index < CDataSource::COLUMN_DATA_DATA; index++)
+    for(auto index = 0; index < COLUMN_DATA_COUNT; index++)
         rowText += src->data(src->index(selCell.row(), index)).toString() + "\t";
 
     src->setDynamicSortFilter(true);
@@ -389,8 +409,7 @@ void MainWindow::on_treeView_connection_customContextMenuRequested(const QPoint 
 
 }
 
-
-const QString MainWindow::GetAuthGuiName()
+bool MainWindow::GetAuthGuiName(QString &command, QStringList &cmdArgs)
 {
     QStringList passwordReqApp;
     passwordReqApp << "/usr/bin/pkexec";
@@ -399,70 +418,80 @@ const QString MainWindow::GetAuthGuiName()
     passwordReqApp << "/usr/bin/kdesu";
     passwordReqApp << "/usr/bin/gksu";
 
-
     foreach(auto tmpv, passwordReqApp)
     {
         auto name = tmpv.split(" ").at(0);
         if( access(name.toLatin1(), X_OK ) == 0 )
         {
-            if(name.startsWith("/usr/bin/pkexec"))
-                return  QString("%1 %2 --rootmodule").arg(tmpv, QCoreApplication::applicationFilePath());
-
-            return QString("%1 \"%2 --rootmodule\"").arg(tmpv, QCoreApplication::applicationFilePath());
+            command = tmpv;
+            cmdArgs << QCoreApplication::applicationFilePath();
+            cmdArgs << "--rootmodule";
+            return true;
         }
     }
 
-    auto errorString = QString(
-                QObject::tr("Cannot start module, because \n%1\n is missing or execution access is denied."))
-                .arg(passwordReqApp.join("\n"));
-
+    auto errorString = QString(QObject::tr("Cannot start module, because \n%1\n is missing or execution access is denied.")).arg(passwordReqApp.join("\n"));
     QMessageBox::critical(this, QObject::tr("Run as root"), errorString, QMessageBox::Ok);
 
-    return "";
-
+    return false;
 }
 
 void MainWindow::on_pushButton_displayNames_clicked()
 {
 
-    auto cmd = GetAuthGuiName();
-    if(cmd.isEmpty())
+    if (CDataSource::Instance().rootLoaderActive()) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(windowTitle());
+        msgBox.setText(QObject::tr("Restart?"));
+        msgBox.setStandardButtons(QMessageBox::Yes);
+        msgBox.addButton(QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        if (msgBox.exec() == QMessageBox::Yes) {
+            //CDataSource::Instance().shutdownRootModule();
+            auto tmp = QCoreApplication::applicationFilePath().toStdString();
+            char arr[PATH_MAX] = {0};
+            strncpy(arr, tmp.c_str(), std::min(sizeof(arr), tmp.size()));
+            char *argv[] = {arr, nullptr};
+            execv(tmp.c_str(), argv);
+            QCoreApplication::quit();
+            return;
+        } else {
+            return;
+            }
+    }
+
+    QString command;
+    QStringList cmdArgs;
+    if(!GetAuthGuiName(command, cmdArgs))
         return;
 
-    std::cout << cmd.toStdString() << std::endl;
 
-    auto pause = m_NetData.IsPause();
-    m_NetData.pauseUpdate(true);
-    setEnabled(false);
-    //setDisabled(true);
+    qInfo("Run root acces module [%s]", command.toStdString().c_str());
+
+    uuid_t uuid;
+    uuid_generate(uuid);
+
+    char guid[65];
+    memset(guid, 0, sizeof(guid));
+    uuid_unparse(uuid, guid);
+    cmdArgs << guid;
 
     auto rootResolver = new QProcess(this);
-    rootResolver->start(cmd);
+    rootResolver->start(command, cmdArgs);
     if(!rootResolver->waitForStarted(-1))
     {
         auto retErrString = rootResolver->errorString();
-        std::cout << "QProcess error: " << retErrString.toStdString() << std::endl;
-
-        m_NetData.pauseUpdate(pause);
-        setEnabled(true);
-        //setDisabled(false);
-        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Failed on start\n") + retErrString + "\n" + cmd, QMessageBox::Ok);
+        QMessageBox::critical(this, QObject::tr("Run as root"), "Failed: \n" + command + "\n" +retErrString, QMessageBox::Ok);
         return;
     }
 
-    if(!m_NetData.InitRootLoader())
+    if(!CDataSource::Instance().InitRootLoader(guid))
     {
-        m_NetData.pauseUpdate(pause);
-        setEnabled(true);
-        //setDisabled(false);
-        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Failed on 'init' client module"), QMessageBox::Ok);
+        QMessageBox::critical(this, QObject::tr("Run as root"), QObject::tr("Root module not found"), QMessageBox::Ok);
         return;
     }
 
-    setEnabled(true);
-    //setDisabled(false);
-    m_NetData.pauseUpdate(pause);
-    ui->pushButton_displayNames->setEnabled(false);
+    ui->pushButton_displayNames->setText(QObject::tr("Restart"));
 
 }
 
@@ -485,11 +514,6 @@ QString MainWindow::CutLongText(const QString &sourceText, int maxLength)
         retText += " " + varTmp;
     }
     return retText;
-
-//    QFontMetrics metrix(this->font());
-//    int cellWidth = this->width();
-//    return  metrix.elidedText(sourceText, Qt::ElideRight, cellWidth);
-
 }
 
 void MainWindow::UpdateStatusText()
@@ -517,10 +541,44 @@ void MainWindow::UpdateStatusText()
     m_visibleItems = visibleItems;
     m_totalItems = totalItems;
 
-    auto labelText = QString(tr("  %1 / %2  ")).arg(visibleItems).arg(totalItems);
+    auto labelText = QString(tr("Visible %1 / total %2")).arg(visibleItems).arg(totalItems);
     ui->label_status->setText(labelText);
+    ui->label_status->setToolTip(labelText);
 
-    auto labelToolTip = QString(tr(" Visible %1 / Total %2 ")).arg(visibleItems).arg(totalItems);
-    ui->label_status->setToolTip(labelToolTip);
+}
 
+void MainWindow::tooltipText(const QString &text)
+{
+    if(width() < 1 || height() < 1)
+        return;
+
+    const auto toolTipText = QString("<center><b>%1</b></center>").arg(text);
+    auto fm = fontMetrics();
+    auto boundingRect = fm.boundingRect(QRect(0,0, width(), height()), Qt::TextWordWrap, toolTipText);
+    boundingRect.setWidth( boundingRect.width());
+    boundingRect.setHeight(boundingRect.height());
+
+    auto xPos =  width() - boundingRect.width()/2;
+    auto yPos =  height() - boundingRect.height()/2;
+
+    if(xPos < 1 || yPos < 1)
+        return;
+
+    xPos /= 2;
+    yPos /= 2;
+
+    QToolTip::showText(this->mapToGlobal(QPoint(xPos, yPos)), toolTipText, this);
+}
+
+void MainWindow::UpdateConfig()
+{
+     auto proxy = qobject_cast<CCustomProxyModel*>(ui->treeView_connection->model());
+     if (proxy != nullptr)
+         proxy->updateColorMap();
+     ui->treeView_connection->viewport()->update();
+}
+
+void MainWindow::CloseConfig()
+{
+    ui->pushButton_Settings->setEnabled(true);
 }

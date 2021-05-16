@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,12 @@
 #include <source/buffer.h>
 
 #define DEF_STARTCODE 0x010101010
+#define TIMEOUT_SERVER_START 1000
 
 class CRootModule
 {
 public:
-    CRootModule(__pid_t processId);
+    CRootModule(__pid_t processId, std::string fifoName);
     ~CRootModule();
 
 private:
@@ -65,26 +66,29 @@ private:
 
 public:
     void RunServer();
-    bool RunClient(std::map<unsigned long long, unsigned int> *pProcInodeList,
+    void RunClient(std::map<unsigned long long, unsigned int> *pProcInodeList,
                    std::map<unsigned int, std::string> *procCommand);
 
-    std::string     m_error;
-    unsigned int    m_syncCounter;
-    __pid_t         m_processId;
+    bool isAbort() const;
+    void setAbort();
 
 private:
+    unsigned int    m_syncCounter;
+    __pid_t         m_processId;
     std::string     m_fifoNameSrv;
+    std::string     m_fifoNameSrvRun;
     int             m_fifoSrv;
     CBuffer         m_buffer;
+    bool            m_abort;
 
-    static bool LoadProcessInodeList(unsigned int pid, int fifoSrv);
-    static unsigned int GetSocketFromNameTypeA(const char *buf, size_t strLen);
-    static unsigned int GetSocketFromNameTypeB(const char *buf, size_t strLen);
+    bool LoadProcessInodeList(unsigned int pid, int fifoSrv);
+    unsigned int GetSocketFromNameTypeA(const char *buf, size_t strLen);
+    unsigned int GetSocketFromNameTypeB(const char *buf, size_t strLen);
 
-    static void GetCommandString(unsigned int pid, int fifoSrv);
+    void GetCommandString(unsigned int pid, int fifoSrv);
 
-    static bool WriteFifo(int fifo, const char *pBuffer, size_t size);
-    static int ReadFifo(int fifo, CBuffer *pBuffer);
+    bool WriteFifo(int fifo, const char *pBuffer, size_t size);
+    int ReadFifo(int fifo, CBuffer *pBuffer);
 
 };
 

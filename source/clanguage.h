@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,9 @@
 #include <QTranslator>
 #include <QDir>
 
-
 class CLanguage
 {
 public:
-
     CLanguage();
     void SetLang(const QString &langName);
     void SetLangByLocale();
@@ -39,11 +37,9 @@ public:
     QString ExtractLanguageName(const QString &fileName);
 
 private:
-
     QStringList            m_langNames;
     QMap<QString, QString> m_langList;
     QTranslator            m_translator;
-
 };
 
 #endif // CLANGUAGE_H

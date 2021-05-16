@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>data/tcpview.svg</file>
-        <file>data/tcpviewb.svg</file>
-        <file>data/tcpvieww.svg</file>
         <file>translations/language_en.qm</file>
         <file>translations/language_ru.qm</file>
         <file>translations/language_zh_TW.qm</file>

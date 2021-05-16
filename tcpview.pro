@@ -1,5 +1,5 @@
 #/* This file is part of "TcpView For Linux" - network connections viewer for Linux
-# * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+# * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
 # *
 # * This program is free software: you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -30,19 +30,22 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     source/buffer.cpp \
+    source/configdialog.cpp \
+    source/connectionstatehelper.cpp \
     source/datasource.cpp \
     source/rootmodule.cpp \
     source/cconnectionstree.cpp \
     source/ccustomproxymodel.cpp \
     source/ccfontsize.cpp \
     source/cfilesavewrapper.cpp \
-    source/updatethread.cpp \
     source/cportservicenames.cpp \
     source/cusername.cpp \
     source/clanguage.cpp
 
 HEADERS  += mainwindow.h \
     source/buffer.h \
+    source/configdialog.h \
+    source/connectionstatehelper.h \
     source/datasource.h \
     source/rootmodule.h \
     source/cconnectionstree.h \
@@ -50,18 +53,16 @@ HEADERS  += mainwindow.h \
     source/ccustomproxymodel.h \
     source/ccfontsize.h \
     source/cfilesavewrapper.h \
-    source/updatethread.h \
     source/cportservicenames.h \
     source/cusername.h \
     source/clanguage.h \
     source/defined.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    configdialog.ui
 
 DISTFILES += \
     data/tcpview.svg \
-    data/tcpviewb.svg \
-    data/tcpvieww.svg \
     data/tcpview.desktop \
     debian/compat \
     debian/control \
@@ -76,21 +77,24 @@ DISTFILES += \
 RESOURCES += \
     tcpview.qrc
 
-
+# $HOME/Qt/5.15.2/gcc_64/bin/lupdate -no-obsolete -verbose -pro tcpview.pro
 # lupdate -no-obsolete -verbose -pro tcpview.pro
 
 # cd translations
 
-# linguist language_en.ts language_cs.ts language_de.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+# $HOME/Qt/5.15.2/gcc_64/bin/linguist language_en.ts language_cs.ts language_de.ts language_es.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
+# language_en.ts language_cs.ts language_de.ts language_es.ts language_fr.ts language_ja.ts language_pl.ts language_ru.ts language_sl.ts language_zh_CN.ts language_zh_TW.ts
 
 # cd ..
 
+# $HOME/Qt/5.15.2/gcc_64/bin/lrelease -removeidentical -compress tcpview.pro
 # lrelease -removeidentical -compress tcpview.pro
 
 TRANSLATIONS += \
     translations/language_en.ts \
     translations/language_cs.ts \
     translations/language_de.ts \
+    translations/language_es.ts \
     translations/language_fr.ts \
     translations/language_ja.ts \
     translations/language_pl.ts \
@@ -98,8 +102,6 @@ TRANSLATIONS += \
     translations/language_sl.ts \
     translations/language_zh_CN.ts \
     translations/language_zh_TW.ts
-
-
 
 #af		Afrikaans
 #sq		Albanian
@@ -110,24 +112,24 @@ TRANSLATIONS += \
 #bg		Bulgarian
 #ca		Catalan
 #hr		Croatian
-#zh_cn		Chinese (Simplified)
-#zh_tw		Chinese (Traditional)
+#zh_cn	Chinese (Simplified)
+#zh_tw	Chinese (Traditional)
 #cs		Czech
 #da		Danish
 #nl		Dutch
 #en		English
-#en_us		English (US)
+#en_us	English (US)
 #et		Estonian
 #fa		Farsi
-#fil		Filipino
+#fil	Filipino
 #fi		Finnish
 #fr		French
-#fr_ca		French (Canada)
+#fr_ca	French (Canada)
 #ga		Gaelic
 #gl		Gallego
 #ka		Georgian
 #de		German
-#de_du		German (Personal)
+#de_du	German (Personal)
 #el		Greek
 #gu		Gujarati
 #he		Hebrew
@@ -145,15 +147,15 @@ TRANSLATIONS += \
 #lv		Latvian
 #ml		Malayalam
 #ms		Malaysian
-#mi_tn		Maori (Ngai Tahu)
+#mi_tn	Maori (Ngai Tahu)
 #mi_wwow	Maori (Waikoto Uni)
 #mn		Mongolian
 #no		Norwegian
-#no_gr		Norwegian (Primary)
+#no_gr	Norwegian (Primary)
 #nn		Nynorsk
 #pl		Polish
 #pt		Portuguese
-#pt_br		Portuguese (Brazil)
+#pt_br	Portuguese (Brazil)
 #ro		Romanian
 #ru		Russian
 #sm		Samoan

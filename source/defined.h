@@ -1,5 +1,5 @@
 /* This file is part of "TcpView For Linux" - network connections viewer for Linux
- * Copyright (C) 2019 chipmunk-sm <dannico@linuxmail.org>
+ * Copyright (C) 2021 chipmunk-sm <dannico@linuxmail.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 #ifndef DEFINED_H
 #define DEFINED_H
 
-
 #define PROC_NET_TCP  "/proc/net/tcp"
 #define PROC_NET_UDP  "/proc/net/udp"
 #define PROC_NET_TCP6 "/proc/net/tcp6"
@@ -30,6 +29,5 @@
 #define PROC_PATH_FD  "/proc/%d/fd"
 #define PROC_PATH_FD2 "/proc/%d/fd/%s"
 #define PROC_PATH_CMD "/proc/%d/cmdline"
-
 
 #endif // DEFINED_H
