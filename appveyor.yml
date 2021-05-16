@@ -2,16 +2,16 @@ version: 3.0.{build}.{branch}
 
 environment:
   matrix:
-  
+
       ##Ubuntu2004 - Ubuntu 20.04 (Focal Fossa)
     - job_name: "ubuntu.20.04"
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
-        
+
       ##Ubuntu1804 - Ubuntu 18.04 (Bionic Beaver)
     - job_name: "Ubuntu.18.04"
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       BUILD_FLAG: -qt=qt5
-        
+
       #Ubuntu1604 - Ubuntu 16.04 (Xenial Xerus)
     - job_name: "Ubuntu.16.04"
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
@@ -20,8 +20,8 @@ environment:
 install:
     - sh: sudo apt-get update
     - sh: sudo apt-get install -y qtbase5-dev uuid-dev
-  
+    #sudo apt-get install -y qtbase5-dev uuid-dev g++ make
+
 build_script:
     - sh: qmake $BUILD_FLAG
     - sh: make -j$(nproc)
-
