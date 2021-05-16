@@ -66,17 +66,17 @@ void ConnectionStateHelper::updatetColor(bool reset)
 {
     initParameters(CONNECTION_TCP_EMPTY      , QColor(0x7F,0x7F,0x7F), QColor(0xFF,0xFF,0xFF), QObject::tr(""), reset);
     initParameters(CONNECTION_TCP_ESTABLISHED, QColor(0x00,0x7F,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("established"), reset);
-    initParameters(CONNECTION_TCP_SYN_SENT   , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("syn_sent"), reset);
+    initParameters(CONNECTION_TCP_SYN_SENT   , QColor(0x00,0xb4,0x57), QColor(0xFF,0xFF,0xFF), QObject::tr("syn_sent"), reset);
     initParameters(CONNECTION_TCP_SYN_RECV   , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("syn_recv"), reset);
     initParameters(CONNECTION_TCP_FIN_WAIT1  , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("fin_wait1"), reset);
     initParameters(CONNECTION_TCP_FIN_WAIT2  , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("fin_wait2"), reset);
-    initParameters(CONNECTION_TCP_TIME_WAIT  , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("time_wait"), reset);
-    initParameters(CONNECTION_TCP_CLOSE      , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("unconnected"), reset);
-    initParameters(CONNECTION_TCP_CLOSE_WAIT , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("close_wait"), reset);
-    initParameters(CONNECTION_TCP_LAST_ACK   , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("last_ack"), reset);
-    initParameters(CONNECTION_TCP_LISTEN     , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("listen"), reset);
-    initParameters(CONNECTION_TCP_CLOSING    , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("closing"), reset);
-    initParameters(CONNECTION_TCP_CLOSED     , QColor(0x00,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("closed"), reset);
+    initParameters(CONNECTION_TCP_TIME_WAIT  , QColor(0x8b,0x00,0x46), QColor(0xFF,0xFF,0xFF), QObject::tr("time_wait"), reset);
+    initParameters(CONNECTION_TCP_CLOSE      , QColor(0x00,0x00,0xff), QColor(0xFF,0xFF,0xFF), QObject::tr("unconnected"), reset);
+    initParameters(CONNECTION_TCP_CLOSE_WAIT , QColor(0xb1,0x00,0xb1), QColor(0xFF,0xFF,0xFF), QObject::tr("close_wait"), reset);
+    initParameters(CONNECTION_TCP_LAST_ACK   , QColor(0x7e,0x7e,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("last_ack"), reset);
+    initParameters(CONNECTION_TCP_LISTEN     , QColor(0x00,0xaa,0x7f), QColor(0xFF,0xFF,0xFF), QObject::tr("listen"), reset);
+    initParameters(CONNECTION_TCP_CLOSING    , QColor(0xaf,0x00,0x58), QColor(0xFF,0xFF,0xFF), QObject::tr("closing"), reset);
+    initParameters(CONNECTION_TCP_CLOSED     , QColor(0xc8,0x00,0x64), QColor(0xFF,0xFF,0xFF), QObject::tr("closed"), reset);
     initParameters(CONNECTION_REMOVED        , QColor(0xFF,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("removed"), reset);
 }
 
