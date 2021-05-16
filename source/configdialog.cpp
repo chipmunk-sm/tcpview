@@ -66,9 +66,65 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         ind++;
     }
 
-    auto resetButton = new QPushButton(tr("Reset color"));
-    m_ui->gridLayout_color->addWidget(resetButton, ind, 0, 1, 3);
-    connect(resetButton, &QPushButton::clicked, this, &ConfigDialog::onReset);
+    // Reset
+    {
+        auto resetButton = new QPushButton(tr("Reset color"));
+        m_ui->gridLayout_color->addWidget(resetButton, ind, 0, 1, 3);
+        connect(resetButton, &QPushButton::clicked, this, &ConfigDialog::onReset);
+    }
+    // separator
+    {
+        ind++;
+        auto line = new QFrame(this);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+    }
+    // Color BW
+    {
+        ind++;
+        auto wbColorButton = new QPushButton(tr("Color - B && W"));
+        m_ui->gridLayout_color->addWidget(wbColorButton, ind, 0, 1, 3);
+        connect(wbColorButton, &QPushButton::clicked, this, &ConfigDialog::onWbColor);
+    }
+    // Color WB
+    {
+        ind++;
+        auto bwColorButton = new QPushButton(tr("Color - W && B"));
+        m_ui->gridLayout_color->addWidget(bwColorButton, ind, 0, 1, 3);
+        connect(bwColorButton, &QPushButton::clicked, this, &ConfigDialog::onBwColor);
+    }
+    // separator
+    {
+        ind++;
+        auto line = new QFrame(this);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+    }
+    // Color viewport background
+    {
+        ind++;
+        auto backgroundButton = new QPushButton(tr("Table - set background color"));
+        m_ui->gridLayout_color->addWidget(backgroundButton, ind, 0, 1, 3);
+        connect(backgroundButton, &QPushButton::clicked, this, &ConfigDialog::onBackgroundColor);
+    }
+    // Color Reset viewport background
+    {
+        ind++;
+        auto backgroundButton = new QPushButton(tr("Table - set default background"));
+        m_ui->gridLayout_color->addWidget(backgroundButton, ind, 0, 1, 3);
+        connect(backgroundButton, &QPushButton::clicked, this, &ConfigDialog::onDefaultBackgroundColor);
+    }
+    // separator
+    {
+        ind++;
+        auto line = new QFrame(this);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+    }
+
 }
 
 ConfigDialog::~ConfigDialog() {
@@ -118,6 +174,22 @@ void ConfigDialog::tooltipText(const QString &text) {
     QToolTip::showText(this->mapToGlobal(QPoint(xPos, yPos)), toolTipText, this);
 }
 
+void ConfigDialog::reloadColor()
+{
+    QLabel *pLabel = nullptr;
+    for (int idx = 0; idx < m_ui->gridLayout_color->count(); idx++) {
+        auto item = m_ui->gridLayout_color->itemAt(idx)->widget();
+        auto propLab = item->property(PROP_CLRLABEL);
+        if (propLab.isValid()) {
+            pLabel = qobject_cast<QLabel *>(item);
+            if (pLabel) {
+                auto id = static_cast<eConnectionTcpState>(propLab.toInt());
+                setLabelColor(m_ConnectionStateHelper.getStateColor(id, true), m_ConnectionStateHelper.getStateColor(id, false), pLabel);
+            }
+        }
+    }
+}
+
 void ConfigDialog::onClick() {
     auto button = qobject_cast<QPushButton *>(QObject::sender());
     if (!button)
@@ -157,19 +229,49 @@ void ConfigDialog::onClick() {
 
 void ConfigDialog::onReset() {
     m_ConnectionStateHelper.updatetColor(true);
-    QLabel *pLabel = nullptr;
-    for (int idx = 0; idx < m_ui->gridLayout_color->count(); idx++) {
-        auto item = m_ui->gridLayout_color->itemAt(idx)->widget();
-        auto propLab = item->property(PROP_CLRLABEL);
-        if (propLab.isValid()) {
-            pLabel = qobject_cast<QLabel *>(item);
-            if (pLabel) {
-                auto id = static_cast<eConnectionTcpState>(propLab.toInt());
-                setLabelColor(m_ConnectionStateHelper.getStateColor(id, true), m_ConnectionStateHelper.getStateColor(id, false), pLabel);
-            }
+    reloadColor();
+    m_callbackUpdate();
+}
+
+void ConfigDialog::onBwColor()
+{
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        settings.setValue("tree/color", "#000000");
+    }
+    m_ConnectionStateHelper.setBwColor();
+    reloadColor();
+    m_callbackUpdate();
+}
+
+void ConfigDialog::onWbColor()
+{
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        settings.setValue("tree/color", "#FFFFFF");
+    }
+    m_ConnectionStateHelper.setWbColor();
+    reloadColor();
+    m_callbackUpdate();
+}
+
+void ConfigDialog::onBackgroundColor() {
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        auto color = QColorDialog::getColor(QColor(settings.value("tree/color").toString()), this);
+        if (color.isValid()) {
+            settings.setValue("tree/color", color.name());
         }
     }
+    m_callbackUpdate();
+}
 
+void ConfigDialog::onDefaultBackgroundColor()
+{
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        settings.setValue("tree/color", "");
+    }
     m_callbackUpdate();
 }
 

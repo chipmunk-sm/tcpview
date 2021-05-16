@@ -91,6 +91,10 @@ MainWindow::MainWindow(QWidget *parent)
     //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
     ui->treeView_connection->header()->restoreState(settings.value(DEFCFG_CONNECTIONTABLE, "").toByteArray());
 
+    auto val = settings.value("tree/color");
+    if (val.isValid()) {
+        setStyleSheet("QTreeView { background: " + val.toString() + "; }");
+    }
 }
 
 MainWindow::~MainWindow()
@@ -575,6 +579,13 @@ void MainWindow::UpdateConfig()
      auto proxy = qobject_cast<CCustomProxyModel*>(ui->treeView_connection->model());
      if (proxy != nullptr)
          proxy->updateColorMap();
+
+     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+     auto val = settings.value("tree/color");
+     if (val.isValid()) {
+         setStyleSheet("QTreeView { background: " + val.toString() + "; }");
+     }
+
      ui->treeView_connection->viewport()->update();
 }
 
