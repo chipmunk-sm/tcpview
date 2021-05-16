@@ -35,9 +35,29 @@ Copyright (C) chipmunk-sm&lt;br&gt;
         <translation>Фон</translation>
     </message>
     <message>
-        <location filename="../source/configdialog.cpp" line="69"/>
+        <location filename="../source/configdialog.cpp" line="71"/>
         <source>Reset color</source>
         <translation>Сбросить цвет</translation>
+    </message>
+    <message>
+        <location filename="../source/configdialog.cpp" line="86"/>
+        <source>Color - B &amp;&amp; W</source>
+        <translation>Цвет - B &amp;&amp; W</translation>
+    </message>
+    <message>
+        <location filename="../source/configdialog.cpp" line="93"/>
+        <source>Color - W &amp;&amp; B</source>
+        <translation>Цвет - W &amp;&amp; B</translation>
+    </message>
+    <message>
+        <location filename="../source/configdialog.cpp" line="108"/>
+        <source>Table - set background color</source>
+        <translation>Таблица - установить цвет фона</translation>
+    </message>
+    <message>
+        <location filename="../source/configdialog.cpp" line="115"/>
+        <source>Table - set default background</source>
+        <translation>Таблица - установить фон по умолчанию</translation>
     </message>
 </context>
 <context>
@@ -95,7 +115,7 @@ tcp\b|udp\b</source>
     <message>
         <location filename="../mainwindow.ui" line="143"/>
         <location filename="../mainwindow.ui" line="146"/>
-        <location filename="../mainwindow.cpp" line="185"/>
+        <location filename="../mainwindow.cpp" line="189"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
@@ -135,7 +155,7 @@ tcp\b|udp\b</source>
         <translation>whois</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="544"/>
+        <location filename="../mainwindow.cpp" line="548"/>
         <source>Visible %1 / total %2</source>
         <translation>Отображено %1 из %2</translation>
     </message>
@@ -149,7 +169,7 @@ tcp\b|udp\b</source>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="433"/>
+        <location filename="../mainwindow.cpp" line="437"/>
         <source>Cannot start module, because 
 %1
  is missing or execution access is denied.</source>
@@ -158,14 +178,14 @@ tcp\b|udp\b</source>
 отсутствуют или доступ запрещен.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="434"/>
-        <location filename="../mainwindow.cpp" line="484"/>
-        <location filename="../mainwindow.cpp" line="490"/>
+        <location filename="../mainwindow.cpp" line="438"/>
+        <location filename="../mainwindow.cpp" line="488"/>
+        <location filename="../mainwindow.cpp" line="494"/>
         <source>Run as root</source>
         <translation>Запуск с правами root</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="165"/>
+        <location filename="../mainwindow.cpp" line="169"/>
         <source>Command &apos;whois&apos; not found,
 but can be installed with:
 sudo apt install whois</source>
@@ -174,34 +194,34 @@ sudo apt install whois</source>
 sudo apt install whois</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="171"/>
+        <location filename="../mainwindow.cpp" line="175"/>
         <source>Failed run &apos;whois&apos;:
 </source>
         <translation>Ошибка при запуске &apos;whois&apos;:
 </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="382"/>
+        <location filename="../mainwindow.cpp" line="386"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="387"/>
+        <location filename="../mainwindow.cpp" line="391"/>
         <source>Copy row</source>
         <translation>Копировать строку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="445"/>
+        <location filename="../mainwindow.cpp" line="449"/>
         <source>Restart?</source>
         <translation>Перезапустить?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="490"/>
+        <location filename="../mainwindow.cpp" line="494"/>
         <source>Root module not found</source>
         <translation>Root модуль не найден</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="494"/>
+        <location filename="../mainwindow.cpp" line="498"/>
         <source>Restart</source>
         <translation>Перезапуск</translation>
     </message>
@@ -403,7 +423,7 @@ sudo apt install whois</translation>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="158"/>
+        <location filename="../mainwindow.cpp" line="162"/>
         <location filename="../source/cconnectionstree.cpp" line="251"/>
         <source>Unexpected exception</source>
         <translation>Неожиданная ошибка</translation>

@@ -41,6 +41,10 @@ public:
 public slots:
     void onClick();
     void onReset();
+    void onBwColor();
+    void onWbColor();
+    void onBackgroundColor();
+    void onDefaultBackgroundColor();
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -52,6 +56,7 @@ private:
     ConnectionStateHelper     m_ConnectionStateHelper;
 
     void tooltipText(const QString &text);
+    void reloadColor();
 };
 
 #endif // CONFIGDIALOG_H

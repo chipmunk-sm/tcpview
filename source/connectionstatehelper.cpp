@@ -80,6 +80,27 @@ void ConnectionStateHelper::updatetColor(bool reset)
     initParameters(CONNECTION_REMOVED        , QColor(0xFF,0x00,0x00), QColor(0xFF,0xFF,0xFF), QObject::tr("removed"), reset);
 }
 
+void ConnectionStateHelper::setBwColor() {
+     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    for (const auto & item : m_state) {
+        settings.setValue(getKeyName(item.first, true), QColor(0xFF,0xFF,0xFF));
+        settings.setValue(getKeyName(item.first, false), QColor(0x00,0x00,0x00));
+        m_state[item.first].foreground = settings.value(getKeyName(item.first, true)).value<QColor>();
+        m_state[item.first].background = settings.value(getKeyName(item.first, false)).value<QColor>();
+    }
+}
+
+void ConnectionStateHelper::setWbColor()
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    for (const auto & item : m_state) {
+        settings.setValue(getKeyName(item.first, true), QColor(0x00,0x00,0x00));
+        settings.setValue(getKeyName(item.first, false), QColor(0xFF,0xFF,0xFF));
+        m_state[item.first].foreground = settings.value(getKeyName(item.first, true)).value<QColor>();
+        m_state[item.first].background = settings.value(getKeyName(item.first, false)).value<QColor>();
+    }
+}
+
 void ConnectionStateHelper::initParameters(eConnectionTcpState id, QColor defColorForeground, QColor defColorBackground, const QString & name, bool reset)
 {
 

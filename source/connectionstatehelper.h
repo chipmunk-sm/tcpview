@@ -42,6 +42,8 @@ public:
     void saveColor(eConnectionTcpState id, const QColor & defColor, bool foreground);
     const std::map<eConnectionTcpState, ConnectionStateItem> getArray() const;
     void updatetColor(bool reset);
+    void setBwColor();
+    void setWbColor();
 private:
     void initParameters(eConnectionTcpState id, QColor defColorForeground, QColor defColorBackground, const QString &name, bool reset);
     QString getKeyName(eConnectionTcpState id, bool foreground);
