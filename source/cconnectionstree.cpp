@@ -213,7 +213,7 @@ void CConnectionsTree::Save(QWidget *parent)
     {
 
         auto selectedFilter = dialog.selectedNameFilter();
-        const auto fileName = dialog.selectedFiles().constFirst();
+        auto fileName = dialog.selectedFiles().at(0);
 
         try
         {

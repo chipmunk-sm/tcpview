@@ -67,7 +67,11 @@ void CLanguage::SetLangByLocale()
     if(SetLangByLocale(localeName))
         return;
     //xx
+#if (QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 15) || QT_VERSION_MAJOR >= 6
     auto list = localeName.split(QRegExp("(_|-)"), Qt::SkipEmptyParts);
+#else
+    auto list = localeName.split(QRegExp("(_|-)"), QString::SkipEmptyParts);
+#endif
     foreach (auto tmp, list)
     {
         if(SetLangByLocale(tmp))

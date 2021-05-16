@@ -10,6 +10,7 @@ environment:
       ##Ubuntu1804 - Ubuntu 18.04 (Bionic Beaver)
     - job_name: "Ubuntu.18.04"
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      BUILD_FLAG: -qt=qt5
         
       #Ubuntu1604 - Ubuntu 16.04 (Xenial Xerus)
     - job_name: "Ubuntu.16.04"

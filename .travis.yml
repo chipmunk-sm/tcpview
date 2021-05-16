@@ -10,6 +10,7 @@ jobs:
     - name: "Bionic.18.04"
       dist: bionic
       os: linux
+      env: BUILD_FLAG=-qt=qt5
 
     - name: "Focal.20.04"
       dist: focal
