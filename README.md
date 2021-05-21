@@ -37,7 +37,7 @@ https://github.com/chipmunk-sm/tcpview
 
 
 ## Description
-TcpView For Linux. Touch screen friendly design graphical network connections viewer for Linux.
+TcpView For Linux. Graphical network connections viewer for Linux.
 ```
 Show processes – Display the path of the executable process.  (Password required)
 Pause - Stop loading new records
