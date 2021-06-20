@@ -169,14 +169,16 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         m_layout_color->addWidget(line, ind, 0, 1, 3);
     }
 
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
+
     auto pObj1 = this;
     pObj1->grabGesture(Qt::PinchGesture);
     //pObj1->grabGesture(Qt::PanGesture);
     //pObj1->grabGesture(Qt::SwipeGesture);
 
-    auto pObj = m_scrollArea_color;//>viewport()
-    //this->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    //m_scrollArea_color->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    auto pObj = m_scrollArea_color;
+    //setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    //setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     QScroller::grabGesture(pObj, QScroller::LeftMouseButtonGesture);
 
@@ -186,6 +188,8 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
     properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
                                QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
     QScroller::scroller(pObj)->setScrollerProperties(properties);
+
+#endif
 
     readGeometry();
 }
