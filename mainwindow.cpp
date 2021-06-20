@@ -69,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent)
     CDataSource::Instance().setPauseUpdate(false);
 
 
-#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
 
     auto pObj1 = this;
     pObj1->grabGesture(Qt::PinchGesture);
@@ -89,8 +88,9 @@ MainWindow::MainWindow(QWidget *parent)
                                QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
     QScroller::scroller(pObj)->setScrollerProperties(properties);
 
-#endif
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
 
+#endif
 
 
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());

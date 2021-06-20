@@ -91,9 +91,6 @@ tcp\b|udp\b</string>
          <property name="mouseTracking">
           <bool>true</bool>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string>WHOIS - Lookup service to search for the domain name registration information</string>
          </property>
@@ -111,9 +108,6 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="tabletTracking">
           <bool>true</bool>
          </property>
          <property name="toolTip">
@@ -138,9 +132,6 @@ tcp\b|udp\b</string>
          <property name="mouseTracking">
           <bool>true</bool>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string>Display the path of the executable process.  (Password required)</string>
          </property>
@@ -158,9 +149,6 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="tabletTracking">
           <bool>true</bool>
          </property>
          <property name="toolTip">
@@ -182,9 +170,6 @@ tcp\b|udp\b</string>
          <property name="mouseTracking">
           <bool>true</bool>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string>Save to XML or CVS</string>
          </property>
@@ -195,9 +180,6 @@ tcp\b|udp\b</string>
        </item>
        <item row="0" column="10">
         <widget class="QLabel" name="label_status">
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
          <property name="text">
           <string>&lt;a href=&quot;https://github.com/chipmunk-sm/tcpview&quot;&gt;https://github.com/chipmunk-sm/tcpview&lt;/a&gt;</string>
          </property>
@@ -218,9 +200,6 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="tabletTracking">
           <bool>true</bool>
          </property>
          <property name="toolTip">
@@ -245,9 +224,6 @@ tcp\b|udp\b</string>
          <property name="mouseTracking">
           <bool>true</bool>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
          <property name="toolTip">
           <string>Settings</string>
          </property>
@@ -265,9 +241,6 @@ tcp\b|udp\b</string>
           </sizepolicy>
          </property>
          <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="tabletTracking">
           <bool>true</bool>
          </property>
          <property name="toolTip">

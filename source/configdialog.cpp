@@ -169,7 +169,6 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         m_layout_color->addWidget(line, ind, 0, 1, 3);
     }
 
-#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
 
     auto pObj1 = this;
     pObj1->grabGesture(Qt::PinchGesture);
@@ -188,6 +187,8 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
     properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
                                QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
     QScroller::scroller(pObj)->setScrollerProperties(properties);
+
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
 
 #endif
 
@@ -331,7 +332,8 @@ void ConfigDialog::onClick() {
 void ConfigDialog::onReset() {
     m_ConnectionStateHelper.updatetColor(true);
     reloadColor();
-    m_callbackUpdate();
+    //m_callbackUpdate();
+    onDefaultBackgroundColor();
 }
 
 void ConfigDialog::onBwColor()
