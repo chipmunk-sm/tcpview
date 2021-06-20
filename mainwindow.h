@@ -37,6 +37,9 @@ namespace Ui {
     class MainWindow;
 }
 
+class QGestureEvent;
+class QPinchGesture;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -46,9 +49,13 @@ public:
     ~MainWindow() override;
 
 protected:
-    void wheelEvent(QWheelEvent *e) override;
+    virtual void wheelEvent(QWheelEvent *e) override;
+    virtual bool event(QEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void closeEvent(QCloseEvent *) override;
 
-private slots:
+  private slots:
     void on_pushButton_displayNames_clicked();
     void on_pushButton_Pause_toggled(bool checked);
     void on_pushButton_Record_toggled(bool checked);
@@ -60,6 +67,7 @@ private slots:
     void on_treeView_connection_customContextMenuRequested(const QPoint &pos);
     void updateGui();
     void onCurrentSelectionChanged(const QModelIndex current, const QModelIndex previous);
+    void on_pushButton_resize_clicked();
 
 signals:
     void callUpdateGui();
@@ -85,6 +93,9 @@ private:
 
     void UpdateConfig();
     void CloseConfig();
+
+    bool gestureEventPinch(QPinchGesture *gesture);
+    void readGeometry();
 };
 
 #endif // MAINWINDOW_H

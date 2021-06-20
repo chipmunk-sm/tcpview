@@ -32,6 +32,7 @@ SOURCES += main.cpp\
     source/buffer.cpp \
     source/configdialog.cpp \
     source/connectionstatehelper.cpp \
+    source/cstylehelperex.cpp \
     source/datasource.cpp \
     source/rootmodule.cpp \
     source/cconnectionstree.cpp \
@@ -46,6 +47,7 @@ HEADERS  += mainwindow.h \
     source/buffer.h \
     source/configdialog.h \
     source/connectionstatehelper.h \
+    source/cstylehelperex.h \
     source/datasource.h \
     source/rootmodule.h \
     source/cconnectionstree.h \
@@ -58,8 +60,7 @@ HEADERS  += mainwindow.h \
     source/clanguage.h \
     source/defined.h
 
-FORMS    += mainwindow.ui \
-    configdialog.ui
+FORMS    += mainwindow.ui
 
 DISTFILES += \
     data/tcpview.svg \
