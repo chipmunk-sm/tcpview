@@ -15,17 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CCFONTSIZE_H
-#define CCFONTSIZE_H
+#ifndef CSTYLEHELPEREX_H
+#define CSTYLEHELPEREX_H
 
 class QWidget;
 
-class CCFontSize
+class CStyleHelperEx
 {
-public:
-    static double changeFontSize(double change, QWidget* pObj);
-private:
-    static const char* GetConfigName();
+  public:
+    static double SetStyle(double size, QWidget *obj);
 };
 
-#endif // CCFONTSIZE_H
+#endif // CSTYLEHELPEREX_H

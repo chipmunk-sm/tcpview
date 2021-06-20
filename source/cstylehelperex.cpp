@@ -15,52 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ccfontsize.h"
-
-#include <QApplication>
-#include <QSettings>
-#include <QFont>
-#include <QWidget>
-
 #include "cstylehelperex.h"
 
-double CCFontSize::changeFontSize(double change, QWidget* pObj)
-{
+#include <QCoreApplication>
+#include <QWidget>
+#include <QSettings>
 
-    auto fontX = QApplication::font();
+double CStyleHelperEx::SetStyle(double size, QWidget *obj) {
 
-    const double pixSize = fontX.pixelSize();
-    const double pointSize = fontX.pointSizeF();
-
-    const double fontSize = pointSize > 0 ? pointSize : pixSize;
 
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-    auto tmpSz = settings.value(GetConfigName(), fontSize).toDouble();
+    auto valColor = settings.value("tree/color");
 
-    tmpSz += change;
+    // QFontMetrics fm(fontX);
 
-    if (tmpSz < 5.0)
-        tmpSz = 5.0;
+    auto valSize = QString::number(size);
+    auto valSize1 = QString::number(size / 4);
 
-    if (tmpSz > 100.0)
-        tmpSz = 100.0;
+    auto style = "QPushButton { icon-size: " + valSize + "px;  padding-left: " + valSize + "px; padding-right: " + valSize + "px; padding-top: " + valSize1 + "px; padding-bottom: " + valSize1 + "px; }"
+                 "QHeaderView::section {   padding-left: " + valSize + "px; padding-right: " + valSize + "px; padding-top: " + valSize1 + "px; padding-bottom: " + valSize1 + "px }";
 
-    settings.setValue(GetConfigName(), tmpSz);
+    if (valColor.isValid()) {
+        style += "QTreeView { background: " + valColor.toString() + "; }";
+    }
 
-    if(pointSize > 0)
-        fontX.setPointSizeF(tmpSz);
-    else
-        fontX.setPixelSize(static_cast<int>(tmpSz));
+    obj->setStyleSheet(style);
 
-    QApplication::setFont(fontX);
-
-    CStyleHelperEx::SetStyle(tmpSz, pObj);
-
-    return tmpSz;
+    return size;
 }
-
-const char *CCFontSize::GetConfigName()
-{
-    return "base/xfontSize";
-}
-

@@ -24,10 +24,10 @@
 #define CONFIGDIALOG_H
 
 class QLabel;
-
-namespace Ui {
-    class ConfigDialog;
-}
+class QGridLayout;
+class QGestureEvent;
+class QScrollArea;
+class QPinchGesture;
 
 class ConfigDialog : public QDialog
 {
@@ -38,7 +38,7 @@ public:
 
     void setLabelColor(const QColor &frg, const QColor &bkg, QLabel *pLabel);
 
-public slots:
+  public slots:
     void onClick();
     void onReset();
     void onBwColor();
@@ -47,16 +47,24 @@ public slots:
     void onDefaultBackgroundColor();
 
 protected:
-    void wheelEvent(QWheelEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
+    virtual void closeEvent(QCloseEvent *event) override;
+    virtual bool event(QEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    Ui::ConfigDialog* m_ui;
+    QGridLayout *m_layout_color;
+    QScrollArea *m_scrollArea_color;
+
     std::function<void(void)> m_callbackUpdate;
     std::function<void(void)> m_callbackClose;
     ConnectionStateHelper     m_ConnectionStateHelper;
 
     void tooltipText(const QString &text);
     void reloadColor();
+    void readGeometry();
+    bool gestureEventPinch(QPinchGesture *gesture);
 };
 
 #endif // CONFIGDIALOG_H

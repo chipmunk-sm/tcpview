@@ -26,6 +26,9 @@
 #include <QStandardItemModel>
 #include <QToolTip>
 #include <QDebug>
+#include <QScroller>
+#include <QGestureEvent>
+#include <QScrollBar>
 
 #if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 15) || QT_VERSION_MAJOR >= 6)
 #   include <QScreen>
@@ -46,13 +49,16 @@ MainWindow::MainWindow(QWidget *parent)
     , m_totalItems(0)
 
 {
+
     ui->setupUi(this);
+
+    CCFontSize::changeFontSize(0.0, this);
 
     setWindowIcon(QPixmap(":/data/tcpview.svg"));
 
     m_cconnectionstree.InitConnectonsTree(ui->treeView_connection);
 
-    connect(this, SIGNAL(callUpdateGui()),        this, SLOT(updateGui()));
+    connect(this, SIGNAL(callUpdateGui()), this, SLOT(updateGui()));
 
     connect(ui->treeView_connection->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), this, SLOT(onCurrentSelectionChanged(QModelIndex,QModelIndex)));
 
@@ -63,38 +69,54 @@ MainWindow::MainWindow(QWidget *parent)
     CDataSource::Instance().setPauseUpdate(false);
 
 
-#if defined (Q_OS_ANDROID)
 
-#else
-    {
-        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-        //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
-        const QByteArray restoredGeometry = settings.value(QLatin1String(MAIN_WINDOW_LAYOUT)).toByteArray();
-        if (restoredGeometry.isEmpty() || !restoreGeometry(restoredGeometry))
-        {
+    auto pObj1 = this;
+    pObj1->grabGesture(Qt::PinchGesture);
+    //pObj1->grabGesture(Qt::PanGesture);
+    //pObj1->grabGesture(Qt::SwipeGesture);
 
-#ifdef OLDVERSION
-            const QRect availableGeometry = QApplication::desktop()->availableGeometry();
-#else
-            const QRect availableGeometry = screen()->availableGeometry();
+    auto pObj = ui->treeView_connection->viewport();
+    ui->treeView_connection->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->treeView_connection->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+    QScroller::grabGesture(pObj, QScroller::LeftMouseButtonGesture);
+
+    QScrollerProperties properties = QScroller::scroller(pObj)->scrollerProperties();
+    properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
+                               QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
+    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
+                               QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
+    QScroller::scroller(pObj)->setScrollerProperties(properties);
+
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
+
 #endif
-            const QSize size = (availableGeometry.size() * 4) / 5;
-            resize(size);
-            move(availableGeometry.center() - QPoint(size.width(), size.height()) / 2);
-        }
-    }
-#endif
 
-    CCFontSize::changeFontSize(0.0);
 
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
     ui->treeView_connection->header()->restoreState(settings.value(DEFCFG_CONNECTIONTABLE, "").toByteArray());
 
-    auto val = settings.value("tree/color");
-    if (val.isValid()) {
-        setStyleSheet("QTreeView { background: " + val.toString() + "; }");
+#if defined (Q_OS_ANDROID)
+
+#else
+#ifdef OLDVERSION
+    {
+        QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        //QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+        const QByteArray restoredGeometry = settings.value(QLatin1String(MAIN_WINDOW_LAYOUT)).toByteArray();
+        if (restoredGeometry.isEmpty() || !restoreGeometry(restoredGeometry)) {
+            const QRect availableGeometry = QApplication::desktop()->availableGeometry();
+            const QSize size = (availableGeometry.size() * 4) / 5;
+            resize(size);
+            move(availableGeometry.center() - QPoint(size.width(), size.height()) / 2);
+        }
     }
+#else
+    readGeometry();
+#endif
+#endif
+
 }
 
 MainWindow::~MainWindow()
@@ -103,10 +125,12 @@ MainWindow::~MainWindow()
 #if defined (Q_OS_ANDROID)
 
 #else
+#ifdef OLDVERSION
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     //    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue(QLatin1String(MAIN_WINDOW_LAYOUT), saveGeometry());
     settings.setValue(DEFCFG_CONNECTIONTABLE, ui->treeView_connection->header()->saveState());
+#endif
 #endif
     delete ui;
 }
@@ -207,14 +231,11 @@ void MainWindow::wheelEvent(QWheelEvent *event)
         const auto numPixels = event->pixelDelta();
         const auto numDegrees = event->angleDelta();
 
-        if (!numPixels.isNull())
-        {
-            auto fontSize = CCFontSize::changeFontSize((numPixels.y() < 0.0) ? -1 : 1);
+        if (!numPixels.isNull()) {
+            auto fontSize = CCFontSize::changeFontSize((numPixels.y() < 0.0) ? -1 : 1, this);
             tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
-        }
-        else if (!numDegrees.isNull())
-        {
-            auto fontSize = CCFontSize::changeFontSize((numDegrees.y() < 0.0) ? -1 : 1);
+        } else if (!numDegrees.isNull()) {
+            auto fontSize = CCFontSize::changeFontSize((numDegrees.y() < 0.0) ? -1 : 1, this);
             tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
         }
 
@@ -222,6 +243,60 @@ void MainWindow::wheelEvent(QWheelEvent *event)
         return;
     }
     QMainWindow::wheelEvent(event);
+}
+
+bool MainWindow::event(QEvent *event) {
+    if (event->type() == QEvent::Gesture) {
+        auto pGestureEvent = dynamic_cast<QGestureEvent *>(event);
+        if (pGestureEvent) {
+            auto pPinchGesture = pGestureEvent->gesture(Qt::PinchGesture);
+            if (pPinchGesture) {
+                return gestureEventPinch(static_cast<QPinchGesture *>(pPinchGesture));
+            }
+        }
+    }
+    return QWidget::event(event);
+}
+
+bool MainWindow::gestureEventPinch(QPinchGesture *gesture) {
+
+    QPinchGesture::ChangeFlags changeFlags = gesture->changeFlags();
+    if ((changeFlags & QPinchGesture::ScaleFactorChanged) == QPinchGesture::ScaleFactorChanged) {
+
+        double scale = 0.0;
+        double scaleFactor = gesture->scaleFactor() - 1.0;
+
+        if (scaleFactor >= 0.01)
+            scale = 1;
+        else if (scaleFactor <= -0.01)
+            scale = -1;
+
+        if (std::abs(scale) > 0.01) {
+            auto fontSize = CCFontSize::changeFontSize(scale, this);
+            tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
+        }
+    }
+    return true;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (ui->treeView_connection->verticalScrollBar()->isEnabled() && (event->modifiers() & Qt::ControlModifier) == Qt::ControlModifier)
+    {
+        ui->treeView_connection->verticalScrollBar()->setEnabled(false);
+        toolTip();
+    }
+    QWidget::keyPressEvent(event);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if(!ui->treeView_connection->verticalScrollBar()->isEnabled() && (event->modifiers() & Qt::ControlModifier) != Qt::ControlModifier)
+    {
+        ui->treeView_connection->verticalScrollBar()->setEnabled(true);
+        QToolTip::hideText();
+    }
+    QWidget::keyReleaseEvent(event);
 }
 
 void MainWindow::updateGui()
@@ -318,6 +393,11 @@ void MainWindow::onCurrentSelectionChanged(const QModelIndex current, const QMod
 
     m_ClipBoardString = m_RowText;
 
+}
+
+void MainWindow::on_pushButton_resize_clicked() {
+    for (int i = 0; i < ui->treeView_connection->model()->columnCount(); ++i)
+        ui->treeView_connection->resizeColumnToContents(i);
 }
 
 void MainWindow::ShowInfoDialog(QString title, QString dialogText, bool readonly)
@@ -580,11 +660,7 @@ void MainWindow::UpdateConfig()
      if (proxy != nullptr)
          proxy->updateColorMap();
 
-     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-     auto val = settings.value("tree/color");
-     if (val.isValid()) {
-         setStyleSheet("QTreeView { background: " + val.toString() + "; }");
-     }
+     CCFontSize::changeFontSize(0.0, this);
 
      ui->treeView_connection->viewport()->update();
 }
@@ -592,4 +668,16 @@ void MainWindow::UpdateConfig()
 void MainWindow::CloseConfig()
 {
     ui->pushButton_Settings->setEnabled(true);
+}
+
+void MainWindow::readGeometry()
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
+}
+
+void MainWindow::closeEvent(QCloseEvent *)
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    settings.setValue("MainWindow/geometry", saveGeometry());
 }

@@ -17,7 +17,6 @@
 
 #include "configdialog.h"
 #include "ccfontsize.h"
-#include "ui_configdialog.h"
 
 #include <QColorDialog>
 #include <QDebug>
@@ -27,20 +26,65 @@
 #include <QSettings>
 #include <QToolTip>
 #include <QWheelEvent>
+#include <QScrollArea>
+#include <QGroupBox>
+#include <QCoreApplication>
+#include <QGestureEvent>
+#include <QScrollBar>
+#include <QScroller>
+#include <QAbstractItemView>
 
 #define PROP_CLRFOREGROUND "clrForeground"
 #define PROP_CLRBACKGROUND "clrBackground"
 #define PROP_CLRLABEL "clrLabel"
 
 ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const std::function<void()> &callbackClose, QWidget *parent)
-    : QDialog(parent), m_ui(new Ui::ConfigDialog) {
-    m_ui->setupUi(this);
+    : QDialog(parent) {
 
     m_callbackUpdate = std::move(callbackUpdate);
     m_callbackClose = std::move(callbackClose);
 
-    CCFontSize::changeFontSize(0.0);
+    CCFontSize::changeFontSize(0.0, this);
 
+    setWindowTitle(tr("Settings"));
+    setSizeGripEnabled(true);
+
+    auto verticalLayout = new QVBoxLayout(this);
+
+    // *** LABEL ABOUT
+    {
+        auto label = new QLabel(this);
+        label->setOpenExternalLinks(true);
+        label->setText(tr("<html>\n"
+                          "<head/>\n"
+                          "<body>\n"
+                          "Copyright (C) chipmunk-sm<br>\n"
+                          "<a href=\"https://github.com/chipmunk-sm/\">https://github.com/chipmunk-sm/</a>\n"
+                          "</body>\n"
+                          "</html>"));
+        verticalLayout->addWidget(label);
+    }
+
+    // *** QScrollArea for Color Group Box
+    {
+        m_scrollArea_color = new QScrollArea(this);
+        m_scrollArea_color->setWidgetResizable(true);
+        m_scrollArea_color->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
+
+        verticalLayout->addWidget(m_scrollArea_color);
+
+        auto verticalLayout_2 = new QVBoxLayout(m_scrollArea_color);
+        auto groupBox = new QGroupBox(m_scrollArea_color);
+        groupBox->setTitle(tr("Color"));
+
+        auto gridLayout_color = new QGridLayout(groupBox);
+        verticalLayout_2->addWidget(groupBox);
+
+        m_scrollArea_color->setWidget(groupBox);
+        m_layout_color = gridLayout_color;
+    }
+
+    // *** Color Group Box Items
     int ind = 0;
     for (const auto &item : m_ConnectionStateHelper.getArray()) {
 
@@ -49,17 +93,17 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
 
         auto colorLabel = new QLabel(item.second.name);
         colorLabel->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        m_ui->gridLayout_color->addWidget(colorLabel, ind, 0);
+        m_layout_color->addWidget(colorLabel, ind, 0);
         colorLabel->setProperty(PROP_CLRLABEL, QVariant(item.first));
         setLabelColor(item.second.foreground, item.second.background, colorLabel);
 
         auto colorFButton = new QPushButton(tr("Foreground"));
-        m_ui->gridLayout_color->addWidget(colorFButton, ind, 1);
+        m_layout_color->addWidget(colorFButton, ind, 1);
         connect(colorFButton, &QPushButton::clicked, this, &ConfigDialog::onClick);
         colorFButton->setProperty(PROP_CLRFOREGROUND, QVariant(item.first));
 
         auto colorBButton = new QPushButton(tr("Background"));
-        m_ui->gridLayout_color->addWidget(colorBButton, ind, 2);
+        m_layout_color->addWidget(colorBButton, ind, 2);
         connect(colorBButton, &QPushButton::clicked, this, &ConfigDialog::onClick);
         colorBButton->setProperty(PROP_CLRBACKGROUND, QVariant(item.first));
 
@@ -69,7 +113,7 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
     // Reset
     {
         auto resetButton = new QPushButton(tr("Reset color"));
-        m_ui->gridLayout_color->addWidget(resetButton, ind, 0, 1, 3);
+        m_layout_color->addWidget(resetButton, ind, 0, 1, 3);
         connect(resetButton, &QPushButton::clicked, this, &ConfigDialog::onReset);
     }
     // separator
@@ -78,20 +122,20 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         auto line = new QFrame(this);
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
-        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+        m_layout_color->addWidget(line, ind, 0, 1, 3);
     }
     // Color BW
     {
         ind++;
         auto wbColorButton = new QPushButton(tr("Color - B && W"));
-        m_ui->gridLayout_color->addWidget(wbColorButton, ind, 0, 1, 3);
+        m_layout_color->addWidget(wbColorButton, ind, 0, 1, 3);
         connect(wbColorButton, &QPushButton::clicked, this, &ConfigDialog::onWbColor);
     }
     // Color WB
     {
         ind++;
         auto bwColorButton = new QPushButton(tr("Color - W && B"));
-        m_ui->gridLayout_color->addWidget(bwColorButton, ind, 0, 1, 3);
+        m_layout_color->addWidget(bwColorButton, ind, 0, 1, 3);
         connect(bwColorButton, &QPushButton::clicked, this, &ConfigDialog::onBwColor);
     }
     // separator
@@ -100,20 +144,20 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         auto line = new QFrame(this);
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
-        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+        m_layout_color->addWidget(line, ind, 0, 1, 3);
     }
     // Color viewport background
     {
         ind++;
         auto backgroundButton = new QPushButton(tr("Table - set background color"));
-        m_ui->gridLayout_color->addWidget(backgroundButton, ind, 0, 1, 3);
+        m_layout_color->addWidget(backgroundButton, ind, 0, 1, 3);
         connect(backgroundButton, &QPushButton::clicked, this, &ConfigDialog::onBackgroundColor);
     }
     // Color Reset viewport background
     {
         ind++;
         auto backgroundButton = new QPushButton(tr("Table - set default background"));
-        m_ui->gridLayout_color->addWidget(backgroundButton, ind, 0, 1, 3);
+        m_layout_color->addWidget(backgroundButton, ind, 0, 1, 3);
         connect(backgroundButton, &QPushButton::clicked, this, &ConfigDialog::onDefaultBackgroundColor);
     }
     // separator
@@ -122,14 +166,38 @@ ConfigDialog::ConfigDialog(const std::function<void()> &callbackUpdate, const st
         auto line = new QFrame(this);
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
-        m_ui->gridLayout_color->addWidget(line, ind, 0, 1, 3);
+        m_layout_color->addWidget(line, ind, 0, 1, 3);
     }
 
+
+    auto pObj1 = this;
+    pObj1->grabGesture(Qt::PinchGesture);
+    //pObj1->grabGesture(Qt::PanGesture);
+    //pObj1->grabGesture(Qt::SwipeGesture);
+
+    auto pObj = m_scrollArea_color;
+    //setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    //setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+    QScroller::grabGesture(pObj, QScroller::LeftMouseButtonGesture);
+
+    QScrollerProperties properties = QScroller::scroller(pObj)->scrollerProperties();
+    properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
+                               QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
+    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
+                               QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
+    QScroller::scroller(pObj)->setScrollerProperties(properties);
+
+#if ((QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 9) || QT_VERSION_MAJOR >= 6)
+
+#endif
+
+    readGeometry();
 }
 
 ConfigDialog::~ConfigDialog() {
     m_callbackClose();
-    delete m_ui;
+   // delete m_ui;
 }
 
 void ConfigDialog::wheelEvent(QWheelEvent *event) {
@@ -139,17 +207,51 @@ void ConfigDialog::wheelEvent(QWheelEvent *event) {
         const auto numDegrees = event->angleDelta();
 
         if (!numPixels.isNull()) {
-            auto fontSize = CCFontSize::changeFontSize((numPixels.y() < 0.0) ? -1 : 1);
+            auto fontSize = CCFontSize::changeFontSize((numPixels.y() < 0.0) ? -1 : 1, this);
             tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
         } else if (!numDegrees.isNull()) {
-            auto fontSize = CCFontSize::changeFontSize((numDegrees.y() < 0.0) ? -1 : 1);
+            auto fontSize = CCFontSize::changeFontSize((numDegrees.y() < 0.0) ? -1 : 1, this);
             tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
         }
-
+        m_callbackUpdate();
         event->accept();
         return;
     }
     QDialog::wheelEvent(event);
+}
+
+bool ConfigDialog::event(QEvent *event) {
+    if (event->type() == QEvent::Gesture) {
+        auto pGestureEvent = dynamic_cast<QGestureEvent *>(event);
+        if (pGestureEvent) {
+            auto pPinchGesture = pGestureEvent->gesture(Qt::PinchGesture);
+            if (pPinchGesture) {
+                return gestureEventPinch(static_cast<QPinchGesture *>(pPinchGesture));
+            }
+        }
+    }
+    return QWidget::event(event);
+}
+
+bool ConfigDialog::gestureEventPinch(QPinchGesture *gesture) {
+
+    QPinchGesture::ChangeFlags changeFlags = gesture->changeFlags();
+    if ((changeFlags & QPinchGesture::ScaleFactorChanged) == QPinchGesture::ScaleFactorChanged) {
+
+        double scale = 0.0;
+        double scaleFactor = gesture->scaleFactor() - 1.0;
+
+        if (scaleFactor >= 0.01)
+            scale = 1;
+        else if (scaleFactor <= -0.01)
+            scale = -1;
+
+        if (std::abs(scale) > 0.01) {
+            auto fontSize = CCFontSize::changeFontSize(scale, this);
+            tooltipText(QString("<center><b>Font %1</b></center>").arg(static_cast<int>(fontSize)));
+        }
+    }
+    return true;
 }
 
 void ConfigDialog::tooltipText(const QString &text) {
@@ -177,8 +279,8 @@ void ConfigDialog::tooltipText(const QString &text) {
 void ConfigDialog::reloadColor()
 {
     QLabel *pLabel = nullptr;
-    for (int idx = 0; idx < m_ui->gridLayout_color->count(); idx++) {
-        auto item = m_ui->gridLayout_color->itemAt(idx)->widget();
+    for (int idx = 0; idx < m_layout_color->count(); idx++) {
+        auto item = m_layout_color->itemAt(idx)->widget();
         auto propLab = item->property(PROP_CLRLABEL);
         if (propLab.isValid()) {
             pLabel = qobject_cast<QLabel *>(item);
@@ -203,8 +305,8 @@ void ConfigDialog::onClick() {
         return;
 
     QLabel *pLabel = nullptr;
-    for (int idx = 0; idx < m_ui->gridLayout_color->count(); idx++) {
-        auto item = m_ui->gridLayout_color->itemAt(idx)->widget();
+    for (int idx = 0; idx < m_layout_color->count(); idx++) {
+        auto item = m_layout_color->itemAt(idx)->widget();
         auto propLab = item->property(PROP_CLRLABEL);
         if (propLab.isValid()) {
             if (propLab == propVal) {
@@ -230,7 +332,8 @@ void ConfigDialog::onClick() {
 void ConfigDialog::onReset() {
     m_ConnectionStateHelper.updatetColor(true);
     reloadColor();
-    m_callbackUpdate();
+    //m_callbackUpdate();
+    onDefaultBackgroundColor();
 }
 
 void ConfigDialog::onBwColor()
@@ -284,4 +387,36 @@ void ConfigDialog::setLabelColor(const QColor &frg, const QColor &bkg, QLabel *p
                               .arg(bkg.red())
                               .arg(bkg.green())
                               .arg(bkg.blue()));
+}
+
+void ConfigDialog::readGeometry()
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    restoreGeometry(settings.value("settings/geometry").toByteArray());
+}
+
+void ConfigDialog::closeEvent(QCloseEvent *)
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    settings.setValue("settings/geometry", saveGeometry());
+}
+
+void ConfigDialog::keyPressEvent(QKeyEvent *event)
+{
+    if (m_scrollArea_color->verticalScrollBar()->isEnabled() && (event->modifiers() & Qt::ControlModifier) == Qt::ControlModifier)
+    {
+        m_scrollArea_color->verticalScrollBar()->setEnabled(false);
+        toolTip();
+    }
+    QWidget::keyPressEvent(event);
+}
+
+void ConfigDialog::keyReleaseEvent(QKeyEvent *event)
+{
+    if(!m_scrollArea_color->verticalScrollBar()->isEnabled() && (event->modifiers() & Qt::ControlModifier) != Qt::ControlModifier)
+    {
+        m_scrollArea_color->verticalScrollBar()->setEnabled(true);
+        QToolTip::hideText();
+    }
+    QWidget::keyReleaseEvent(event);
 }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>885</width>
+    <width>1006</width>
     <height>360</height>
    </rect>
   </property>
@@ -80,35 +80,41 @@ tcp\b|udp\b</string>
        <property name="spacing">
         <number>5</number>
        </property>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="pushButton_copyToClipboard">
+       <item row="0" column="4">
+        <widget class="QPushButton" name="pushButton_whois">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
          <property name="toolTip">
-          <string>Copy to Clipboard</string>
+          <string>WHOIS - Lookup service to search for the domain name registration information</string>
          </property>
          <property name="text">
-          <string>Copy</string>
+          <string>whois</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="pushButton_Record">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_Pause">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
          <property name="toolTip">
-          <string>Do not cleanup deleted records</string>
+          <string>Stop reading new records</string>
          </property>
          <property name="text">
-          <string>Record</string>
+          <string>Pause</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -123,6 +129,9 @@ tcp\b|udp\b</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
          <property name="toolTip">
           <string>Display the path of the executable process.  (Password required)</string>
          </property>
@@ -131,54 +140,22 @@ tcp\b|udp\b</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
-        <widget class="QPushButton" name="pushButton_Settings">
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButton_copyToClipboard">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="toolTip">
-          <string>Settings</string>
-         </property>
-         <property name="text">
-          <string>Settings</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_Pause">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Stop reading new records</string>
-         </property>
-         <property name="text">
-          <string>Pause</string>
-         </property>
-         <property name="checkable">
+         <property name="mouseTracking">
           <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="pushButton_whois">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="toolTip">
-          <string>WHOIS - Lookup service to search for the domain name registration information</string>
+          <string>Copy to Clipboard</string>
          </property>
          <property name="text">
-          <string>whois</string>
+          <string>Copy</string>
          </property>
         </widget>
        </item>
@@ -190,6 +167,9 @@ tcp\b|udp\b</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
          <property name="toolTip">
           <string>Save to XML or CVS</string>
          </property>
@@ -198,7 +178,7 @@ tcp\b|udp\b</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="9">
+       <item row="0" column="10">
         <widget class="QLabel" name="label_status">
          <property name="text">
           <string>&lt;a href=&quot;https://github.com/chipmunk-sm/tcpview&quot;&gt;https://github.com/chipmunk-sm/tcpview&lt;/a&gt;</string>
@@ -208,6 +188,66 @@ tcp\b|udp\b</string>
          </property>
          <property name="openExternalLinks">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pushButton_Record">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Do not cleanup deleted records</string>
+         </property>
+         <property name="text">
+          <string>Record</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <widget class="QPushButton" name="pushButton_Settings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Settings</string>
+         </property>
+         <property name="text">
+          <string>Settings</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+        <widget class="QPushButton" name="pushButton_resize">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Adjust columns to match text size</string>
+         </property>
+         <property name="text">
+          <string> Auto Fit</string>
          </property>
         </widget>
        </item>
