@@ -10,7 +10,7 @@ Graphical network connections viewer for Linux
 
 [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
 
-## Project status (travis-ci)
+## Master branch status (travis-ci)
 
 [![Build Status](https://travis-ci.org/chipmunk-sm/tcpview.svg?branch=master)](https://travis-ci.org/chipmunk-sm/tcpview)
 
