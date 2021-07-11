@@ -1,6 +1,10 @@
 # TcpView For Linux
 
-Graphical network connections viewer for Linux
+## Graphical network connections viewer for Linux
+
+[![Totalalerts](https://img.shields.io/lgtm/alerts/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/alerts/)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/context:cpp)
+
 
 ## Project status (appveyor)
 
