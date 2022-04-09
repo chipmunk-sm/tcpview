@@ -53,7 +53,7 @@ bool CCustomProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
     if (filterRegExp().isEmpty())
         return true;
 
-    for (int ind = 0; ind < sourceModel()->columnCount() - 1; ind++)
+    for (int ind = 0; ind < sourceModel()->columnCount(); ind++)
     {
         QModelIndex index = sourceModel()->index(sourceRow, ind, sourceParent);
         if(sourceModel()->data(index).toString().contains(filterRegExp()))
