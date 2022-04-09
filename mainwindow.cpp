@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     CCFontSize::changeFontSize(0.0, this);
 
-    setWindowIcon(QPixmap(":/data/tcpview.svg"));
+    setWindowIcon(QPixmap(":/data/tcpviewU.svg"));
 
     m_cconnectionstree.InitConnectonsTree(ui->treeView_connection);
 

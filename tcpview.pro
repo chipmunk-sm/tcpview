@@ -64,6 +64,7 @@ FORMS    += mainwindow.ui
 
 DISTFILES += \
     data/tcpview.svg \
+    data/tcpviewU.svg \
     data/tcpview.desktop \
     debian/compat \
     debian/control \
