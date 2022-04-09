@@ -6,17 +6,11 @@
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/context:cpp)
 
 
-## Project status (appveyor)
+**Project status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
+**Master branch status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
 
-## Master branch status (appveyor)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
-
-## Master branch status (travis-ci)
-
-[![Build Status](https://travis-ci.org/chipmunk-sm/tcpview.svg?branch=master)](https://travis-ci.org/chipmunk-sm/tcpview)
+**Master branch status (travis-ci)** [![Build Status](https://travis-ci.org/chipmunk-sm/tcpview.svg?branch=master)](https://travis-ci.org/chipmunk-sm/tcpview)
 
 
 ### To get the last release version, please use the PPA:
