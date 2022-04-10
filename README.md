@@ -10,9 +10,6 @@
 
 **Master branch status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
 
-**Master branch status (travis-ci)** [![Build Status](https://travis-ci.org/chipmunk-sm/tcpview.svg?branch=master)](https://travis-ci.org/chipmunk-sm/tcpview)
-
-
 ### To get the last release version, please use the PPA:
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
 
