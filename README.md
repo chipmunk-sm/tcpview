@@ -2,6 +2,8 @@
 
 ## Graphical network connections viewer for Linux
 
+<a href="https://www.buymeacoffee.com/chipmunksm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 [![Totalalerts](https://img.shields.io/lgtm/alerts/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/alerts/)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/context:cpp)
 
@@ -25,6 +27,7 @@ https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa/+packages
 Home page:
 
 https://github.com/chipmunk-sm/tcpview
+
 
 ![screen](https://user-images.githubusercontent.com/29524958/118386224-7e994e00-b605-11eb-8a24-2feef8a62815.png)
 
