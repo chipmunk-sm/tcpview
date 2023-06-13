@@ -550,7 +550,7 @@ void MainWindow::on_pushButton_displayNames_clicked()
         return;
 
 
-    qInfo("Run root acces module [%s]", command.toStdString().c_str());
+    qInfo("Run root access module [%s]", command.toStdString().c_str());
 
     uuid_t uuid;
     uuid_generate(uuid);
