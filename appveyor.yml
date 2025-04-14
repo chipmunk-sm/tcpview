@@ -1,5 +1,8 @@
 version: 3.0.{build}.{branch}
 
+# Set the build mode to "Script" instead of the default "MSBuild"
+build_mode: Script
+
 environment:
   matrix:
 
