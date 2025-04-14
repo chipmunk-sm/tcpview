@@ -1,7 +1,5 @@
 version: 3.0.{build}.{branch}
 
-build: script
-
 environment:
   matrix:
 
