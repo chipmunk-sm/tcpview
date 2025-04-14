@@ -2,3 +2,13 @@ build/*
 tcpview.pro.user
 *.autosave
 /translations/*.txt
+/.vs
+/debug
+/release
+/.qmake.stash
+/tcpview.qtvscr
+/tcpview.sln
+/tcpview.vcxproj
+/tcpview.vcxproj.filters
+/tcpview.vcxproj.user
+/ui_mainwindow.h
