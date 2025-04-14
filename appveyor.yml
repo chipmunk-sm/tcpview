@@ -24,6 +24,7 @@ environment:
       BUILD_FLAG: -qt=qt5
 
 install:
+    - sh: if [ "$APPVEYOR_BUILD_WORKER_IMAGE" = "Ubuntu1804" ] || [ "$APPVEYOR_BUILD_WORKER_IMAGE" = "Ubuntu1604" ]; then sudo rm -f /etc/apt/sources.list.d/google-chrome.list; fi
     - sh: sudo apt-get update
     - sh: sudo apt-get install -y qtbase5-dev uuid-dev
     #sudo apt-get install -y qtbase5-dev uuid-dev g++ make
