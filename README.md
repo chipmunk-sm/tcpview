@@ -4,9 +4,11 @@
 
 <a href="https://www.buymeacoffee.com/chipmunksm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-**Project status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
+**Project status (appveyor)**
+[![Build status](https://ci.appveyor.com/api/projects/status/manttq3gao1gqysr?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
 
-**Master branch status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
+**Master branch status (appveyor)**
+[![Build status](https://ci.appveyor.com/api/projects/status/manttq3gao1gqysr/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
 
 ### To get the last release version, please use the PPA:
 https://launchpad.net/~chipmunk.sm/+archive/ubuntu/ppa
