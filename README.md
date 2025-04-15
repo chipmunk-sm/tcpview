@@ -4,10 +4,6 @@
 
 <a href="https://www.buymeacoffee.com/chipmunksm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-[![Totalalerts](https://img.shields.io/lgtm/alerts/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/alerts/)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/chipmunk-sm/tcpview.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/chipmunk-sm/tcpview/context:cpp)
-
-
 **Project status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview)
 
 **Master branch status (appveyor)** [![Build status](https://ci.appveyor.com/api/projects/status/sr5bmaqi7qj9ekr5/branch/master?svg=true)](https://ci.appveyor.com/project/chipmunk-sm/tcpview/branch/master)
