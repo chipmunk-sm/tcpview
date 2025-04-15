@@ -3,29 +3,44 @@ version: 3.0.{build}.{branch}
 environment:
   matrix:
 
-      ##Ubuntu2004 - Ubuntu 20.04 (Focal Fossa)
+      #Ubuntu2204 - Ubuntu 22.04 (Jammy Jellyfish)
+    - job_name: "ubuntu.22.04"
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
+      QT_VERSION: qt5
+
+      #Ubuntu2004 - Ubuntu 20.04 (Focal Fossa)
     - job_name: "ubuntu.20.04"
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
-      BUILD_FLAG: -qt=qt5
+      QT_VERSION: qt5
 
-      ##Ubuntu1804 - Ubuntu 18.04 (Bionic Beaver)
+      #Ubuntu1804 - Ubuntu 18.04 (Bionic Beaver)
     - job_name: "Ubuntu.18.04"
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
-      BUILD_FLAG: -qt=qt5
+      QT_VERSION: qt5
 
       #Ubuntu1604 - Ubuntu 16.04 (Xenial Xerus)
     - job_name: "Ubuntu.16.04"
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
-      BUILD_FLAG: -qt=qt5
+      QT_VERSION: qt5
 
 install:
+    - sh: if [ "$APPVEYOR_BUILD_WORKER_IMAGE" = "Ubuntu1804" ] || [ "$APPVEYOR_BUILD_WORKER_IMAGE" = "Ubuntu1604" ]; then sudo rm -f /etc/apt/sources.list.d/google-chrome.list; fi
     - sh: sudo apt-get update
-    - sh: sudo apt-get install -y qtbase5-dev uuid-dev
-    #sudo apt-get install -y qtbase5-dev uuid-dev g++ make
+    - sh: |
+        if [ "$QT_VERSION" = "qt6" ]; then
+          sudo apt-get install -y qt6-base-dev uuid-dev
+        else
+          sudo apt-get install -y qtbase5-dev uuid-dev
+        fi
 
 build_script:
     - sh: set -e
+    - sh: |
+        if [ "$QT_VERSION" = "qt6" ]; then
+          export QT_SELECT=qt6
+        else
+          export QT_SELECT=qt5
+        fi
     - sh: qmake --version
-    - sh: make --version
-    - sh: qmake $BUILD_FLAG
+    - sh: qmake -qt=$QT_VERSION
     - sh: make -j$(nproc)
