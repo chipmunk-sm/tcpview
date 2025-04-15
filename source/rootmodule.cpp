@@ -114,7 +114,11 @@ void CRootModule::RunClient(
         if (retv <= 0)
             return;
 
-        auto const itemInf = reinterpret_cast<ItemInfo*>(m_buffer.GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1));
+        // Ensure buffer is large enough and properly sized for the read data
+        if (m_buffer.size() < sizeof(ItemInfo) + _POSIX_PATH_MAX + 1)
+            m_buffer.resize(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1);
+        
+        auto const itemInf = reinterpret_cast<ItemInfo*>(m_buffer.data());
         if (itemInf->startcode1 != DEF_STARTCODE || itemInf->startcode1 != DEF_STARTCODE)
         {
             setAbort();
@@ -409,11 +413,15 @@ bool CRootModule::WriteFifo(int fifo, const char *pBuffer, size_t size)
     return true;
 }
 
-int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
+int CRootModule::ReadFifo(int fifo, std::vector<uint8_t> *pBuffer)
 {
-    auto bufferPtr  = pBuffer->GetBufferPtr(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1);
-    auto inf        = reinterpret_cast<ItemInfo*>(bufferPtr);
-    inf->command    = ItemType_ERROR;
+    // Ensure buffer is large enough for the initial read
+    if (pBuffer->size() < sizeof(ItemInfo) + _POSIX_PATH_MAX + 1)
+        pBuffer->resize(sizeof(ItemInfo) + _POSIX_PATH_MAX + 1);
+    
+    auto bufferPtr = pBuffer->data();
+    auto inf = reinterpret_cast<ItemInfo*>(bufferPtr);
+    inf->command = ItemType_ERROR;
     inf->startcode1 = 0;
     inf->startcode2 = 0;
 
@@ -464,6 +472,12 @@ int CRootModule::ReadFifo(int fifo, CBuffer *pBuffer)
     if(inf->dataCount > _POSIX_PATH_MAX)
         inf->dataCount = _POSIX_PATH_MAX;
 
+    // Ensure buffer is large enough for additional data
+    if (pBuffer->size() < output + inf->dataCount)
+        pBuffer->resize(output + inf->dataCount);
+    
+    bufferPtr = pBuffer->data(); // Re-acquire pointer after possible resize
+    
     auto toread = inf->dataCount;
     while (toread > 0)
     {

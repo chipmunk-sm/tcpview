@@ -36,7 +36,6 @@
 #include <netdb.h>
 #include <uuid/uuid.h>
 #include <semaphore.h>
-#include <source/buffer.h>
 
 #define DEF_STARTCODE 0x010101010
 #define TIMEOUT_SERVER_START 1000
@@ -78,7 +77,7 @@ private:
     std::string     m_fifoNameSrv;
     std::string     m_fifoNameSrvRun;
     int             m_fifoSrv;
-    CBuffer         m_buffer;
+    std::vector<uint8_t> m_buffer;
     bool            m_abort;
 
     bool LoadProcessInodeList(unsigned int pid, int fifoSrv);
@@ -88,11 +87,8 @@ private:
     void GetCommandString(unsigned int pid, int fifoSrv);
 
     bool WriteFifo(int fifo, const char *pBuffer, size_t size);
-    int ReadFifo(int fifo, CBuffer *pBuffer);
+    int ReadFifo(int fifo, std::vector<uint8_t> *pBuffer);
 
 };
-
-
-
 
 #endif // CROOTMODULE_H
